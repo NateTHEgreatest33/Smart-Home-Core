@@ -15,18 +15,18 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "inc/tm4c123gh6pm.h"
-#include "inc/hw_memmap.h"
-#include "inc/hw_types.h"
-#include "driverlib/sysctl.h"
-#include "driverlib/interrupt.h"
-#include "driverlib/gpio.h"
-#include "inc/hw_gpio.h"
-#include "driverlib/timer.h"
-#include "driverlib/ssi.h"
-#include "driverlib/pin_map.h"
-#include "driverlib/pwm.h"
-#include "driverlib/i2c.h"
+#include "tivaware/inc/tm4c123gh6pm.h"
+#include "tivaware/inc/hw_memmap.h"
+#include "tivaware/inc/hw_types.h"
+#include "tivaware/driverlib/sysctl.h"
+#include "tivaware/driverlib/interrupt.h"
+#include "tivaware/driverlib/gpio.h"
+#include "tivaware/inc/hw_gpio.h"
+#include "tivaware/driverlib/timer.h"
+#include "tivaware/driverlib/ssi.h"
+#include "tivaware/driverlib/pin_map.h"
+#include "tivaware/driverlib/pwm.h"
+#include "tivaware/driverlib/i2c.h"
 
 /*--------------------------------------------------------------------
                           LITERAL CONSTANTS

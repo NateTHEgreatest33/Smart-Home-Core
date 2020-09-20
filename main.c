@@ -14,9 +14,11 @@
 --------------------------------------------------------------------*/
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
+#include <stdio.h>
 
 #include "messageAPI/messageAPI.h"
-#include "init.c"
+#include "init.h"
 
 /*--------------------------------------------------------------------
                           LITERAL CONSTANTS
@@ -34,7 +36,6 @@ static const location current_module = MODULE_NONE;
 /*--------------------------------------------------------------------
                               VARIABLES
 --------------------------------------------------------------------*/
-static global_error;
 
 
 /*--------------------------------------------------------------------
@@ -95,15 +96,13 @@ Local variables
 lora_errors lora_err_var;
 rx_message rx_msg;
 tx_message tx_msg;
-uint8_t lora_msg_size;
 
 /*----------------------------------------------------------
 Initialize local variables
 ----------------------------------------------------------*/
 lora_err_var = RX_NO_ERROR;
-lora_msg_size = 0;
-memset( rx_msg, 0, sizeof( rx_message ) );
-memset( tx_msg, 0, sizeof( tx_message ) );
+memset( &rx_msg, 0, sizeof( rx_message ) );
+memset( &tx_msg, 0, sizeof( tx_message ) );
 
 /*----------------------------------------------------------
 Initialize all subsystems while interrupts are disabled

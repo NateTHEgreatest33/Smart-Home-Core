@@ -12,8 +12,12 @@
 /*--------------------------------------------------------------------
                            GENERAL INCLUDES
 --------------------------------------------------------------------*/
+
+
 #include <stdint.h>
 #include <stdbool.h>
+
+#define PART_TM4C123GH6PM
 
 #include "inc/tm4c123gh6pm.h"
 #include "inc/hw_memmap.h"
@@ -34,7 +38,7 @@
 #define INTERRUPT_PORT 		( GPIO_PORTE_BASE )
 #define INTERRUPT_PIN  		( GPIO_PIN_1 )
 
-#define PART_TM4C123GH6PM  	( 1 )
+
 
 #define TIMER_400_KHZ 		( SysCtlClockGet() / 100 )
 #define TIMER_40_KHZ 		( SysCtlClockGet() / 1000 )

@@ -23,6 +23,9 @@
 /*--------------------------------------------------------------------
                           LITERAL CONSTANTS
 --------------------------------------------------------------------*/
+#define RED_LED               ( 0x02 )      /* value for red LED    */
+#define GREEN_LED             ( 0x08 )      /* value for Green LED  */
+#define BLUE_LED              ( 0x04 )      /* value for Blue LED   */
 
 /*--------------------------------------------------------------------
                                 TYPES
@@ -31,7 +34,7 @@
 /*--------------------------------------------------------------------
                            MEMORY CONSTANTS
 --------------------------------------------------------------------*/
-static const location current_module = MODULE_NONE;
+static const location current_module = TIVA_MODULE;
 
 /*--------------------------------------------------------------------
                               VARIABLES
@@ -75,7 +78,6 @@ IntMasterEnable();
 
 }
 
-
 /*********************************************************************
 *
 *   PROCEDURE NAME:
@@ -96,6 +98,7 @@ Local variables
 lora_errors lora_err_var;
 rx_message rx_msg;
 tx_message tx_msg;
+uint i;
 
 /*----------------------------------------------------------
 Initialize local variables
@@ -119,7 +122,7 @@ If issue with subsystem initilization do not move forward
 ----------------------------------------------------------*/
 if ( lora_err_var != RX_NO_ERROR )
     {
-    GPIO_PORTF_DATA_R = 0x2;                                 //red
+    GPIO_PORTF_DATA_R = RED_LED;
     while( true )
         {  
         }
@@ -128,32 +131,51 @@ if ( lora_err_var != RX_NO_ERROR )
 /*----------------------------------------------------------
 Set LED to signify start of main process loop
 ----------------------------------------------------------*/
-GPIO_PORTF_DATA_R = 0x08;                                   //green
+GPIO_PORTF_DATA_R = GREEN_LED; 
 
 /*----------------------------------------------------------
-Main processing loop
+TEST procedure
+----------------------------------------------------------*/
+
+/*----------------------
+Setup TX message
+----------------------*/
+tx_msg.destination = RPI_MODULE;
+tx_msg.message     = {0xFF, 0x11, 0xFF, 0x11}; 
+tx_msg.size        = 4;
+
+/*----------------------
+Send test message
+----------------------*/
+send_message(tx_msg);
+
+/*----------------------------------------------------------
+Playback Test loop
 ----------------------------------------------------------*/
 while( true )
     {
-    /*----------------------------------------------------------
-    Check for new messages
-    ----------------------------------------------------------*/
-    if( get_message( &rx_msg, &lora_err_var ) )
+    
+    /*----------------------
+    Wait for reply
+    ----------------------*/
+    while( get_message( &rx_msg, &lora_err_var ) == false && rx_msg.location != current_module )
+    {}
+
+    /*----------------------
+    Build playback message
+    ----------------------*/
+    memset( &tx_msg.message, 0, sizeof( tx_msg.message ) );
+    for( i = 0; i < rx_msg.size; i++ )
         {
-        /*----------------------------------------------------------
-        Proccess new messages if sent to us
-        ----------------------------------------------------------*/
-        if( rx_msg.destination == current_module )
-            {
-            /*----------------------------------------------------------
-            Send Reply
-            ----------------------------------------------------------*/
-            send_message(tx_msg);
-
-            }
-
+        tx_msg.message[i] = rx_msg.message[i];
         }
+    tx_msg.size = rx_msg.size;
 
+    /*----------------------
+    Send reply
+    ----------------------*/
+    send_message(tx_msg);
+    
     }
 
 } /* main() */

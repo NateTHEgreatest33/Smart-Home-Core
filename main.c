@@ -96,9 +96,10 @@ int main
 Local variables
 ----------------------------------------------------------*/
 lora_errors lora_err_var;
-rx_message rx_msg;
-tx_message tx_msg;
-uint i;
+rx_message  rx_msg;
+tx_message  tx_msg;
+lora_config lora_config_port;
+uint8_t     i;
 
 /*----------------------------------------------------------
 Initialize local variables
@@ -106,6 +107,11 @@ Initialize local variables
 lora_err_var = RX_NO_ERROR;
 memset( &rx_msg, 0, sizeof( rx_message ) );
 memset( &tx_msg, 0, sizeof( tx_message ) );
+memset( &tx_msg, 0, sizeof( lora_config_port ) );
+
+lora_config_port.SSI_BASE = SSI0_BASE;
+lora_config_port.SSI_PIN = 0x08;
+lora_config_port.SSI_PORT = GPIO_PORTA_DATA_R;
 
 /*----------------------------------------------------------
 Initialize all subsystems while interrupts are disabled
@@ -113,7 +119,7 @@ Initialize all subsystems while interrupts are disabled
 IntMasterDisable();
 
 sub_system_init();
-lora_err_var = init_message();
+lora_err_var = init_message( lora_config_port );
 
 IntMasterEnable();
 
@@ -141,13 +147,27 @@ TEST procedure
 Setup TX message
 ----------------------*/
 tx_msg.destination = RPI_MODULE;
-tx_msg.message     = {0xFF, 0x11, 0xFF, 0x11}; 
 tx_msg.size        = 4;
+for ( i = 0; i < tx_msg.size; i++ )
+    {
+    tx_msg.message[i] = i;
+    }
 
 /*----------------------
 Send test message
 ----------------------*/
-send_message(tx_msg);
+lora_err_var = send_message(tx_msg);
+
+/*----------------------
+error checking
+----------------------*/
+if ( lora_err_var != RX_NO_ERROR )
+    {
+    GPIO_PORTF_DATA_R = RED_LED;
+    while( true )
+        {  
+        }
+    }
 
 /*----------------------------------------------------------
 Playback Test loop
@@ -158,8 +178,9 @@ while( true )
     /*----------------------
     Wait for reply
     ----------------------*/
-    while( get_message( &rx_msg, &lora_err_var ) == false && rx_msg.location != current_module )
-    {}
+    while( get_message( &rx_msg, &lora_err_var ) == false && rx_msg.destination != current_module )
+        {
+        }
 
     /*----------------------
     Build playback message

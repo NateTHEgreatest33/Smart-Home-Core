@@ -6,7 +6,7 @@ Tiva Launchpad base module software for which LoraAPI and messageAPI runs on
 - [ ] system test
 
 ### OVERALL TODO
-- [ ] python rPi companion framework
+- [x] python rPi companion framework
 - [ ] backend support using Google FireBase
 - [ ] system UI using swift UI on mac
 - [ ] implement v1.1

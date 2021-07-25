@@ -50,9 +50,9 @@ Enablements
 #define PORT_F_ENABLE 		( true )
 #define PORT_D_ENABLE 		( false )
 #define SSI_ENABLE    		( true )
-#define I2C_ENABLE    		( true )
-#define TIMER_1A_ENABLE 	( true )
-#define INTERRUPT_ENABLE 	( true )
+#define I2C_ENABLE    		( false )
+#define TIMER_1A_ENABLE 	( false )
+#define INTERRUPT_ENABLE 	( false )
 
 
 /*--------------------------------------------------------------------
@@ -236,7 +236,6 @@ if( SSI_ENABLE )
 	GPIODirModeSet( GPIO_PORTA_BASE, GPIO_PIN_3, GPIO_DIR_MODE_OUT );	
 	GPIOPinTypeGPIOOutput( GPIO_PORTA_BASE, GPIO_PIN_3 );
 	GPIOPadConfigSet( GPIO_PORTA_BASE, GPIO_PIN_3, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU );
-	SysCtlDelay( 20000000 );
 
 	/*----------------------------------------------------------
 	Delay to allow time for setup
@@ -248,6 +247,10 @@ if( SSI_ENABLE )
 	----------------------------------------------------------*/
 	SSIConfigSetExpClk( SSI0_BASE, SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 100000, 8);
 
+	/*----------------------------------------------------------
+	Enable
+	----------------------------------------------------------*/
+	SSIEnable(SSI0_BASE);
 	/*----------------------------------------------------------
 	Toggle A3 high to start
 	----------------------------------------------------------*/

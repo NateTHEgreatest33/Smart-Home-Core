@@ -53,5 +53,5 @@ void Timer1A_Handler
     void
     )
 {
-
+TimerIntClear(TIMER1_BASE, TIMER_TIMA_TIMEOUT);
 } /* Timer1A_Handler() */

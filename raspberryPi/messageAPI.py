@@ -106,7 +106,7 @@ class messageAPI:
 			version = ( return_msg[3] & 0xF0 ) >> 4
 			dataSize = return_msg[3] & 0x0F
 			key = return_msg[4]
-			data = return_msg[4:-1]
+			data = return_msg[5:-1]
 			crc = return_msg[ len( return_msg ) - 1 ]
 
 			#confirm key & crc
@@ -252,8 +252,12 @@ class messageAPI:
 		result = self.spi.xfer2(msg) 
 
 		#print
-		print("Sent Message: {",end =" ")
-		for x in messageList:
-			print(hex(x),end =" ")
-		print("}")
+		if self.debug_prints:
+			print("Sent Message: {",end =" ")
+			for x in messageList:
+				print(hex(x),end =" ")
+			print("}")
+
+
+
 

@@ -115,6 +115,7 @@ lora_err_var = RX_NO_ERROR;
 
 lora_config_port.SSI_BASE = 0x40008000;
 lora_config_port.SSI_PORT = PORT_A;
+lora_config_port.SSI_PIN = 0x08;
 
 /*----------------------------------------------------------
 Initialize all subsystems while interrupts are disabled

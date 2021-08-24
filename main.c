@@ -34,7 +34,7 @@
 /*--------------------------------------------------------------------
                            MEMORY CONSTANTS
 --------------------------------------------------------------------*/
-static const location current_module = TIVA_MODULE;
+const location current_location = TIVA_MODULE;
 
 /*--------------------------------------------------------------------
                               VARIABLES
@@ -154,8 +154,7 @@ while( true )
             {
             memset( &tx_msg, 0, sizeof( tx_message ) );
             tx_msg.destination = RPI_MODULE;
-            tx_msg.source = current_module;
-        
+
             tx_msg.message[0] = 0xBB;
             tx_msg.size       = 2;
             switch( lora_err_var )
@@ -177,38 +176,31 @@ while( true )
                     break;
                 }
             send_message(tx_msg);
+
             }
-
         /*----------------------------------------------------------
-        Proccess new messages if sent to us
+        Non distructive testing replies
         ----------------------------------------------------------*/
-        if( rx_msg.destination == current_module )	
+        else
             {
-            /*----------------------------------------------------------
-            Non distructive testing replies
-            ----------------------------------------------------------*/
-            if( lora_err_var == RX_NO_ERROR )
-                {
-                memset( &tx_msg, 0, sizeof( tx_message ) );
-                tx_msg.destination = RPI_MODULE;
-                tx_msg.source = current_module;
+            memset( &tx_msg, 0, sizeof( tx_message ) );
+            tx_msg.destination = RPI_MODULE;
 
-                tx_msg.message[0] = 0xAA;
-                tx_msg.size       = 2;
-                switch( rx_msg.size )
-                    {
-                    case 0x01:
-                        tx_msg.message[1] = 0x11;
-                        break;
-                    case 0x0A:
-                        tx_msg.message[1] = 0x22;
-                        break;
-                    default:
-                        tx_msg.message[1] = 0xFF;
-                        break;
-                    }
-                send_message(tx_msg);
+            tx_msg.message[0] = 0xAA;
+            tx_msg.size       = 2;
+            switch( rx_msg.size )
+                {
+                case 0x01:
+                    tx_msg.message[1] = 0x11;
+                    break;
+                case 0x0A:
+                    tx_msg.message[1] = 0x22;
+                    break;
+                default:
+                    tx_msg.message[1] = 0xFF;
+                    break;
                 }
+            send_message(tx_msg);
             }
         }
 	}

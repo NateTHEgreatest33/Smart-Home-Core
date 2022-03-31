@@ -3,7 +3,7 @@ Tiva Launchpad base module software for which LoraAPI and messageAPI runs on
 
 ### TODO LIST:
 - [x] create stable v1.0
-- [ ] wiring diagrams for tiva, launchpad and lora
+- [x] wiring diagrams for tiva, launchpad and lora
 - [x] system test
 
 ### OVERALL TODO

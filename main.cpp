@@ -16,25 +16,22 @@
 #include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"
 #include "hardware/spi.h"
-extern "C" {
-#include "LoraAPI.h"
-}
 
-// #include "LoraAPI.c"
+extern "C" 
+    {
+    #include "LoraAPI.h"
+    }
 
+/*--------------------------------------------------------------------
+                          LITERAL CONSTANTS
+--------------------------------------------------------------------*/
+#define RED_LED               ( 0x02 )      /* value for red LED    */
+#define GREEN_LED             ( 0x08 )      /* value for Green LED  */
+#define BLUE_LED              ( 0x04 )      /* value for Blue LED   */
 
-// #include "loraAPI.h"
-
-// /*--------------------------------------------------------------------
-//                           LITERAL CONSTANTS
-// --------------------------------------------------------------------*/
-// #define RED_LED               ( 0x02 )      /* value for red LED    */
-// #define GREEN_LED             ( 0x08 )      /* value for Green LED  */
-// #define BLUE_LED              ( 0x04 )      /* value for Blue LED   */
-
-// /*--------------------------------------------------------------------
-//                                 TYPES
-// --------------------------------------------------------------------*/
+/*--------------------------------------------------------------------
+                                TYPES
+--------------------------------------------------------------------*/
 
 // /*--------------------------------------------------------------------
 //                            MEMORY CONSTANTS
@@ -98,9 +95,9 @@ if( cyw43_arch_init() )
     printf("Wi-Fi init failed");
     return -1;
     }
-
-
-// init_message( lora_config_port );
+    
+lora_port_init( spi_default );
+lora_init_continious_rx();
 
 // /*----------------------------------------------------------
 // If issue with subsystem initilization do not move forward
@@ -119,8 +116,7 @@ if( cyw43_arch_init() )
 cyw43_arch_gpio_put( CYW43_WL_GPIO_LED_PIN, 1 );
 
 
-// lora_port_init( spi_default );
-lora_init_continious_rx();
+
 
 
 

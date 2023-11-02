@@ -64,7 +64,10 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "cinttypes": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "loraapi.c": "cpp",
+        "cyw43_arch.h": "c",
+        "stdlib.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": false
 }

@@ -16,8 +16,14 @@
 #include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"
 #include "hardware/spi.h"
+extern "C" {
+#include "LoraAPI.h"
+}
 
-// #include "messageAPI/messageAPI.h"
+// #include "LoraAPI.c"
+
+
+// #include "loraAPI.h"
 
 // /*--------------------------------------------------------------------
 //                           LITERAL CONSTANTS
@@ -113,53 +119,76 @@ if( cyw43_arch_init() )
 cyw43_arch_gpio_put( CYW43_WL_GPIO_LED_PIN, 1 );
 
 
+// lora_port_init( spi_default );
+lora_init_continious_rx();
 
 
 
-#define PIN_CS   17
-#define ACTIVE 0
-#define INACTIVE 1
 
-spi_init(spi_default, 100000 );
-spi_set_format(spi_default, 8, SPI_CPOL_0, SPI_CPHA_1, SPI_MSB_FIRST);
-gpio_set_function(PICO_DEFAULT_SPI_RX_PIN, GPIO_FUNC_SPI);
-gpio_set_function(PICO_DEFAULT_SPI_SCK_PIN, GPIO_FUNC_SPI);
-gpio_set_function(PICO_DEFAULT_SPI_TX_PIN, GPIO_FUNC_SPI);
+
+
+
+
+
+
+
+
+
+/* --------------
+WORKING BUT TESTING
+-------------- */
+
+
+
+// // #define PIN_CS   17
+// #define PIN_CS   28
+// #define ACTIVE 0
+// #define INACTIVE 1
+
+// spi_init(spi_default, 100000 );
+// spi_set_format(spi_default, 8, SPI_CPOL_0, SPI_CPHA_1, SPI_MSB_FIRST);
+// gpio_set_function(PICO_DEFAULT_SPI_RX_PIN, GPIO_FUNC_SPI);
+// gpio_set_function(PICO_DEFAULT_SPI_SCK_PIN, GPIO_FUNC_SPI);
+// gpio_set_function(PICO_DEFAULT_SPI_TX_PIN, GPIO_FUNC_SPI);
 // gpio_set_function(PICO_DEFAULT_SPI_CSN_PIN, GPIO_FUNC_SPI );
-gpio_init(PIN_CS);
-gpio_set_dir(PIN_CS, GPIO_OUT);
-gpio_put(PIN_CS, INACTIVE );
+// gpio_init(PIN_CS);
+// gpio_set_dir(PIN_CS, GPIO_OUT);
+// gpio_put(PIN_CS, INACTIVE );
 
 
-while(1)
-    {
+// while(1)
+//     {
+//     int i;
+//     sleep_ms( 1000 );
 
-    sleep_ms( 1000 );
-
-    uint8_t buffer[4]      = { 0x81, 0x80, 0x00, 0x00 }; //configure into sleep mode (0x81 -write reg 1 0x80, sleep mode)
-    uint8_t rtn_buffer[4]  = { 0xFF, 0xFF, 0xFF, 0xFF }; //giberish?
-    uint8_t buffer2[4]     = { 0x01, 0x00, 0x00, 0x00 }; // ( 0x01 - read from register 1)
-    uint8_t rtn_buffer2[4] = { 0xFF, 0xFF, 0xFF, 0xFF }; // this should be the value 0x80
-
-
-
-    gpio_put(PIN_CS, ACTIVE);  // Active low
-    spi_write_blocking(spi_default, buffer, 4 );
-    spi_read_blocking(spi_default, 0, rtn_buffer, 4);
-    gpio_put(PIN_CS, INACTIVE);  // Active high
+//     uint8_t buffer[4]      = { 0x81, 0x80, 0x00, 0x00 }; //configure into sleep mode (0x81 -write reg 1 0x80, sleep mode)
+//     uint8_t rtn_buffer[4]  = { 0xFF, 0xFF, 0xFF, 0xFF }; //giberish?
+//     uint8_t buffer2[4]     = { 0x01, 0x00, 0x00, 0x00 }; // ( 0x01 - read from register 1)
+//     uint8_t rtn_buffer2[4] = { 0xFF, 0xFF, 0xFF, 0xFF }; // this should be the value 0x00 0x80
 
 
 
+//     gpio_put(PIN_CS, ACTIVE);  // Active low
+//     // spi_write_blocking(spi_default, buffer, 4 );
+//     // spi_read_blocking(spi_default, 0, rtn_buffer, 4);
+//     spi_write_read_blocking(spi_default, buffer, rtn_buffer, 2 );
+//     gpio_put(PIN_CS, INACTIVE);  // Active high
 
-    // spi_write_blocking(spi_default, buffer2, 2 );
-    gpio_put(PIN_CS, ACTIVE);  // Active high
-    spi_write_read_blocking(spi_default, buffer2, rtn_buffer2, 4 );
+    
+//     // sleep_ms(1);
+//     sleep_us( 10 ); //THIS IS REQUIRED TO ALLOW TIME FOR CS TO BE STOPPED!
+//     // i++;
+//     //this works, however the key is the 1ms sleep (could probably be less tbh)
 
-    gpio_put(PIN_CS, INACTIVE);  // Active high
+//     // spi_write_blocking(spi_default, buffer2, 2 );
+//     gpio_put(PIN_CS, ACTIVE);  // Active high
+//     spi_write_read_blocking(spi_default, buffer2, rtn_buffer2, 2 );
+
+//     gpio_put(PIN_CS, INACTIVE);  // Active high
 
 
-    printf(" result here ");
-    }
+//     printf(" result here %d", i );
+//     }
 
 
 

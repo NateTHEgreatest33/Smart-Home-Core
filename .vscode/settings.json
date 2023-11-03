@@ -67,7 +67,8 @@
         "typeinfo": "cpp",
         "loraapi.c": "cpp",
         "cyw43_arch.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "messageapi.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": false
 }

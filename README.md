@@ -5,6 +5,9 @@ Tiva Launchpad base module software for which LoraAPI and messageAPI runs on
 - [x] create stable v1.0
 - [x] wiring diagrams for tiva, launchpad and lora
 - [x] system test
+- [ ] add support for pi pico
+- [ ] make base module configurable (or maybe multiple base?). Put this in sys_def
+
 
 ### OVERALL TODO
 - [x] python rPi companion framework

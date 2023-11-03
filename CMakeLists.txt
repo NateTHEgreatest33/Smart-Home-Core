@@ -6,8 +6,8 @@ project(PicoModule C CXX ASM)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 20)
 
-add_subdirectory( messageAPI/LoRa )
-# add_subdirectory( messageAPI )
+# add_subdirectory( messageAPI/LoRa )
+add_subdirectory( messageAPI )
 
 pico_sdk_init()
 
@@ -23,6 +23,6 @@ target_link_libraries(PicoModule
   pico_cyw43_arch_none
 
   loraAPI
-  # messageAPI
+  messageAPI
 
 )

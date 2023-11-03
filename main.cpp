@@ -20,7 +20,8 @@
 
 extern "C" 
     {
-    #include "messageAPI.h"
+    // #include "messageAPI.h"
+    #include "LoraAPI.h"
     }
 
 /*--------------------------------------------------------------------
@@ -37,7 +38,7 @@ extern "C"
 /*--------------------------------------------------------------------
                            MEMORY CONSTANTS
 --------------------------------------------------------------------*/
-const location current_location = PICO_MODULE;
+// const location current_location = PICO_MODULE;
 
 /*--------------------------------------------------------------------
                               VARIABLES
@@ -70,8 +71,8 @@ int main
 /*----------------------------------------------------------
 Local variables
 ----------------------------------------------------------*/
-rx_message       rx_msg;
-tx_message       tx_msg;
+// rx_message       rx_msg;
+// tx_message       tx_msg;
 lora_errors      lora_err_var;
 bool             sdio_err_var;
 pico_error_codes wifi_err_var;
@@ -79,22 +80,22 @@ pico_error_codes wifi_err_var;
 /*----------------------------------------------------------
 Initialize local variables
 ----------------------------------------------------------*/
-memset( &rx_msg, 0, sizeof( rx_message ) );
-memset( &tx_msg, 0, sizeof( tx_message ) );
+// memset( &rx_msg, 0, sizeof( rx_message ) );
+// memset( &tx_msg, 0, sizeof( tx_message ) );
 
 lora_err_var = RX_NO_ERROR;
 sdio_err_var = false;
 wifi_err_var = PICO_ERROR_GENERIC;
 
 /*----------------------------------------------------------
-Initialize all subsystems
+Initialize all subsystems   
 ----------------------------------------------------------*/
 sdio_err_var = stdio_init_all();
 wifi_err_var = (pico_error_codes) cyw43_arch_init();
-lora_err_var = init_message( spi_default );
+// lora_err_var = init_message( spi_default );
 
 lora_port_init( spi_default);
-// lora_init_continious_rx();
+lora_init_continious_rx();
 
 /*----------------------------------------------------------
 If issue with subsystem initilization do not move forward

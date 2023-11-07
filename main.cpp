@@ -117,64 +117,64 @@ while( true )
 	/*----------------------------------------------------------
     Check for new messages
     ----------------------------------------------------------*/
-    // if( get_message( &rx_msg, &lora_err_var ) )
-    //     {
-    //     /*----------------------------------------------------------
-    //     Distructive testing replies
-    //     ----------------------------------------------------------*/ 
-    //     if( lora_err_var != RX_NO_ERROR )
-    //         {
-    //         memset( &tx_msg, 0, sizeof( tx_message ) );
-    //         tx_msg.destination = RPI_MODULE;
+    if( get_message( &rx_msg, &lora_err_var ) )
+        {
+        /*----------------------------------------------------------
+        Distructive testing replies
+        ----------------------------------------------------------*/ 
+        if( lora_err_var != RX_NO_ERROR )
+            {
+            memset( &tx_msg, 0, sizeof( tx_message ) );
+            tx_msg.destination = RPI_MODULE;
 
-    //         tx_msg.message[0] = 0xBB;
-    //         tx_msg.size       = 2;
-    //         switch( lora_err_var )
-    //             {
-    //             case RX_CRC_ERROR:
-    //                 tx_msg.message[1] = 0x01;
-    //                 break;
-    //             case RX_INVALID_HEADER:
-    //                 tx_msg.message[1] = 0x02;
-    //                 break;
-    //             case RX_SIZING:
-    //                 tx_msg.message[1] = 0x03;
-    //                 break;
-    //             case RX_KEY_ERR:
-    //                 tx_msg.message[1] = 0x04;
-    //                 break;
-    //             default:
-    //                 tx_msg.message[1] = 0xFF;
-    //                 break;
-    //             }
-    //         send_message(tx_msg);
+            tx_msg.message[0] = 0xBB;
+            tx_msg.size       = 2;
+            switch( lora_err_var )
+                {
+                case RX_CRC_ERROR:
+                    tx_msg.message[1] = 0x01;
+                    break;
+                case RX_INVALID_HEADER:
+                    tx_msg.message[1] = 0x02;
+                    break;
+                case RX_SIZING:
+                    tx_msg.message[1] = 0x03;
+                    break;
+                case RX_KEY_ERR:
+                    tx_msg.message[1] = 0x04;
+                    break;
+                default:
+                    tx_msg.message[1] = 0xFF;
+                    break;
+                }
+            send_message(tx_msg);
 
-    //         }
-    //     /*----------------------------------------------------------
-    //     Non distructive testing replies
-    //     ----------------------------------------------------------*/
-    //     else
-    //         {
-    //         memset( &tx_msg, 0, sizeof( tx_message ) );
-    //         tx_msg.destination = RPI_MODULE;
+            }
+        /*----------------------------------------------------------
+        Non distructive testing replies
+        ----------------------------------------------------------*/
+        else
+            {
+            memset( &tx_msg, 0, sizeof( tx_message ) );
+            tx_msg.destination = RPI_MODULE;
 
-    //         tx_msg.message[0] = 0xAA;
-    //         tx_msg.size       = 2;
-    //         switch( rx_msg.size )
-    //             {
-    //             case 0x01:
-    //                 tx_msg.message[1] = 0x11;
-    //                 break;
-    //             case 0x0A:
-    //                 tx_msg.message[1] = 0x22;
-    //                 break;
-    //             default:
-    //                 tx_msg.message[1] = 0xFF;
-    //                 break;
-    //             }
-    //         send_message(tx_msg);
-    //         }
-    //     }
+            tx_msg.message[0] = 0xAA;
+            tx_msg.size       = 2;
+            switch( rx_msg.size )
+                {
+                case 0x01:
+                    tx_msg.message[1] = 0x11;
+                    break;
+                case 0x0A:
+                    tx_msg.message[1] = 0x22;
+                    break;
+                default:
+                    tx_msg.message[1] = 0xFF;
+                    break;
+                }
+            send_message(tx_msg);
+            }
+        }
 	}
 
 } /* main() */

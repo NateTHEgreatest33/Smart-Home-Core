@@ -22,8 +22,6 @@ import time
 testIndex = ( 'test_description', 'send_data', 'destination', 'expected_data' )
 dTestIndex = ( 'test_description', 'raw_send', 'expected_data')
 
-
-
 #---------------------------------------------------------------------
 #                      TEST CASE VARIABLES
 #---------------------------------------------------------------------
@@ -34,7 +32,7 @@ test_case_group = [ ( "Test 1 byte message",  		[0xFF],															0x02, [0xA
 					( "Send 0 byte message",  		[], 															0x02, [0xBB, 0x03] 	),
 					( "send to unsupported module", [0xFF],															0x05, []			) ]
 
-#								("description",    			[dest, src,  pad, ver/size, key, DATA... crc], (True, source, data, valid) )
+#								("description",    			[dest, src,  pad, ver/size, key, DATA... crc],  (True, source, data, valid) )
 distructive_test_case_group = [ ("Test CRC Error", 			[0x02, 0x01, 0x00, 0x11, 0x00, 0xFF, 0xFF], 	(True, 0x02, [0xBB, 0x01], True) ),
 								("Test Size (Big) Error", 	[0x02, 0x01, 0x00, 0x1F, 0x00, 0xFF, 0xFF], 	(True, 0x02, [0xBB, 0x02], True) ),
 								("Test Size (Small) Error", [0x02, 0x01, 0x00, 0x10, 0x00, 0xFF], 			(True, 0x02, [0xBB, 0x03], True) ),

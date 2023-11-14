@@ -6,13 +6,13 @@ project(PicoModule C CXX ASM)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 20)
 
-# add_subdirectory( messageAPI/LoRa )
-add_subdirectory( messageAPI )
+add_subdirectory( lib/messageAPI )
+add_subdirectory( lib/LoRa )
 
 pico_sdk_init()
 
 add_executable( PicoModule
-  main.cpp
+  src/main.cpp
 )
 
 
@@ -22,6 +22,7 @@ target_link_libraries(PicoModule
   # Using Pico W
   pico_cyw43_arch_none
 
+  # libraries
   loraAPI
   messageAPI
 

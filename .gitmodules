@@ -1,3 +1,6 @@
-[submodule "messageAPI"]
-	path = messageAPI
-	url = https://NateTHEgreatest33@github.com/NateTHEgreatest33/messageAPI.git
+[submodule "lib/messageAPI"]
+	path = lib/messageAPI
+	url = https://github.com/NateTHEgreatest33/messageAPI.git
+[submodule "lib/LoRa"]
+	path = lib/LoRa
+	url = https://github.com/NateTHEgreatest33/LoRa.git

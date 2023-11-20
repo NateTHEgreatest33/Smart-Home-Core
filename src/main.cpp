@@ -99,7 +99,6 @@ If issue with subsystem initilization do not move forward
 ----------------------------------------------------------*/
 if ( lora_err_var != RX_NO_ERROR || wifi_err_var != PICO_OK || !sdio_err_var )
     {
-
     while( true )
         {  
         }
@@ -173,7 +172,7 @@ while( true )
                 tx_msg.message[1] = 0xFF;
                 break;
             }
-        send_message(tx_msg);
+        send_message(tx_msg); //need to add error handling here
 
         }
 

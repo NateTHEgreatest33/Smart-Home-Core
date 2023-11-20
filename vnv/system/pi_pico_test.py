@@ -12,7 +12,7 @@
 #---------------------------------------------------------------------
 #                              IMPORTS
 #---------------------------------------------------------------------
-from msgAPI import messageAPI
+from vnv.system.lib.msgAPI import messageAPI
 from enum import Enum
 import time
 

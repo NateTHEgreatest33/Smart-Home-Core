@@ -4,3 +4,6 @@
 [submodule "lib/LoRa"]
 	path = lib/LoRa
 	url = https://github.com/NateTHEgreatest33/LoRa.git
+[submodule "lib/button"]
+	path = lib/button
+	url = https://github.com/NateTHEgreatest33/button_component.git

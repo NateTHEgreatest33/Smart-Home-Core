@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory( lib/messageAPI )
 add_subdirectory( lib/LoRa )
+add_subdirectory( lib/button )
 
 pico_sdk_init()
 
@@ -25,5 +26,6 @@ target_link_libraries(PicoModule
   # libraries
   loraAPI
   messageAPI
+  buttonComponent
 
 )

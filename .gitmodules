@@ -7,3 +7,6 @@
 [submodule "lib/button"]
 	path = lib/button
 	url = https://github.com/NateTHEgreatest33/button_component.git
+[submodule "lib/console"]
+	path = lib/console
+	url = https://github.com/NateTHEgreatest33/console_api.git

@@ -17,6 +17,11 @@
 #include "pico/cyw43_arch.h"
 #include "hardware/spi.h"
 #include "pico/error.h"
+#include "hardware/gpio.h"
+#include <iostream>
+
+// #include "button.hpp"
+// component::button newButton( 1, component::edge::rising_edge, 1, false );
 
 extern "C" 
     {
@@ -26,9 +31,6 @@ extern "C"
 /*--------------------------------------------------------------------
                           LITERAL CONSTANTS
 --------------------------------------------------------------------*/
-#define RED_LED               ( 0x02 )      /* value for red LED    */
-#define GREEN_LED             ( 0x08 )      /* value for Green LED  */
-#define BLUE_LED              ( 0x04 )      /* value for Blue LED   */
 
 /*--------------------------------------------------------------------
                                 TYPES
@@ -52,6 +54,47 @@ int main                                   /* main proccessing loop */
     void
     );
 
+void gpio_int_handler                     /* GPIO interrupt handler */
+    (
+    uint gpio, 
+    uint32_t events
+    );
+
+/*********************************************************************
+*
+*   PROCEDURE NAME:
+*       gpio_int_handler
+*
+*   DESCRIPTION:
+*       Due to the nature of 
+*
+*   NOTES:
+*       Pi Pico architecture only allows for one gpio interrupt
+*       handler. It is mandated to pass in the gpio port # and the
+*       event which describes the manor of the interrupt (rising edge,
+*       lowering edge, etc. )
+*
+*********************************************************************/
+void gpio_int_handler                     /* GPIO interrupt handler */
+    (
+    uint gpio, 
+    uint32_t events
+    )
+{
+/*----------------------------------------------------------
+Local variables
+----------------------------------------------------------*/
+
+/*----------------------------------------------------------
+Handle GPIO configured
+----------------------------------------------------------*/
+switch( gpio )
+    {
+    default:
+        std::cout << __FILE__ << ":" << __LINE__ << " -  gpio interrupt handler not configured for interrupts on port " << gpio << std::endl;
+        break;
+    }
+}
 
 /*********************************************************************
 *
@@ -93,6 +136,7 @@ Initialize all subsystems
 sdio_err_var = stdio_init_all();
 wifi_err_var = (pico_error_codes) cyw43_arch_init();
 lora_err_var = init_message( spi_default );
+gpio_set_irq_callback( gpio_int_handler );
 
 /*----------------------------------------------------------
 If issue with subsystem initilization do not move forward
@@ -118,6 +162,41 @@ while( true )
     Check for new messages
     ----------------------------------------------------------*/
     msgRxed = get_message( &rx_msg, &lora_err_var );
+
+
+    char buffer[1024];
+    std::string buf2;
+    printf(" we got here\n");
+    char test1;
+    while(1)
+        {
+        // sleep_ms(500);
+        // working:
+        // scanf("%1024s", buffer);
+        // std::cin >> buffer;
+        if( uart_is_readable( uart0 ) )
+            {
+            test1 = uart_getc( uart0 );
+            if( test1 == '\r')
+                test1 = '\n';
+
+            buf2 += test1;
+            uart_putc_raw( uart0, test1 );
+
+            if( test1 == '\n' )
+                {
+                std::cout << "command gotten is: " << buf2 << std::endl;
+                }
+            // std::cin >> buffer;
+            // scanf("%1024s", buffer);
+            // printf( "result: %s\n", buffer);
+            }
+        
+
+        
+        }
+
+
 
     /*----------------------------------------------------------
     Non distructive testing replies
@@ -154,7 +233,7 @@ while( true )
 
         tx_msg.message[0] = 0xBB;
         tx_msg.size       = 2;
-        switch( lora_err_var )
+        switch( lora_err_var )  
             {
             case RX_CRC_ERROR:
                 tx_msg.message[1] = 0x01;

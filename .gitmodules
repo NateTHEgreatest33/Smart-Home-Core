@@ -10,3 +10,6 @@
 [submodule "lib/console"]
 	path = lib/console
 	url = https://github.com/NateTHEgreatest33/console_api.git
+[submodule "lib/util"]
+	path = lib/util
+	url = https://NateTHEgreatest33@github.com/NateTHEgreatest33/utilities.git

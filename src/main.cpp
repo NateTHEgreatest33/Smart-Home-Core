@@ -18,6 +18,8 @@
 #include "hardware/spi.h"
 #include "pico/error.h"
 #include "hardware/gpio.h"
+#include "button.hpp"
+#include "console.hpp"
 #include <iostream>
 
 // #include "button.hpp"
@@ -60,6 +62,9 @@ void gpio_int_handler                     /* GPIO interrupt handler */
     uint32_t events
     );
 
+component::button myButton( 14, 15,  true );
+
+
 /*********************************************************************
 *
 *   PROCEDURE NAME:
@@ -90,6 +95,11 @@ Handle GPIO configured
 ----------------------------------------------------------*/
 switch( gpio )
     {
+    case 14:
+        gpio_put( 13, true );
+        myButton.int_pushed();
+        gpio_put( 13, false );
+        break;
     default:
         std::cout << __FILE__ << ":" << __LINE__ << " -  gpio interrupt handler not configured for interrupts on port " << gpio << std::endl;
         break;
@@ -138,6 +148,9 @@ wifi_err_var = (pico_error_codes) cyw43_arch_init();
 lora_err_var = init_message( spi_default );
 gpio_set_irq_callback( gpio_int_handler );
 
+// gpio_init( 13 );
+// gpio_set_dir( 13, GPIO_OUT );
+// gpio_put( 13, false );
 /*----------------------------------------------------------
 If issue with subsystem initilization do not move forward
 ----------------------------------------------------------*/
@@ -152,6 +165,45 @@ if ( lora_err_var != RX_NO_ERROR || wifi_err_var != PICO_OK || !sdio_err_var )
 Set LED on to signify start of main process loop
 ----------------------------------------------------------*/
 cyw43_arch_gpio_put( CYW43_WL_GPIO_LED_PIN, 1 );
+
+
+// component::button myButton( 14, component::edge::lowering_edge, 15, false );
+// while( true )
+//     {
+//     if( myButton.isPushed() )
+//         {
+//         // std::cout << "hello world!\n";
+//         myButton.setLight( true );
+//         }
+//     else
+//         {
+//         myButton.setLight( false ); 
+//         }
+//     }
+
+
+//interrupt driven one
+// bool lightVal{false};
+// while( true )
+//     {
+//     // sleep_ms( 500 );
+//     if( myButton.wasPushed() )
+//         lightVal = !lightVal;
+    
+//     myButton.setLight( lightVal );
+//     //TODO: play around with input (3.3v vs GND) to see if maybe that is the cause?
+//     }
+
+core::console myConsole( false, uart0 );
+myConsole.add_assert( "something0", true );
+myConsole.add_assert( "something1", true );
+myConsole.add_assert( "something2", true );
+myConsole.add_assert( "something3", true );
+while( true )
+    {
+    myConsole.console_runtime();
+    //need to figure out how to stop a return from continuing WAY tabbed in
+    }
 
 /*----------------------------------------------------------
 System Test procedure/replies
@@ -178,7 +230,7 @@ while( true )
             {
             test1 = uart_getc( uart0 );
             if( test1 == '\r')
-                test1 = '\n';
+                test1 = '\r';
 
             buf2 += test1;
             uart_putc_raw( uart0, test1 );

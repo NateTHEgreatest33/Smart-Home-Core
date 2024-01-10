@@ -16,14 +16,13 @@
 #include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"
 #include "hardware/spi.h"
-#include "pico/error.h"
 #include "hardware/gpio.h"
+#include "pico/error.h"
+
 #include "button.hpp"
 #include "console.hpp"
-#include <iostream>
 
-// #include "button.hpp"
-// component::button newButton( 1, component::edge::rising_edge, 1, false );
+#include <iostream>
 
 extern "C" 
     {
@@ -46,7 +45,7 @@ const location current_location = PICO_MODULE;
 /*--------------------------------------------------------------------
                               VARIABLES
 --------------------------------------------------------------------*/
-
+core::console console( uart0 );       /* console API */
 
 /*--------------------------------------------------------------------
                               PROCEDURES
@@ -62,16 +61,13 @@ void gpio_int_handler                     /* GPIO interrupt handler */
     uint32_t events
     );
 
-component::button myButton( 14, 15,  true );
-
-
 /*********************************************************************
 *
 *   PROCEDURE NAME:
 *       gpio_int_handler
 *
 *   DESCRIPTION:
-*       Due to the nature of 
+*       GPIO Interupt Handler
 *
 *   NOTES:
 *       Pi Pico architecture only allows for one gpio interrupt
@@ -80,10 +76,10 @@ component::button myButton( 14, 15,  true );
 *       lowering edge, etc. )
 *
 *********************************************************************/
-void gpio_int_handler                     /* GPIO interrupt handler */
+void gpio_int_handler
     (
-    uint gpio, 
-    uint32_t events
+    uint gpio,                        /* gpio port number           */    
+    uint32_t events                   /* event for gpio interrupt   */
     )
 {
 /*----------------------------------------------------------
@@ -95,13 +91,8 @@ Handle GPIO configured
 ----------------------------------------------------------*/
 switch( gpio )
     {
-    case 14:
-        gpio_put( 13, true );
-        myButton.int_pushed();
-        gpio_put( 13, false );
-        break;
     default:
-        std::cout << __FILE__ << ":" << __LINE__ << " -  gpio interrupt handler not configured for interrupts on port " << gpio << std::endl;
+        console.add_assert( "GPIO Handler called on unsupported pin" );
         break;
     }
 }
@@ -123,12 +114,12 @@ int main
 /*----------------------------------------------------------
 Local variables
 ----------------------------------------------------------*/
-rx_message       rx_msg;
-tx_message       tx_msg;
-lora_errors      lora_err_var;
-bool             sdio_err_var;
-pico_error_codes wifi_err_var;
-bool             msgRxed;
+rx_message       rx_msg;    /* returned message structure */
+tx_message       tx_msg;    /* transmit message structure */
+lora_errors      lora_err_var; /* lora errors             */
+bool             sdio_err_var; /* stdio init errors       */
+pico_error_codes wifi_err_var; /* wifi init errors        */
+bool             msgRxed;  /* message rx'ed               */
 
 /*----------------------------------------------------------
 Initialize local variables
@@ -148,16 +139,20 @@ wifi_err_var = (pico_error_codes) cyw43_arch_init();
 lora_err_var = init_message( spi_default );
 gpio_set_irq_callback( gpio_int_handler );
 
-// gpio_init( 13 );
-// gpio_set_dir( 13, GPIO_OUT );
-// gpio_put( 13, false );
 /*----------------------------------------------------------
 If issue with subsystem initilization do not move forward
 ----------------------------------------------------------*/
 if ( lora_err_var != RX_NO_ERROR || wifi_err_var != PICO_OK || !sdio_err_var )
     {
+    console.add_assert( "System unable to initilize" );
+
     while( true )
-        {  
+        {
+        /*--------------------------------------------------
+        Allow user to retrive error messages if unable to
+        initilize.
+        --------------------------------------------------*/
+        console.console_runtime();  
         }
     }
 
@@ -166,93 +161,23 @@ Set LED on to signify start of main process loop
 ----------------------------------------------------------*/
 cyw43_arch_gpio_put( CYW43_WL_GPIO_LED_PIN, 1 );
 
-
-// component::button myButton( 14, component::edge::lowering_edge, 15, false );
-// while( true )
-//     {
-//     if( myButton.isPushed() )
-//         {
-//         // std::cout << "hello world!\n";
-//         myButton.setLight( true );
-//         }
-//     else
-//         {
-//         myButton.setLight( false ); 
-//         }
-//     }
-
-
-//interrupt driven one
-// bool lightVal{false};
-// while( true )
-//     {
-//     // sleep_ms( 500 );
-//     if( myButton.wasPushed() )
-//         lightVal = !lightVal;
-    
-//     myButton.setLight( lightVal );
-//     //TODO: play around with input (3.3v vs GND) to see if maybe that is the cause?
-//     }
-
-core::console myConsole( false, uart0 );
-myConsole.add_assert( "something0", true );
-myConsole.add_assert( "something1", true );
-myConsole.add_assert( "something2", true );
-myConsole.add_assert( "something3", true );
-while( true )
-    {
-    myConsole.console_runtime();
-    //need to figure out how to stop a return from continuing WAY tabbed in
-    }
-
 /*----------------------------------------------------------
 System Test procedure/replies
 ----------------------------------------------------------*/
 while( true )
     {
-	/*----------------------------------------------------------
+    /*------------------------------------------------------
+    Run console periodic
+    ------------------------------------------------------*/
+    console.console_runtime();
+	/*------------------------------------------------------
     Check for new messages
-    ----------------------------------------------------------*/
+    ------------------------------------------------------*/
     msgRxed = get_message( &rx_msg, &lora_err_var );
 
-
-    char buffer[1024];
-    std::string buf2;
-    printf(" we got here\n");
-    char test1;
-    while(1)
-        {
-        // sleep_ms(500);
-        // working:
-        // scanf("%1024s", buffer);
-        // std::cin >> buffer;
-        if( uart_is_readable( uart0 ) )
-            {
-            test1 = uart_getc( uart0 );
-            if( test1 == '\r')
-                test1 = '\r';
-
-            buf2 += test1;
-            uart_putc_raw( uart0, test1 );
-
-            if( test1 == '\n' )
-                {
-                std::cout << "command gotten is: " << buf2 << std::endl;
-                }
-            // std::cin >> buffer;
-            // scanf("%1024s", buffer);
-            // printf( "result: %s\n", buffer);
-            }
-        
-
-        
-        }
-
-
-
-    /*----------------------------------------------------------
+    /*------------------------------------------------------
     Non distructive testing replies
-    ----------------------------------------------------------*/
+    ------------------------------------------------------*/
     if(  msgRxed == true && lora_err_var == RX_NO_ERROR )
         {
         memset( &tx_msg, 0, sizeof( tx_message ) );
@@ -303,8 +228,8 @@ while( true )
                 tx_msg.message[1] = 0xFF;
                 break;
             }
-        send_message(tx_msg); //need to add error handling here
 
+        send_message(tx_msg); //need to add error handling here
         }
 
 
@@ -315,6 +240,6 @@ while( true )
     lora_err_var = RX_NO_ERROR;
     msgRxed = false;
 
-	}
+	} /* while(true) */
 
 } /* main() */

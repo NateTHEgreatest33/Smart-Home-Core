@@ -15,12 +15,14 @@
 --------------------------------------------------------------------*/
 #include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"
+#include "pico/error.h"
+#include "pico/multicore.h"
 #include "hardware/spi.h"
 #include "hardware/gpio.h"
-#include "pico/error.h"
 
 #include "button.hpp"
 #include "console.hpp"
+#include "background_task.hpp"
 
 #include <iostream>
 
@@ -45,7 +47,7 @@ const location current_location = PICO_MODULE;
 /*--------------------------------------------------------------------
                               VARIABLES
 --------------------------------------------------------------------*/
-core::console console( uart0 );       /* console API */
+core::console console( uart0 );            /* console API           */
 
 /*--------------------------------------------------------------------
                               PROCEDURES
@@ -137,6 +139,7 @@ Initialize all subsystems
 sdio_err_var = stdio_init_all();
 wifi_err_var = (pico_error_codes) cyw43_arch_init();
 lora_err_var = init_message( spi_default );
+
 gpio_set_irq_callback( gpio_int_handler );
 
 /*----------------------------------------------------------
@@ -157,6 +160,11 @@ if ( lora_err_var != RX_NO_ERROR || wifi_err_var != PICO_OK || !sdio_err_var )
     }
 
 /*----------------------------------------------------------
+launch background_task on core 1
+----------------------------------------------------------*/
+multicore_launch_core1( background_task );
+
+/*----------------------------------------------------------
 Set LED on to signify start of main process loop
 ----------------------------------------------------------*/
 cyw43_arch_gpio_put( CYW43_WL_GPIO_LED_PIN, 1 );
@@ -166,10 +174,7 @@ System Test procedure/replies
 ----------------------------------------------------------*/
 while( true )
     {
-    /*------------------------------------------------------
-    Run console periodic
-    ------------------------------------------------------*/
-    console.console_runtime();
+
 	/*------------------------------------------------------
     Check for new messages
     ------------------------------------------------------*/

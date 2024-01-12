@@ -16,12 +16,16 @@ pico_sdk_init()
 
 add_executable( PicoModule
   src/main.cpp
+
+  src/background_task.cpp
+  src/background_task.hpp
 )
 
 
 target_link_libraries(PicoModule
   pico_stdlib
   hardware_spi
+  pico_multicore
   # Using Pico W
   pico_cyw43_arch_none
 

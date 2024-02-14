@@ -1,0 +1,22 @@
+active: true
+derived: true
+header: ''
+level: 1.2.0
+links: []
+normative: false
+ref: ''
+reviewed: null
+text: |
+  Definitions
+
+  ***LoRa*** - Long Range Radio
+
+  ***Tivaware*** - TI Launchpad Board Support Package
+
+  ***Launchpad*** - Texas Instruments Launchpad Microcontroller
+
+  ***Pico*** - Raspberry Pi Pico W (Wifi Enabled) Microcontroller
+
+  ***Pico-sdk*** - Raspberry Pi Pico Board Support Package
+
+  ***RFM69HWC*** - Lora Transceiver

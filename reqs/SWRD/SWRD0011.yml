@@ -1,0 +1,10 @@
+active: true
+derived: false
+header: 'Requirements covered'
+level: 4.1.2.0
+links: []
+normative: true
+ref: ''
+reviewed: null
+text: |
+  System tests shall be responsible for verifying high level requirements.

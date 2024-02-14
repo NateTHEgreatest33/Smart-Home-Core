@@ -1,0 +1,10 @@
+active: true
+derived: false
+header: 'Outgoing message handling'
+level: 2.1.1.2.0
+links: []
+normative: true
+ref: ''
+reviewed: null
+text: |
+  Outgoing messages shall be processed and handled immediately as they are requested by the module

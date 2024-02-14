@@ -1,0 +1,12 @@
+active: true
+derived: true
+header: ''
+level: 2.1.0
+links: []
+normative: false
+ref: ''
+reviewed: null
+text: |
+  Sub Systems
+
+  Sub Systems are core components of the smart home core and cannot be enabled/disabled

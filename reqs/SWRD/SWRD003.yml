@@ -1,0 +1,10 @@
+active: true
+derived: false
+header: 'LoRa handling'
+level: 2.1.2.1.0
+links: []
+normative: true
+ref: ''
+reviewed: null
+text: |
+  All communication to the ***RFM69HWC*** shall be handled through the loraAPI.

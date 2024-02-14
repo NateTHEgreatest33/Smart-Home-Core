@@ -1,0 +1,17 @@
+active: true
+derived: true
+header: ''
+level: 5.1.0
+links: []
+normative: false
+ref: ''
+reviewed: null
+text: |
+  Publishing Requirements
+
+  *NOTE:* It is assumed that [doorstop](https://doorstop.readthedocs.io/en/latest/) has been installed previously
+
+  To publish requirements run the following from within the /req folder
+  > doorstop publish all ./docs 
+
+  

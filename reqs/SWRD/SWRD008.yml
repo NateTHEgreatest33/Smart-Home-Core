@@ -1,0 +1,10 @@
+active: true
+derived: false
+header: 'Pi Pico'
+level: 3.1.2.0
+links: []
+normative: true
+ref: ''
+reviewed: null
+text: |
+  ![Pico](assets/pico.png "Pi Pico wiring diagram")

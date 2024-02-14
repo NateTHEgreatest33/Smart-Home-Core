@@ -1,0 +1,12 @@
+active: true
+derived: true
+header: ''
+level: 2.2.0
+links: []
+normative: false
+ref: ''
+reviewed: null
+text: |
+  Components
+
+  Components are non-core components of the smart home core and can be enabled/disabled

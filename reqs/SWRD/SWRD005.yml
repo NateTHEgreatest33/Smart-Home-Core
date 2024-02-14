@@ -1,0 +1,10 @@
+active: true
+derived: false
+header: 'Subsystem initilization'
+level: 2.3.1.0
+links: []
+normative: true
+ref: ''
+reviewed: null
+text: |
+  All systems shall be initialized before launching main loop

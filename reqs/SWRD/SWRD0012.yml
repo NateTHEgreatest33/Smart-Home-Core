@@ -1,0 +1,10 @@
+active: true
+derived: true
+header: 'Locations'
+level: 4.2.1.0
+links: []
+normative: true
+ref: ''
+reviewed: null
+text: |
+  Module tests shall be found within the vnv/mod directory and results shall be stored in the docs/results directory

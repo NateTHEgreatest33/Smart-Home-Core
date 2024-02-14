@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head><title>Doorstop</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <link rel="stylesheet" href="assets/doorstop/bootstrap.min.css" />
+  <link rel="stylesheet" href="assets/doorstop/general.css" />
+  <link type="text/css" rel="stylesheet" href="assets/doorstop/sidebar.css" />
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" ></script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
+  });
+  </script>
+</head>
+<body>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-2 hidden-sm hidden-xs">
+          <nav id="TOC" class="nav nav-stacked fixed sidebar">
+              <h3>Table of Contents</h3>
+<ul>
+<li><a href="#HEAD-1.0">1.0 Software Requirement Document</a><ul>
+<li><a href="#HEAD-1.1">1.1 Definitions</a></li>
+<li><a href="#HEAD-1.2">1.2 Definitions</a></li>
+<li><a href="#HEAD-1.3">1.3 Referenced Documents</a></li>
+<li><a href="#HEAD-1.4">1.4 Conventions</a></li>
+</ul>
+</li>
+<li><a href="#HEAD-2.0">2.0 Software Requirements</a><ul>
+<li><a href="#HEAD-2.1">2.1 Sub Systems</a><ul>
+<li><a href="#HEAD-2.1.1">2.1.1 Message API</a><ul>
+<li><a href="#SWRD001">2.1.1.1 Incoming message handling</a></li>
+<li><a href="#SWRD002">2.1.1.2 Outgoing message handling</a></li>
+</ul>
+</li>
+<li><a href="#HEAD-2.1.2">2.1.2 Lora API</a><ul>
+<li><a href="#SWRD003">2.1.2.1 LoRa handling</a></li>
+</ul>
+</li>
+<li><a href="#HEAD-2.1.3">2.1.3 Console API</a><ul>
+<li><a href="#SWRD004">2.1.3.1 Console Behavior</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#HEAD-2.2">2.2 Components</a></li>
+<li><a href="#HEAD-2.3">2.3 Module Initialization</a><ul>
+<li><a href="#SWRD005">2.3.1 Subsystem initilization</a></li>
+<li><a href="#SWRD006">2.3.2 Component initilization</a></li>
+</ul>
+</li>
+<li><a href="#HEAD-2.4">2.4 Main Loop</a></li>
+</ul>
+</li>
+<li><a href="#HEAD-3.0">3.0 Hardware Requirements</a><ul>
+<li><a href="#HEAD-3.1">3.1 Default Wiring Positions for Lora</a><ul>
+<li><a href="#SWRD007">3.1.1 SWRD007</a></li>
+<li><a href="#SWRD008">3.1.2 Pi Pico</a></li>
+<li><a href="#SWRD009">3.1.2 Pi 3B+</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#HEAD-4.0">4.0 Testing and Results</a><ul>
+<li><a href="#HEAD-4.1">4.1 System Testing</a><ul>
+<li><a href="#SWRD0010">4.1.1 Locations</a></li>
+<li><a href="#SWRD0011">4.1.2 Requirements covered</a></li>
+</ul>
+</li>
+<li><a href="#HEAD-4.2">4.2 Module Testing</a><ul>
+<li><a href="#SWRD0012">4.2.1 Locations</a></li>
+<li><a href="#SWRD0013">4.2.2 Requirements covered</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#HEAD-5.0">5.0 Requirements</a><ul>
+<li><a href="#HEAD-5.1">5.1 Publishing Requirements</a></li>
+</ul>
+</li>
+</ul>
+          </nav>
+      </div>
+      <div class="col-lg-8" id="main">
+        <h1 id="HEAD-1.0">1.0 Software Requirement Document</h1>
+<p>This document contains all high level requirements for the smart home core</p>
+<h2 id="HEAD-1.1">1.1 Definitions</h2>
+<p><strong><em>LoRa</em></strong> - Long Range Radio</p>
+<p><strong><em>Tivaware</em></strong> - TI Launchpad Board Support Package</p>
+<p><strong><em>Launchpad</em></strong> - Texas Instruments Launchpad Microcontroller</p>
+<p><strong><em>Pico</em></strong> - Raspberry Pi Pico W (Wifi Enabled) Microcontroller</p>
+<p><strong><em>Pico-sdk</em></strong> - Raspberry Pi Pico Board Support Package</p>
+<p><strong><em>RFM69HWC</em></strong> - Lora Transceiver</p>
+<h2 id="HEAD-1.2">1.2 Definitions</h2>
+<p><strong><em>LoRa</em></strong> - Long Range Radio</p>
+<p><strong><em>Tivaware</em></strong> - TI Launchpad Board Support Package</p>
+<p><strong><em>Launchpad</em></strong> - Texas Instruments Launchpad Microcontroller</p>
+<p><strong><em>Pico</em></strong> - Raspberry Pi Pico W (Wifi Enabled) Microcontroller</p>
+<p><strong><em>Pico-sdk</em></strong> - Raspberry Pi Pico Board Support Package</p>
+<p><strong><em>RFM69HWC</em></strong> - Lora Transceiver</p>
+<h2 id="HEAD-1.3">1.3 Referenced Documents</h2>
+<ul>
+<li><a href="https://www.raspberrypi.com/documentation/pico-sdk/"><strong><em>Pico SDK Reference Manual</em></strong></a></li>
+<li><a href="https://cdn-shop.adafruit.com/product-files/3076/RFM69HCW-V1.1.pdf"><strong><em>Lora Transceiver Reference Manual</em></strong></a></li>
+</ul>
+<h2 id="HEAD-1.4">1.4 Conventions</h2>
+<ul>
+<li>Notes shall be written italic and prefacned with "NOTE"</li>
+<li>Document and defintion refrences shall be both bolded and italicized</li>
+</ul>
+<h1 id="HEAD-2.0">2.0 Software Requirements</h1>
+<h2 id="HEAD-2.1">2.1 Sub Systems</h2>
+<p>Sub Systems are core components of the smart home core and cannot be enabled/disabled</p>
+<h3 id="HEAD-2.1.1">2.1.1 Message API</h3>
+<h4 id="SWRD001">2.1.1.1 Incoming message handling <small>SWRD001</small></h4>
+<p>Incoming message shall be processed and handled immediately as they are received by the module</p>
+<h4 id="SWRD002">2.1.1.2 Outgoing message handling <small>SWRD002</small></h4>
+<p>Outgoing messages shall be processed and handled immediately as they are requested by the module</p>
+<h3 id="HEAD-2.1.2">2.1.2 Lora API</h3>
+<h4 id="SWRD003">2.1.2.1 LoRa handling <small>SWRD003</small></h4>
+<p>All communication to the <strong><em>RFM69HWC</em></strong> shall be handled through the loraAPI.</p>
+<h3 id="HEAD-2.1.3">2.1.3 Console API</h3>
+<h4 id="SWRD004">2.1.3.1 Console Behavior <small>SWRD004</small></h4>
+<p>The console interface shall handle user inputs and commands</p>
+<h2 id="HEAD-2.2">2.2 Components</h2>
+<p>Components are non-core components of the smart home core and can be enabled/disabled</p>
+<h2 id="HEAD-2.3">2.3 Module Initialization</h2>
+<h3 id="SWRD005">2.3.1 Subsystem initilization <small>SWRD005</small></h3>
+<p>All systems shall be initialized before launching main loop</p>
+<h3 id="SWRD006">2.3.2 Component initilization <small>SWRD006</small></h3>
+<p>All components that are configured shall be initialized before launching main loop</p>
+<h2 id="HEAD-2.4">2.4 Main Loop</h2>
+<h1 id="HEAD-3.0">3.0 Hardware Requirements</h1>
+<h2 id="HEAD-3.1">3.1 Default Wiring Positions for Lora</h2>
+<h3 id="SWRD007">3.1.1 SWRD007</h3>
+<p><img alt="Tiva" src="assets/tiva.png" title="Tiva Launchpad wiring diagram" /></p>
+<h3 id="SWRD008">3.1.2 Pi Pico <small>SWRD008</small></h3>
+<p><img alt="Pico" src="assets/pico.png" title="Pi Pico wiring diagram" /></p>
+<h3 id="SWRD009">3.1.2 Pi 3B+ <small>SWRD009</small></h3>
+<p><img alt="Pi" src="assets/pi.png" title="Pi 3B+ wiring diagram" /></p>
+<h1 id="HEAD-4.0">4.0 Testing and Results</h1>
+<h2 id="HEAD-4.1">4.1 System Testing</h2>
+<h3 id="SWRD0010">4.1.1 Locations <small>SWRD0010</small></h3>
+<p>System tests shall be found within the vnv/system directory and results shall be stored in the docs/results directory</p>
+<h3 id="SWRD0011">4.1.2 Requirements covered <small>SWRD0011</small></h3>
+<p>System tests shall be responsible for verifying high level requirements.</p>
+<h2 id="HEAD-4.2">4.2 Module Testing</h2>
+<h3 id="SWRD0012">4.2.1 Locations <small>SWRD0012</small></h3>
+<p>Module tests shall be found within the vnv/mod directory and results shall be stored in the docs/results directory</p>
+<h3 id="SWRD0013">4.2.2 Requirements covered <small>SWRD0013</small></h3>
+<p>Module tests shall be responsible for verifying low level requirements.</p>
+<h1 id="HEAD-5.0">5.0 Requirements</h1>
+<h2 id="HEAD-5.1">5.1 Publishing Requirements</h2>
+<p><em>NOTE:</em> It is assumed that <a href="https://doorstop.readthedocs.io/en/latest/">doorstop</a> has been installed previously</p>
+<p>To publish requirements run the following from within the /req folder</p>
+<blockquote>
+<p>doorstop publish all ./docs</p>
+</blockquote>
+      </div>
+    </div>
+</div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="assets/doorstop/jquery.min.js"></script>
+<script src="assets/doorstop/bootstrap.min.js"></script>
+<script>
+    $(function() {
+        $("table").addClass("table");
+        $("nav ul").addClass("nav nav-stacked");
+        $("nav").affix();
+        $('body').scrollspy({
+          target: '.sidebar'
+        });
+        $("#main a").attr("target", "parent");
+
+  $(window).on('hashchange', function() {
+    $(window).scrollTop($(location.hash.toLowerCase()).offset().top);});
+  });
+</script>
+</body>
+</html>
+

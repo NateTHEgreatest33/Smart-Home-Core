@@ -1,0 +1,10 @@
+active: true
+derived: false
+header: 'Pi 3B+'
+level: 3.1.2.0
+links: []
+normative: true
+ref: ''
+reviewed: null
+text: |
+  ![Pi](assets/pi.png "Pi 3B+ wiring diagram")

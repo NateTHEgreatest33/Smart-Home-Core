@@ -1,0 +1,10 @@
+active: true
+derived: true
+header: 'Locations'
+level: 4.1.1.0
+links: []
+normative: true
+ref: ''
+reviewed: null
+text: |
+  System tests shall be found within the vnv/system directory and results shall be stored in the docs/results directory

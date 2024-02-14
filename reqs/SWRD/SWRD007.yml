@@ -1,0 +1,10 @@
+active: true
+derived: true
+header: ''
+level: 3.1.1.0
+links: []
+normative: true
+ref: ''
+reviewed: null
+text: |
+  ![Tiva](assets/tiva.png "Tiva Launchpad wiring diagram")

@@ -26,9 +26,9 @@ Modules included†
 - https://www.raspberrypi.com/products/raspberry-pi-pico/
  
 ## Requirements
-[High Level Requirements](https://smrt-home.atlassian.net/wiki/spaces/HOS/pages/7634976/High+Level+Requirements)
+[High Level Requirements](reqs/docs/SWRD.html)
 
-[Low Level Requirements](https://smrt-home.atlassian.net/wiki/spaces/HOS/pages/8126465/Low+Level+Requirements)
+[Low Level Requirements](reqs/docs/SWRD.html)
 
 ## Quick Start
 

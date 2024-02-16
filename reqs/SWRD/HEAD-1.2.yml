@@ -7,16 +7,9 @@ normative: false
 ref: ''
 reviewed: null
 text: |
-  Definitions
+  Referenced Documents
 
-  ***LoRa*** - Long Range Radio
+  **<ins>messageAPI-ICD</ins>** - [version 1.0](https://docs.google.com/document/d/130JMIxLKgSH4ArH4278pt9nv2rzlUnXZ5191O4RaR6M/edit#heading=h.vb53gr77h2fj)
 
-  ***Tivaware*** - TI Launchpad Board Support Package
+  **<ins>LoraAPI-Ref-Manual</ins>** - [version 1.1](https://cdn-shop.adafruit.com/product-files/3076/RFM69HCW-V1.1.pdf)
 
-  ***Launchpad*** - Texas Instruments Launchpad Microcontroller
-
-  ***Pico*** - Raspberry Pi Pico W (Wifi Enabled) Microcontroller
-
-  ***Pico-sdk*** - Raspberry Pi Pico Board Support Package
-
-  ***RFM69HWC*** - Lora Transceiver

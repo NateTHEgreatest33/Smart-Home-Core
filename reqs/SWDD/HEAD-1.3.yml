@@ -7,6 +7,8 @@ normative: false
 ref: ''
 reviewed: null
 text: |
-  Referenced Documents
-  - [***Pico SDK Reference Manual***](https://www.raspberrypi.com/documentation/pico-sdk/)
-  - [***Lora Transceiver Reference Manual***](https://cdn-shop.adafruit.com/product-files/3076/RFM69HCW-V1.1.pdf)
+  Conventions
+  
+  Notes shall be written italic and prefacned with "NOTE"
+  
+  Document and defintion refrences shall be both bolded and italicized

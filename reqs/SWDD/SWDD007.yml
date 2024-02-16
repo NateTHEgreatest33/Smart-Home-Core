@@ -1,0 +1,9 @@
+active: true
+derived: false
+header: 'API shall have a method to initialize the lora transceiver to transmit data as defined in ***LoraAPI-Ref-Manual***'
+level: 2.1.2.3
+links: []
+normative: true
+ref: ''
+reviewed: null
+text: ''

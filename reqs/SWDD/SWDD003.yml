@@ -1,0 +1,10 @@
+active: true
+derived: false
+header: 'API shall have a method to initialize subsystem'
+level: 2.1.1.3
+links: []
+normative: false
+ref: ''
+reviewed: null
+text: |
+  The message API shall put the lora transceiver into RX Continuous mode after initialization

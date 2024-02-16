@@ -1,10 +1,14 @@
 active: true
 derived: false
-header: ''
-level: 1.0
+header: 'API shall have a method to send messages'
+level: 2.1.1.1
 links: []
 normative: false
 ref: ''
 reviewed: null
 text: |
-  Software Design Document
+  The message API shall verify the passed in message object conforms to formatting requirements as defined in ***messageAPI-ICD***.
+
+  The message API shall construct a valid message as defined in ***messageAPI-ICD***.
+  
+  The message API shall construct a valid message as defined in ***messageAPI-ICD***.

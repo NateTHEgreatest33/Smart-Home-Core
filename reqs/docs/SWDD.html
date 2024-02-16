@@ -21,16 +21,120 @@
           <nav id="TOC" class="nav nav-stacked fixed sidebar">
               <h3>Table of Contents</h3>
 <ul>
-<li><a href="#SWDD001">1.0 Software Design Document</a><ul>
-<li><a href="#SWDD002">2.1 This document contains the low-level requirements for the smart home core</a></li>
+<li><a href="#HEAD-1.0">1.0 Software Requirement Document</a><ul>
+<li><a href="#HEAD-1.1">1.1 Definitions</a></li>
+<li><a href="#HEAD-1.2">1.2 Definitions</a></li>
+<li><a href="#HEAD-1.3">1.3 Referenced Documents</a></li>
+<li><a href="#HEAD-1.4">1.4 Conventions</a></li>
 </ul>
 </li>
+<li><a href="#HEAD-2.0">2.0 Software Requirements</a><ul>
+<li><a href="#HEAD-2.1">2.1 Sub Systems</a><ul>
+<li><a href="#HEAD-2.1.1">2.1.1 Message API</a><ul>
+<li><a href="#SWDD001">2.1.1.1 API shall have a method to send messages</a></li>
+<li><a href="#SWDD002">2.1.1.2 API shall have a method to get messages</a></li>
+<li><a href="#SWDD003">2.1.1.3 API shall have a method to initialize subsystem</a></li>
+<li><a href="#SWDD004">2.1.1.4 API shall have a method to manage key</a></li>
+</ul>
+</li>
+<li><a href="#HEAD-2.1.2">2.1.2 Lora API</a><ul>
+<li><a href="#SWDD005">2.1.2.1 API shall have a method to initialize subsystem</a></li>
+<li><a href="#SWDD006">2.1.2.2 API shall have a method to initialize the lora transceiver to receive continuous data as defined in <strong><em>LoraAPI-Ref-Manual</em></strong></a></li>
+<li><a href="#SWDD007">2.1.2.3 API shall have a method to initialize the lora transceiver to transmit data as defined in <strong><em>LoraAPI-Ref-Manual</em></strong></a></li>
+<li><a href="#SWDD008">2.1.2.4 API shall have a method for transmitting a payload as defined in <strong><em>LoraAPI-Ref-Manual</em></strong></a></li>
+</ul>
+</li>
+<li><a href="#HEAD-2.1.3">2.1.3 Console API</a><ul>
+<li><a href="#SWDD009">2.1.3.1 The console API shall interface over USB/UART</a></li>
+<li><a href="#SWDD010">2.1.3.2 The console API shall handle the following commands</a></li>
+<li><a href="#SWDD011">2.1.3.3 <del>The console API shall be multi-thread safe</del></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#HEAD-2.2">2.2 Components</a></li>
+<li><a href="#HEAD-2.3">2.3 Module Initialization</a></li>
+<li><a href="#HEAD-2.4">2.4 Main Loop</a></li>
+</ul>
+</li>
+<li><a href="#HEAD-3.0">3.0 Hardware Requirements</a></li>
 </ul>
           </nav>
       </div>
       <div class="col-lg-8" id="main">
-        <h1 id="SWDD001">1.0 Software Design Document</h1>
-<h2 id="SWDD002">2.1 This document contains the low-level requirements for the smart home core</h2>
+        <h1 id="HEAD-1.0">1.0 Software Requirement Document</h1>
+<p>This document contains all low level requirements for the smart home core</p>
+<h2 id="HEAD-1.1">1.1 Definitions</h2>
+<p><strong><em>LoRa</em></strong> - Long Range Radio</p>
+<p><strong><em>Tivaware</em></strong> - TI Launchpad Board Support Package</p>
+<p><strong><em>Launchpad</em></strong> - Texas Instruments Launchpad Microcontroller</p>
+<p><strong><em>Pico</em></strong> - Raspberry Pi Pico W (Wifi Enabled) Microcontroller</p>
+<p><strong><em>Pico-sdk</em></strong> - Raspberry Pi Pico Board Support Package</p>
+<p><strong><em>RFM69HWC</em></strong> - Lora Transceiver</p>
+<h2 id="HEAD-1.2">1.2 Definitions</h2>
+<p><strong><em>LoRa</em></strong> - Long Range Radio</p>
+<p><strong><em>Tivaware</em></strong> - TI Launchpad Board Support Package</p>
+<p><strong><em>Launchpad</em></strong> - Texas Instruments Launchpad Microcontroller</p>
+<p><strong><em>Pico</em></strong> - Raspberry Pi Pico W (Wifi Enabled) Microcontroller</p>
+<p><strong><em>Pico-sdk</em></strong> - Raspberry Pi Pico Board Support Package</p>
+<p><strong><em>RFM69HWC</em></strong> - Lora Transceiver</p>
+<h2 id="HEAD-1.3">1.3 Referenced Documents</h2>
+<ul>
+<li><a href="https://www.raspberrypi.com/documentation/pico-sdk/"><strong><em>Pico SDK Reference Manual</em></strong></a></li>
+<li><a href="https://cdn-shop.adafruit.com/product-files/3076/RFM69HCW-V1.1.pdf"><strong><em>Lora Transceiver Reference Manual</em></strong></a></li>
+</ul>
+<h2 id="HEAD-1.4">1.4 Conventions</h2>
+<ul>
+<li>Notes shall be written italic and prefacned with "NOTE"</li>
+<li>Document and defintion refrences shall be both bolded and italicized</li>
+</ul>
+<h1 id="HEAD-2.0">2.0 Software Requirements</h1>
+<h2 id="HEAD-2.1">2.1 Sub Systems</h2>
+<p>Sub Systems are core components of the smart home core and cannot be enabled/disabled</p>
+<h3 id="HEAD-2.1.1">2.1.1 Message API</h3>
+<h4 id="SWDD001">2.1.1.1 API shall have a method to send messages <small>SWDD001</small></h4>
+<p>The message API shall verify the passed in message object conforms to formatting requirements as defined in <strong><em>messageAPI-ICD</em></strong>.</p>
+<p>The message API shall construct a valid message as defined in <strong><em>messageAPI-ICD</em></strong>.</p>
+<p>The message API shall construct a valid message as defined in <strong><em>messageAPI-ICD</em></strong>.</p>
+<h4 id="SWDD002">2.1.1.2 API shall have a method to get messages <small>SWDD002</small></h4>
+<p>The message API shall verify the received message conforms to formatting requirements as defined in <strong><em>messageAPI-ICD</em></strong>.</p>
+<p>The message API shall verify the received message is valid as defined in <strong><em>messageAPI-ICD</em></strong>.</p>
+<p>The message API shall verify the received message destination matches the current location.</p>
+<h4 id="SWDD003">2.1.1.3 API shall have a method to initialize subsystem <small>SWDD003</small></h4>
+<p>The message API shall put the lora transceiver into RX Continuous mode after initialization</p>
+<h4 id="SWDD004">2.1.1.4 API shall have a method to manage key <small>SWDD004</small></h4>
+<p>API shall have a method to update  message key as defined in <strong><em>messageAPI-ICD</em></strong></p>
+<h3 id="HEAD-2.1.2">2.1.2 Lora API</h3>
+<h4 id="SWDD005">2.1.2.1 API shall have a method to initialize subsystem <small>SWDD005</small></h4>
+<p>The lora API shall not allow any use unless lora_port_init() is has been run first.</p>
+<h4 id="SWDD006">2.1.2.2 API shall have a method to initialize the lora transceiver to receive continuous data as defined in <strong><em>LoraAPI-Ref-Manual</em></strong> <small>SWDD006</small></h4>
+<h4 id="SWDD007">2.1.2.3 API shall have a method to initialize the lora transceiver to transmit data as defined in <strong><em>LoraAPI-Ref-Manual</em></strong> <small>SWDD007</small></h4>
+<h4 id="SWDD008">2.1.2.4 API shall have a method for transmitting a payload as defined in <strong><em>LoraAPI-Ref-Manual</em></strong> <small>SWDD008</small></h4>
+<p><em>NOTE:</em> TX’ing of data can only occur after the Lora transceiver has been initialized into TX mode</p>
+<p>The lora API shall wait until the transceiver reports finishing transmitting as defined in <strong><em>LoraAPI-Ref-Manual</em></strong> before returning.</p>
+<p>The lora API shall return true if a valid payload has been received.</p>
+<p>The lora API shall report if errors are present in received data</p>
+<h3 id="HEAD-2.1.3">2.1.3 Console API</h3>
+<h4 id="SWDD009">2.1.3.1 The console API shall interface over USB/UART <small>SWDD009</small></h4>
+<h4 id="SWDD010">2.1.3.2 The console API shall handle the following commands <small>SWDD010</small></h4>
+<ol>
+<li>
+<p>Providing asserts Since Startup</p>
+</li>
+<li>
+<p>Clearing console screen</p>
+</li>
+<li>
+<p>Listing available commands to user</p>
+</li>
+</ol>
+<h4 id="SWDD011">2.1.3.3 <del>The console API shall be multi-thread safe</del> <small>SWDD011</small></h4>
+<p><strong>NOT IMPLEMENTED</strong></p>
+<h2 id="HEAD-2.2">2.2 Components</h2>
+<p>Components are non-core components of the smart home core and can be enabled/disabled</p>
+<h2 id="HEAD-2.3">2.3 Module Initialization</h2>
+<h2 id="HEAD-2.4">2.4 Main Loop</h2>
+<h1 id="HEAD-3.0">3.0 Hardware Requirements</h1>
       </div>
     </div>
 </div>

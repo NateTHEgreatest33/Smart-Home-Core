@@ -1,0 +1,10 @@
+active: true
+derived: false
+header: '<del>The console API shall be multi-thread safe</del>'
+level: 2.1.3.3
+links: []
+normative: true
+ref: ''
+reviewed: null
+text: |
+  **NOT IMPLEMENTED**

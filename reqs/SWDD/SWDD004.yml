@@ -1,0 +1,10 @@
+active: true
+derived: false
+header: 'API shall have a method to manage key'
+level: 2.1.1.4
+links: []
+normative: false
+ref: ''
+reviewed: null
+text: |
+  API shall have a method to update  message key as defined in ***messageAPI-ICD***

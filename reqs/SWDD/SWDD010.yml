@@ -1,0 +1,14 @@
+active: true
+derived: false
+header: 'The console API shall handle the following commands'
+level: 2.1.3.2
+links: []
+normative: true
+ref: ''
+reviewed: null
+text: |
+  1. Providing asserts Since Startup
+
+  2. Clearing console screen
+
+  3. Listing available commands to user

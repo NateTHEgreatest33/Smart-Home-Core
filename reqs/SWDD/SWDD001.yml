@@ -1,8 +1,10 @@
 active: true
 derived: false
-header: 'API shall have a method to send messages'
+header: |
+  API shall have a method to send messages
 level: 2.1.1.1
-links: []
+links:
+- SWRD002: null
 normative: false
 ref: ''
 reviewed: null
@@ -10,5 +12,5 @@ text: |
   The message API shall verify the passed in message object conforms to formatting requirements as defined in ***messageAPI-ICD***.
 
   The message API shall construct a valid message as defined in ***messageAPI-ICD***.
-  
+
   The message API shall construct a valid message as defined in ***messageAPI-ICD***.

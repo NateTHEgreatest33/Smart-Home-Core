@@ -104,14 +104,18 @@
 <h3 id="HEAD-2.1.1">2.1.1 Message API</h3>
 <h4 id="SWRD001">2.1.1.1 Incoming message handling <small>SWRD001</small></h4>
 <p>Incoming message shall be processed and handled immediately as they are received by the module</p>
+<p><em>Child links:</em> <a href="SWDD.html#SWDD002">SWDD002 API shall have a method to get messages</a>, <a href="SWDD.html#SWDD003">SWDD003 API shall have a method to initialize subsystem</a>, <a href="SWDD.html#SWDD004">SWDD004 API shall have a method to manage key</a></p>
 <h4 id="SWRD002">2.1.1.2 Outgoing message handling <small>SWRD002</small></h4>
 <p>Outgoing messages shall be processed and handled immediately as they are requested by the module</p>
+<p><em>Child links:</em> <a href="SWDD.html#SWDD001">SWDD001 API shall have a method to send messages</a>, <a href="SWDD.html#SWDD003">SWDD003 API shall have a method to initialize subsystem</a>, <a href="SWDD.html#SWDD004">SWDD004 API shall have a method to manage key</a></p>
 <h3 id="HEAD-2.1.2">2.1.2 Lora API</h3>
 <h4 id="SWRD003">2.1.2.1 LoRa handling <small>SWRD003</small></h4>
 <p>All communication to the <strong><em>RFM69HWC</em></strong> shall be handled through the loraAPI.</p>
+<p><em>Child links:</em> <a href="SWDD.html#SWDD005">SWDD005 API shall have a method to initialize subsystem</a>, <a href="SWDD.html#SWDD006">SWDD006 API shall have a method to initialize the lora transceiver to receive continuous data as defined in <strong><em>LoraAPI-Ref-Manual</em></strong></a>, <a href="SWDD.html#SWDD007">SWDD007 API shall have a method to initialize the lora transceiver to transmit data as defined in <strong><em>LoraAPI-Ref-Manual</em></strong></a>, <a href="SWDD.html#SWDD008">SWDD008 API shall have a method for transmitting a payload as defined in <strong><em>LoraAPI-Ref-Manual</em></strong></a></p>
 <h3 id="HEAD-2.1.3">2.1.3 Console API</h3>
 <h4 id="SWRD004">2.1.3.1 Console Behavior <small>SWRD004</small></h4>
 <p>The console interface shall handle user inputs and commands</p>
+<p><em>Child links:</em> <a href="SWDD.html#SWDD009">SWDD009 The console API shall interface over USB/UART</a>, <a href="SWDD.html#SWDD010">SWDD010 The console API shall handle the following commands</a></p>
 <h2 id="HEAD-2.2">2.2 Components</h2>
 <p>Components are non-core components of the smart home core and can be enabled/disabled</p>
 <h2 id="HEAD-2.3">2.3 Module Initialization</h2>

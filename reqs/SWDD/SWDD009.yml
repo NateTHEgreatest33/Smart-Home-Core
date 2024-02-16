@@ -1,8 +1,10 @@
 active: true
 derived: false
-header: 'The console API shall interface over USB/UART'
+header: |
+  The console API shall interface over USB/UART
 level: 2.1.3.1
-links: []
+links:
+- SWRD004: null
 normative: true
 ref: ''
 reviewed: null

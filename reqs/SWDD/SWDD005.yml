@@ -1,8 +1,10 @@
 active: true
 derived: false
-header: 'API shall have a method to initialize subsystem'
+header: |
+  API shall have a method to initialize subsystem
 level: 2.1.2.1
-links: []
+links:
+- SWRD003: null
 normative: false
 ref: ''
 reviewed: null

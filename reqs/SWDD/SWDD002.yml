@@ -1,8 +1,10 @@
 active: true
 derived: false
-header: 'API shall have a method to get messages'
+header: |
+  API shall have a method to get messages
 level: 2.1.1.2
-links: []
+links:
+- SWRD001: null
 normative: false
 ref: ''
 reviewed: null

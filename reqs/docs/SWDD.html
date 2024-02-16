@@ -84,26 +84,35 @@
 <p>The message API shall verify the passed in message object conforms to formatting requirements as defined in <strong><em>messageAPI-ICD</em></strong>.</p>
 <p>The message API shall construct a valid message as defined in <strong><em>messageAPI-ICD</em></strong>.</p>
 <p>The message API shall construct a valid message as defined in <strong><em>messageAPI-ICD</em></strong>.</p>
+<p><em>Parent links:</em> <a href="SWRD.html#SWRD002">SWRD002 Outgoing message handling</a></p>
 <h4 id="SWDD002">2.1.1.2 API shall have a method to get messages <small>SWDD002</small></h4>
 <p>The message API shall verify the received message conforms to formatting requirements as defined in <strong><em>messageAPI-ICD</em></strong>.</p>
 <p>The message API shall verify the received message is valid as defined in <strong><em>messageAPI-ICD</em></strong>.</p>
 <p>The message API shall verify the received message destination matches the current location.</p>
+<p><em>Parent links:</em> <a href="SWRD.html#SWRD001">SWRD001 Incoming message handling</a></p>
 <h4 id="SWDD003">2.1.1.3 API shall have a method to initialize subsystem <small>SWDD003</small></h4>
 <p>The message API shall put the lora transceiver into RX Continuous mode after initialization</p>
+<p><em>Parent links:</em> <a href="SWRD.html#SWRD001">SWRD001 Incoming message handling</a>, <a href="SWRD.html#SWRD002">SWRD002 Outgoing message handling</a></p>
 <h4 id="SWDD004">2.1.1.4 API shall have a method to manage key <small>SWDD004</small></h4>
 <p>API shall have a method to update  message key as defined in <strong><em>messageAPI-ICD</em></strong></p>
+<p><em>Parent links:</em> <a href="SWRD.html#SWRD001">SWRD001 Incoming message handling</a>, <a href="SWRD.html#SWRD002">SWRD002 Outgoing message handling</a></p>
 <h3 id="HEAD-2.1.2">2.1.2 Lora API</h3>
 <h4 id="SWDD005">2.1.2.1 API shall have a method to initialize subsystem <small>SWDD005</small></h4>
 <p>The lora API shall not allow any use unless lora_port_init() is has been run first.</p>
+<p><em>Parent links:</em> <a href="SWRD.html#SWRD003">SWRD003 LoRa handling</a></p>
 <h4 id="SWDD006">2.1.2.2 API shall have a method to initialize the lora transceiver to receive continuous data as defined in <strong><em>LoraAPI-Ref-Manual</em></strong> <small>SWDD006</small></h4>
+<p><em>Parent links:</em> <a href="SWRD.html#SWRD003">SWRD003 LoRa handling</a></p>
 <h4 id="SWDD007">2.1.2.3 API shall have a method to initialize the lora transceiver to transmit data as defined in <strong><em>LoraAPI-Ref-Manual</em></strong> <small>SWDD007</small></h4>
+<p><em>Parent links:</em> <a href="SWRD.html#SWRD003">SWRD003 LoRa handling</a></p>
 <h4 id="SWDD008">2.1.2.4 API shall have a method for transmitting a payload as defined in <strong><em>LoraAPI-Ref-Manual</em></strong> <small>SWDD008</small></h4>
 <p><em>NOTE:</em> TX’ing of data can only occur after the Lora transceiver has been initialized into TX mode</p>
 <p>The lora API shall wait until the transceiver reports finishing transmitting as defined in <strong><em>LoraAPI-Ref-Manual</em></strong> before returning.</p>
 <p>The lora API shall return true if a valid payload has been received.</p>
 <p>The lora API shall report if errors are present in received data</p>
+<p><em>Parent links:</em> <a href="SWRD.html#SWRD003">SWRD003 LoRa handling</a></p>
 <h3 id="HEAD-2.1.3">2.1.3 Console API</h3>
 <h4 id="SWDD009">2.1.3.1 The console API shall interface over USB/UART <small>SWDD009</small></h4>
+<p><em>Parent links:</em> <a href="SWRD.html#SWRD004">SWRD004 Console Behavior</a></p>
 <h4 id="SWDD010">2.1.3.2 The console API shall handle the following commands <small>SWDD010</small></h4>
 <ol>
 <li>
@@ -116,6 +125,7 @@
 <p>Listing available commands to user</p>
 </li>
 </ol>
+<p><em>Parent links:</em> <a href="SWRD.html#SWRD004">SWRD004 Console Behavior</a></p>
 <h4 id="SWDD011">2.1.3.3 <del>The console API shall be multi-thread safe</del> <small>SWDD011</small></h4>
 <p><strong>NOT IMPLEMENTED</strong></p>
 <h2 id="HEAD-2.2">2.2 Components</h2>

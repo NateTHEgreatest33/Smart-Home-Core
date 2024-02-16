@@ -1,8 +1,11 @@
 active: true
 derived: false
-header: 'API shall have a method to manage key'
+header: |
+  API shall have a method to manage key
 level: 2.1.1.4
-links: []
+links:
+- SWRD001: null
+- SWRD002: null
 normative: false
 ref: ''
 reviewed: null

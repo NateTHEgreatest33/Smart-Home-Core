@@ -1,10 +1,11 @@
 active: true
 derived: false
-header: 'API shall have a method to initialize the lora transceiver to receive continuous data as defined in ***LoraAPI-Ref-Manual***'
+header: |
+  API shall have a method to initialize the lora transceiver to receive continuous data as defined in ***LoraAPI-Ref-Manual***
 level: 2.1.2.2
-links: []
+links:
+- SWRD003: null
 normative: true
 ref: ''
 reviewed: null
-text: |
-  
+text: ''

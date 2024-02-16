@@ -1,16 +1,18 @@
 active: true
 derived: false
-header: 'API shall have a method for transmitting a payload as defined in ***LoraAPI-Ref-Manual***'
+header: |
+  API shall have a method for transmitting a payload as defined in ***LoraAPI-Ref-Manual***
 level: 2.1.2.4
-links: []
+links:
+- SWRD003: null
 normative: true
 ref: ''
 reviewed: null
 text: |
   *NOTE:* TX’ing of data can only occur after the Lora transceiver has been initialized into TX mode
 
-  The lora API shall wait until the transceiver reports finishing transmitting as defined in ***LoraAPI-Ref-Manual*** before returning. 
+  The lora API shall wait until the transceiver reports finishing transmitting as defined in ***LoraAPI-Ref-Manual*** before returning.
 
-  The lora API shall return true if a valid payload has been received. 
+  The lora API shall return true if a valid payload has been received.
 
   The lora API shall report if errors are present in received data

@@ -14,7 +14,6 @@
 #---------------------------------------------------------------------
 from lib.msgAPI  import messageAPI
 from lib.results import results
-from enum        import Enum
 import time
 
 #---------------------------------------------------------------------
@@ -22,22 +21,17 @@ import time
 #---------------------------------------------------------------------
 unit_under_test = 0x02         # source identifier for unit under test
 num_units 		= 0x03         # number of units in system
-#---------------------------------------------------------------------
-#                            VARIABLES
-#---------------------------------------------------------------------
-testIndex = ( 'test_description', 'send_data', 'destination', 'expected_data' )
-dTestIndex = ( 'test_description', 'raw_send', 'expected_data')
 
 #---------------------------------------------------------------------
 #                      TEST CASE VARIABLES
 #---------------------------------------------------------------------
-#					  test_description		  		 send_data													  dest  expected data
+#					  test_description		  		 send_data													    dest             expected data
 test_case_group = [ ( "Test 1 byte message",  		[0xFF],															unit_under_test, [0xAA, 0x11] 	),
 					( "Test 10 byte message", 		[0x01, 	0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A],  unit_under_test, [0xAA, 0x22 ]  ),
 					( "Send 0 byte message",  		[], 															unit_under_test, [0xBB, 0x03] 	),
 					( "send to unsupported module", [0xFF],															(num_units+1),   []			    ) ]
 
-#								("description",    			[dest, src,  pad, ver/size, key, DATA... crc],  (True, source, data, valid) )
+#								("description",    			[dest, src,  pad, ver/size, key, DATA... crc],              (Rx'd, source, data, valid) )
 distructive_test_case_group = [ ("Test CRC Error", 			[unit_under_test, 0x01, 0x00, 0x11, 0x00, 0xFF, 0xFF], 	    (True, unit_under_test, [0xBB, 0x01], True) ),
 								("Test Size (Big) Error", 	[unit_under_test, 0x01, 0x00, 0x1F, 0x00, 0xFF, 0xFF], 	    (True, unit_under_test, [0xBB, 0x02], True) ),
 								("Test Size (Small) Error", [unit_under_test, 0x01, 0x00, 0x10, 0x00, 0xFF], 			(True, unit_under_test, [0xBB, 0x03], True) ),
@@ -70,8 +64,6 @@ class Test:
 		self.normal_cases()
 		self.distructive_cases()
 
-
-
     # ==================================
     # normal_cases()
     # ==================================
@@ -87,10 +79,11 @@ class Test:
 			return_msg = self.module.RXMessage()
 
 			#------------------------------------------------------------------
-			# Because RXMessage() returns an array of [ MsgRx'ed, source, data, 
+			# Because RXMessage() returns an array of [ Msg Rx'ed, source, data, 
 			# validity ], we need to format the expexted rtn data as such
 			#------------------------------------------------------------------
 			if expected_rtn_data == []:
+				#format for no message recieved is as follows
 				rtn_list = ( False, 0xFF, [], True )
 			else:
 				rtn_list =  (True, dest, expected_rtn_data, True)

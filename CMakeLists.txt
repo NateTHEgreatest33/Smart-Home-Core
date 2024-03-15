@@ -21,6 +21,12 @@ add_executable( PicoModule
   src/background_task.hpp
 )
 
+# Debugger Attached
+pico_enable_stdio_usb( PicoModule 0)
+pico_enable_stdio_uart( PicoModule 1)
+
+# # No Debugger
+# pico_enable_stdio_usb( {PROJECTNAME} 1)
 
 target_link_libraries(PicoModule
   pico_stdlib

@@ -19,6 +19,9 @@ add_executable( PicoModule
 
   src/background_task.cpp
   src/background_task.hpp
+
+  src/test_mode.hpp
+  src/test_mode.cpp
 )
 
 # Debugger Attached

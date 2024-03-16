@@ -1,9 +1,9 @@
-#ifndef BACKGROUND_TASK_HPP
-#define BACKGROUND_TASK_HPP
+#ifndef TEST_MODE_HPP
+#define TEST_MODE_HPP
 /*********************************************************************
 *
 *   HEADER:
-*       header file for background processing
+*       header file for test mode processing
 *
 *   Copyright 2024 Nate Lenze
 *
@@ -12,7 +12,7 @@
 /*--------------------------------------------------------------------
                            GENERAL INCLUDES
 --------------------------------------------------------------------*/
-
+#include "console.hpp"
 /*--------------------------------------------------------------------
                           LITERAL CONSTANTS
 --------------------------------------------------------------------*/
@@ -40,10 +40,10 @@
 /*--------------------------------------------------------------------
                               PROCEDURES
 --------------------------------------------------------------------*/
-void background_task
+void test_mode
     (
-    void
+    bool test_mode,             /* flag for if test mode is enabled */
+    core::console& c            /* reference to global console      */
     );
-
 
 #endif

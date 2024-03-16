@@ -23,6 +23,7 @@
 #include "button.hpp"
 #include "console.hpp"
 #include "background_task.hpp"
+#include "test_mode.hpp"
 
 #include <iostream>
 
@@ -48,6 +49,13 @@ const location current_location = PICO_MODULE;
                               VARIABLES
 --------------------------------------------------------------------*/
 core::console console( uart0 );            /* console API           */
+
+/*--------------------------------------------------------------------
+                               GLOBALS
+--------------------------------------------------------------------*/
+bool g_test_mode_enable = false;          /* toggle for enabling test
+                                             mode, this is toggled
+                                             using the consoleAPI   */
 
 /*--------------------------------------------------------------------
                               PROCEDURES
@@ -174,12 +182,22 @@ System Test procedure/replies
 ----------------------------------------------------------*/
 while( true )
     {
+	/*------------------------------------------------------
+    Handle test mode. and do not run main processing while 
+    test mode is enabled. 
 
+    Test mode is primarly for system level functionality
+    ------------------------------------------------------*/
+    test_mode( g_test_mode_enable, console ) ;
+
+    if( g_test_mode_enable )
+        continue;
+        
 	/*------------------------------------------------------
     Check for new messages
     ------------------------------------------------------*/
     msgRxed = get_message( &rx_msg, &lora_err_var );
-
+    
     /*------------------------------------------------------
     Non distructive testing replies
     ------------------------------------------------------*/

@@ -18,6 +18,11 @@
 --------------------------------------------------------------------*/
 #include "test_mode.hpp"
 
+extern "C" { 
+    #include "messageAPI.h" 
+    #include <cstring>
+    }
+
 /*--------------------------------------------------------------------
                           GLOBAL NAMESPACES
 --------------------------------------------------------------------*/
@@ -66,9 +71,80 @@ extern bool g_test_mode_enable;
 *********************************************************************/
 static void test_mode_runtime
     (
-    core::console& c
+    core::console& c            /* reference to global console      */
     )
 {
+    
+/*----------------------------------------------------------
+Local variables
+----------------------------------------------------------*/
+rx_message       rx_msg;    /* returned message structure */
+tx_message       tx_msg;    /* transmit message structure */
+lora_errors      lora_err_var; /* lora errors             */
+bool             msgRxed;  /* message rx'ed               */
+
+/*------------------------------------------------------
+Check for new messages
+------------------------------------------------------*/
+msgRxed = get_message( &rx_msg, &lora_err_var );
+
+/*------------------------------------------------------
+Message API Testing:
+Non distructive testing replies
+------------------------------------------------------*/
+if(  msgRxed == true && lora_err_var == RX_NO_ERROR )
+    {
+    memset( &tx_msg, 0, sizeof( tx_message ) );
+    tx_msg.destination = RPI_MODULE;
+
+    tx_msg.message[0] = 0xAA;
+    tx_msg.size       = 2;
+    switch( rx_msg.size )
+        {
+        case 0x01:
+            tx_msg.message[1] = 0x11;
+            break;
+        case 0x0A:
+            tx_msg.message[1] = 0x22;
+            break;
+        default:
+            tx_msg.message[1] = 0xFF;
+            break;
+        }
+    send_message(tx_msg);
+    }
+
+/*----------------------------------------------------------
+Distructive testing
+----------------------------------------------------------*/
+if(lora_err_var != RX_NO_ERROR )
+    {
+    memset( &tx_msg, 0, sizeof( tx_message ) );
+    tx_msg.destination = RPI_MODULE;
+
+    tx_msg.message[0] = 0xBB;
+    tx_msg.size       = 2;
+    switch( lora_err_var )  
+        {
+        case RX_CRC_ERROR:
+            tx_msg.message[1] = 0x01;
+            break;
+        case RX_INVALID_HEADER:
+            tx_msg.message[1] = 0x02;
+            break;
+        case RX_SIZING:
+            tx_msg.message[1] = 0x03;
+            break;
+        case RX_KEY_ERR:
+            tx_msg.message[1] = 0x04;
+            break;
+        default:
+            tx_msg.message[1] = 0xFF;
+            break;
+        }
+
+    send_message(tx_msg); //need to add error handling here
+    }
 
 } /* test_mode_runtime() */
 
@@ -83,7 +159,7 @@ static void test_mode_runtime
 *********************************************************************/
 static void test_mode_powerdown
     (
-    core::console& c
+    core::console& c            /* reference to global console      */
     )
 {
     
@@ -119,6 +195,12 @@ if( test_mode == false && test_mode_prev == false )
     return;
 
 /*----------------------------------------------------------
+If this is the initial entry into test mode, assert
+----------------------------------------------------------*/
+if( test_mode == true && test_mode_prev == false )
+    c.add_assert( "Entering test mode");
+
+/*----------------------------------------------------------
 if test mode is currently enabled, run runtime changes
 ----------------------------------------------------------*/
 if( test_mode )
@@ -129,7 +211,10 @@ If test mode is disabled but was prevously enabled on the
 last run of this function, run powerdown function. 
 ----------------------------------------------------------*/
 if( test_mode == false && test_mode_prev == true )
+    {
     test_mode_powerdown( c );
+    c.add_assert( "Exiting test mode");
+    }
 
 /*----------------------------------------------------------
 update local copy of test_mode

@@ -48,7 +48,7 @@ class Test:
 	def __init__(self, result_obj ):
 		self.log = result_obj
 		self.uart_conn = serial.Serial(
-								port='/dev/ttyS0'
+								port='/dev/ttyS0',
 								baudrate = 115200,
 								parity=serial.PARITY_NONE,
 								stopbits=serial.STOPBITS_ONE,

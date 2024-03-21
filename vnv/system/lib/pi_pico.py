@@ -35,7 +35,7 @@ class pi_pico:
 								listOfModules=[0x00,0x01,0x02] 
 								)
 		self.__uart_conn = serial.Serial(
-								port='/dev/ttyS0'
+								port='/dev/ttyS0',
 								baudrate = 115200,
 								parity=serial.PARITY_NONE,
 								stopbits=serial.STOPBITS_ONE,

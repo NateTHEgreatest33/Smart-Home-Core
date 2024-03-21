@@ -36,6 +36,13 @@ class consoleColor:
 #---------------------------------------------------------------------
 class results:
     # ================================
+    # local variables
+    # ================================
+    __text_replacement = [ { "\r",               "\\r" },
+                           { "\n",               "\\n" },
+                           { "\x1b[2J\x1b[0;0H", "[clear screen]" } ]
+
+    # ================================
     # results constructor
     # ================================
     def __init__(self, fut ):
@@ -101,9 +108,21 @@ class results:
         if cmp_type == "step":
             print( consoleColor.HEADER + case )
             return
-        print( consoleColor.ENDC + case + ": " + str(x) + " " + cmp_type + " " + str(y) )
+        print( consoleColor.ENDC + case + ": " + self.__text_cleanser(x) + " " + cmp_type + " " + self.__text_cleanser(y) )
         color = consoleColor.OKGREEN if result is True else consoleColor.FAIL
         print( color + str(result) )
+
+    # ================================
+    # text cleanser
+    # ================================
+    def __text_cleanser( self, item ):
+        text = str(item)
+        
+        for orginal, replace in self.__text_replacement:
+            text = text.replace( orginal, replace ) 
+	
+        return text
+
 
     # ================================
     # publish results
@@ -149,7 +168,7 @@ class results:
             # normal handling
             # =========================
             pass_fail = pass_fail and result
-            test_case_str = case + ": " + str(x) + " " + cmp_type + " " + str(y) + "\nRESULT: " + str( result ) + "\n"
+            test_case_str = case + ": " + self.__text_cleanser(x) + " " + cmp_type + " " + self.__text_cleanser(y) + "\nRESULT: " + str( result ) + "\n"
             f.writelines(test_case_str )
 
         # ============================

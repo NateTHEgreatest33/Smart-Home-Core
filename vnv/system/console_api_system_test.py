@@ -26,13 +26,13 @@ import binascii
 #                      TEST CASE VARIABLES
 #---------------------------------------------------------------------
                             #command      expected result
-test_case_normal_group = [ ( "help",      "help\nLIST OF COMMANDS:\n - clear\n - print log\n - help" ),
-				    	   ( "print log", "print log\nASSERT LOG:\r\n"                                    ),
-						   ( "clear",     "" ) ]
+test_case_normal_group = [ ( "help",      "help\r\nLIST OF COMMANDS:\r\n - clear\r\n - print log\r\n - help\r\n" ),
+				    	   ( "print log", "print log\r\nASSERT LOG:\r\n"                                    ),
+						   ( "clear",     "clear\r\n\x1b[2J\x1b[0;0H" ) ]
 
 								  #command action        send text                          expected result
-test_case_unsupported_group = [ ( "unsupported command", "unsupported",                     "unsupported\ncommand not found" ),
-                                ( "command too long",    "1234567890123456789012345678901", "123456789012345678901234567890\n1" ) ]
+test_case_unsupported_group = [ ( "unsupported command", "unsupported",                     "unsupported\r\ncommand not found\r\n" ),
+                                ( "command too long",    "1234567890123456789012345678901", "0123456789012345678901234567890\n1" ) ]
 
 #---------------------------------------------------------------------
 #                             CLASSES
@@ -77,9 +77,14 @@ class Test:
 			# Setup Test Case
 			#------------------------------------------------------------------
 			self.log.test_step( "Test \'{}\' command is responded to correctly".format( cmd ) )
-
-			self.uart_conn.flushInput()
 			hex_str = self.__str_to_hex_list( cmd )
+
+			#------------------------------------------------------------------
+			# Clear TX buffer with \r and clear input buffer by flushing
+			#------------------------------------------------------------------
+			self.uart_conn.write( hex( ord('\r') ) )
+			time.sleep(.1)
+			self.uart_conn.flushInput()
 
 			#------------------------------------------------------------------
 			# TX and RX over uart
@@ -105,7 +110,10 @@ class Test:
 			#------------------------------------------------------------------
 			self.log.test_step( "Test console correctly responses to {}".format( action ) )
 
+			self.uart_conn.write( hex( ord('\r') ) )
+			time.sleep(.1)
 			self.uart_conn.flushInput()
+
 			hex_str = self.__str_to_hex_list( cmd )
 
 			#------------------------------------------------------------------
@@ -115,7 +123,7 @@ class Test:
 
 			# only send return carrige for unsupported command, bc
 			# we want to verify too long command self generates return
-			if cmd == "unsupported command":
+			if action == "unsupported command":
 				self.uart_conn.write( hex( ord('\r') ) ) 
 
 			time.sleep(0.1)

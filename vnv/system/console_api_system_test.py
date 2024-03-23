@@ -26,10 +26,11 @@ import binascii
 #                      TEST CASE VARIABLES
 #---------------------------------------------------------------------
                             #command      expected result
-test_case_normal_group = [ ( "help",      "help\r\nLIST OF COMMANDS:\r\n - testmode\r\n - clear\r\n - print log\r\n - help\r\n" ),
-				    	   ( "print log", "print log\r\nASSERT LOG:\r\n"                                                        ),
-						   ( "testmode", "testmode\r\nTest Mode: enabled\r\n"                                                   ),
-						   ( "clear",     "clear\r\n\x1b[2J\x1b[0;0H"                                                           ) ]
+test_case_normal_group = [ ( "help",      "help\r\nLIST OF COMMANDS:\r\n - clear log\r\n - testmode\r\n - clear\r\n - print log\r\n - help\r\n"                                          ),
+						   ( "testmode",  "testmode\r\nTest Mode: enabled\r\n"                                                                                                           ),
+						   ( "clear log", "clear log\r\nlog cleared\r\n"                                                                                                                 ),
+				    	   ( "print log", "print log\r\nASSERT LOG:\r\n/Users/natelenze/Developer/git/Module_base_testing/lib/console/console_commands.cpp:200 - assert log cleared\r\n" ),
+						   ( "clear",     "clear\r\n\x1b[2J\x1b[0;0H"                                                                                                                    ) ]
 
 								  #command action        send text                          expected result
 test_case_unsupported_group = [ ( "unsupported command", "unsupported",                         "unsupported\r\ncommand not found\r\n"      ),
@@ -95,7 +96,7 @@ class Test:
 
 			time.sleep(0.1)
 
-			rtn_data = self.uart_conn.read( 100 )
+			rtn_data = self.uart_conn.read( 500 )
 			rtn_data = rtn_data.decode( "utf-8" )
 
 			self.log.compare_equal( rtn_data, expected_rtn, "Verify command returns as expected" )

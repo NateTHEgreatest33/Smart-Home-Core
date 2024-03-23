@@ -38,9 +38,9 @@ class results:
     # ================================
     # local variables
     # ================================
-    __text_replacement = [ { "\r",               "\\r" },
-                           { "\n",               "\\n" },
-                           { "\x1b[2J\x1b[0;0H", "[clear screen]" } ]
+    __text_replacement = [ ( "\r",               "\\r" ),
+                           ( "\n",               "\\n" ),
+                           ( "\x1b[2J\x1b[0;0H", "[clear screen]" ) ]
 
     # ================================
     # results constructor

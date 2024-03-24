@@ -4,7 +4,9 @@ header: 'Incoming message handling'
 level: 2.1.1.1.0
 links: []
 normative: true
-ref: ''
+references:
+- path: 'vnv/system/message_api_system_test.py'
+  type: file
 reviewed: null
 text: |
   Incoming message shall be processed and handled immediately as they are received by the module 

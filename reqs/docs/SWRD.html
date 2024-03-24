@@ -94,6 +94,7 @@
 <p><strong><em>RFM69HWC</em></strong> - Lora Transceiver</p>
 <h2 id="HEAD-1.2">1.2 Referenced Documents</h2>
 <p><strong><ins>messageAPI-ICD</ins></strong> - <a href="https://docs.google.com/document/d/130JMIxLKgSH4ArH4278pt9nv2rzlUnXZ5191O4RaR6M/edit#heading=h.vb53gr77h2fj">version 1.0</a></p>
+<p><strong><ins>System Testing Control Document</ins></strong> - <a href="https://docs.google.com/document/d/1FVv5hA5xRGgGUplrHvF-c8t_mS53LVC0JSjVdMuSzq0/edit?usp=sharing">version 1.1</a></p>
 <p><strong><ins>LoraAPI-Ref-Manual</ins></strong> - <a href="https://cdn-shop.adafruit.com/product-files/3076/RFM69HCW-V1.1.pdf">version 1.1</a></p>
 <h2 id="HEAD-1.3">1.3 Conventions</h2>
 <p>Notes shall be written italic and prefacned with "NOTE"</p>
@@ -104,9 +105,15 @@
 <h3 id="HEAD-2.1.1">2.1.1 Message API</h3>
 <h4 id="SWRD001">2.1.1.1 Incoming message handling <small>SWRD001</small></h4>
 <p>Incoming message shall be processed and handled immediately as they are received by the module</p>
+<blockquote>
+<p><code>vnv/system/message_api_system_test.py</code></p>
+</blockquote>
 <p><em>Child links:</em> <a href="SWDD.html#SWDD002">SWDD002 API shall have a method to get messages</a>, <a href="SWDD.html#SWDD003">SWDD003 API shall have a method to initialize subsystem</a>, <a href="SWDD.html#SWDD004">SWDD004 API shall have a method to manage key</a></p>
 <h4 id="SWRD002">2.1.1.2 Outgoing message handling <small>SWRD002</small></h4>
 <p>Outgoing messages shall be processed and handled immediately as they are requested by the module</p>
+<blockquote>
+<p><code>vnv/system/message_api_system_test.py</code></p>
+</blockquote>
 <p><em>Child links:</em> <a href="SWDD.html#SWDD001">SWDD001 API shall have a method to send messages</a>, <a href="SWDD.html#SWDD003">SWDD003 API shall have a method to initialize subsystem</a>, <a href="SWDD.html#SWDD004">SWDD004 API shall have a method to manage key</a></p>
 <h3 id="HEAD-2.1.2">2.1.2 Lora API</h3>
 <h4 id="SWRD003">2.1.2.1 LoRa handling <small>SWRD003</small></h4>
@@ -115,6 +122,9 @@
 <h3 id="HEAD-2.1.3">2.1.3 Console API</h3>
 <h4 id="SWRD004">2.1.3.1 Console Behavior <small>SWRD004</small></h4>
 <p>The console interface shall handle user inputs and commands</p>
+<blockquote>
+<p><code>vnv/system/console_api_system_test.py</code></p>
+</blockquote>
 <p><em>Child links:</em> <a href="SWDD.html#SWDD009">SWDD009 The console API shall interface over USB/UART</a>, <a href="SWDD.html#SWDD010">SWDD010 The console API shall handle the following commands</a></p>
 <h2 id="HEAD-2.2">2.2 Components</h2>
 <p>Components are non-core components of the smart home core and can be enabled/disabled</p>
@@ -134,6 +144,7 @@
 <p><img alt="Pi" src="assets/pi.png" title="Pi 3B+ wiring diagram" /></p>
 <h1 id="HEAD-4.0">4.0 Testing and Results</h1>
 <h2 id="HEAD-4.1">4.1 System Testing</h2>
+<p>A detailed gude for system testing can be found within the <strong><em>System Testing Control Document</em></strong></p>
 <h3 id="SWRD0010">4.1.1 Locations <small>SWRD0010</small></h3>
 <p>System tests shall be found within the vnv/system directory and results shall be stored in the docs/results directory</p>
 <h3 id="SWRD0011">4.1.2 Requirements covered <small>SWRD0011</small></h3>

@@ -12,7 +12,8 @@
 #---------------------------------------------------------------------
 #                              IMPORTS
 #---------------------------------------------------------------------
-from lib.msgAPI  import messageAPI
+# from lib.msgAPI  import messageAPI
+from lib.pi_pico import pi_pico
 from lib.results import results
 import time
 
@@ -50,8 +51,7 @@ class Test:
     # ==================================
 	def __init__(self, result_obj ):
 		self.log = result_obj
-		self.module = messageAPI( bus=0, chip_select=0, currentModule=0x00, listOfModules=[0x00,0x01,0x02] )
-		self.module.InitAPI()
+		self.pico = pi_pico( test_mode = True )
 
 
     # ==================================
@@ -74,9 +74,9 @@ class Test:
 			#------------------------------------------------------------------
 			self.log.test_step( test_desc )
 
-			self.module.TXMessage( message = send_data, destination = dest )
+			self.pico.msg_conn.TXMessage( message = send_data, destination = dest )
 			time.sleep(2)
-			return_msg = self.module.RXMessage()
+			return_msg = self.pico.msg_conn.RXMessage()
 
 			#------------------------------------------------------------------
 			# Because RXMessage() returns an array of [ Msg Rx'ed, source, data, 
@@ -106,11 +106,11 @@ class Test:
 			#------------------------------------------------------------------
 			# Send raw TX over low-level interfaces
 			#------------------------------------------------------------------
-			self.module._messageAPI__LoraSendMessage( messageList=raw_tx, messageSize=len( raw_tx ) )
-			self.module._messageAPI__LoraSetRxMode()
+			self.pico.msg_conn._messageAPI__LoraSendMessage( messageList=raw_tx, messageSize=len( raw_tx ) )
+			self.pico.msg_conn._messageAPI__LoraSetRxMode()
 
 			time.sleep(1)
-			rx_msg = self.module.RXMessage()
+			rx_msg = self.pico.msg_conn.RXMessage()
 
 			#------------------------------------------------------------------
 			# Verify Message

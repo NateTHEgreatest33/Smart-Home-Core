@@ -146,6 +146,13 @@ if(lora_err_var != RX_NO_ERROR )
     send_message(tx_msg); //need to add error handling here
     }
 
+    /*----------------------------------------------------------
+    Clear errors and rx message for next round
+    ----------------------------------------------------------*/
+    memset( &rx_msg, 0, sizeof( rx_msg ) );
+    lora_err_var = RX_NO_ERROR;
+    msgRxed = false;
+
 } /* test_mode_runtime() */
 
 /*********************************************************************

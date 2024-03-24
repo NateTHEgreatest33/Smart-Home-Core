@@ -27,7 +27,7 @@ class pi_pico:
 	# ==================================
 	# Constructor
 	# ==================================
-	def __init__(self, test_mode = True ):
+	def __init__(self, test_mode = False ):
 		self.msg_conn = messageAPI( 
 								bus = 0, 
 								chip_select = 0, 
@@ -98,6 +98,16 @@ class pi_pico:
 		# error and exit
 		# ------------------------------------
 		print("Test mode currently broken")
+		return False
+	
+	# ==================================
+	# power_cycle()
+	# ==================================
+	def power_cycle( self ):
+		# ------------------------------------
+		# un-implemented
+		# ------------------------------------
+		raise Exception( "Un-implemented Currently")
 		return False
 
 	# ==================================

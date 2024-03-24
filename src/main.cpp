@@ -204,10 +204,10 @@ while( true )
     if(  msgRxed == true && lora_err_var == RX_NO_ERROR )
         {
         memset( &tx_msg, 0, sizeof( tx_message ) );
-        tx_msg.destination = RPI_MODULE;
-        tx_msg.message[0] = 0xFF;
-        tx_msg.message[0] = 0xFF;
-        tx_msg.size       = 2;
+        tx_msg.destination = rx_msg.source;
+        tx_msg.message[0]  = 0xFF;
+        tx_msg.message[1]  = 0xFF;
+        tx_msg.size        = 2;
 
         send_message(tx_msg);
         }

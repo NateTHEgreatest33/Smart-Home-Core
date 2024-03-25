@@ -13,8 +13,8 @@
 #---------------------------------------------------------------------
 #                              IMPORTS
 #---------------------------------------------------------------------
-from msgAPI import messageAPI
-
+from lib.msgAPI import messageAPI
+import RPi.GPIO as GPIO  
 import serial
 import time
 
@@ -27,7 +27,7 @@ class pi_pico:
 	# ==================================
 	# Constructor
 	# ==================================
-	def __init__(self, test_mode = False ):
+	def __init__(self, test_mode = False, power_cycle_pin=23 ):
 		self.msg_conn = messageAPI( 
 								bus = 0, 
 								chip_select = 0, 
@@ -45,18 +45,38 @@ class pi_pico:
 		self.msg_conn.InitAPI()
 		self.set_test_mode( test_mode )
 	
+		# ------------------------------------
+		# setup power cycle pin. Power cycle
+		# happens when RUN pin on the pico
+		# is connected to ground. This is done
+		# here using a pull down resistor
+		# ------------------------------------
+		GPIO.setmode(GPIO.BCM)
+		self.power_cycle_pin = power_cycle_pin
+	
+		GPIO.setup(self.power_cycle_pin, GPIO.OUT, pull_up_down=GPIO.PUD_DOWN )
+		GPIO.output(self.power_cycle_pin, GPIO.HIGH ) 
+		
 	# ==================================
 	# write_read_uart()
 	# ==================================
-	def write_read_uart(self, str, return_carrige = True, read_limit = 200 ):
+	def write_read_uart(self, str, return_carrige = True, read_limit = 500 ):
+		# ------------------------------------
+		# Clear TX buffer with \r and clear 
+		# input buffer by flushing
+		# ------------------------------------
+		self.__uart_conn.write( [ ord('\r') ] )
+		time.sleep(.1)
+		self.__uart_conn.flushInput()
+
 		# ------------------------------------
 		# convert string to hex & append carrige
 		# return if expected
 		# ------------------------------------
-		hex_list = self.__str_to_hex( str )
+		hex_list = self.__str_to_hex_list( str )
 	
 		if( return_carrige ):
-			hex_list.append( hex( ord('\r') ) )
+			hex_list.append( ord('\r') )
 		
 		# ------------------------------------
 		# write message
@@ -97,7 +117,7 @@ class pi_pico:
 		# there must be another issue, print
 		# error and exit
 		# ------------------------------------
-		print("Test mode currently broken")
+		print("Test mode not working")
 		return False
 	
 	# ==================================
@@ -107,24 +127,38 @@ class pi_pico:
 		# ------------------------------------
 		# un-implemented
 		# ------------------------------------
-		raise Exception( "Un-implemented Currently")
-		return False
+		# raise Exception( "Un-implemented Currently")
+	
+		# ------------------------------------
+		# Power Off, Sleep 2s, Power On
+		# ------------------------------------
+		GPIO.output(self.power_cycle_pin, GPIO.LOW)
+		time.sleep(2)
+		GPIO.output(self.power_cycle_pin, GPIO.HIGH)
+
+	
 
 	# ==================================
 	# helper function: __verify_test_mode()
 	# ==================================
 	def __verify_test_mode( self, rtn_str, enabled ):
-		expected_str = ( "testmode\rTest Mode: enabled\n" if enabled  else "testmode\rTest Mode: disabled\n")
+		expected_str = ( "testmode\r\nTest Mode: enabled\r\n" if enabled  else "testmode\r\nTest Mode: disabled\r\n")
 		return ( rtn_str == expected_str )
 
 	# ==================================
-	# helper function: str_to_hex()
-	# ==================================
+    # helper function: str_to_hex()
+    # ==================================
 	def __str_to_hex_list(self, str):
 		hex_list = []
 		for i in str:
-			hex_list.append( hex( ord( i ) ) )
+			hex_list.append( ord( i ) )
 
 		return hex_list
-
-
+	
+	# ==================================
+    # deconstructor
+    # ==================================
+	def __del__(self):
+		# Reset test mode at end of test
+		self.set_test_mode( False )
+		GPIO.power_cycle_pin()

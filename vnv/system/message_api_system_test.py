@@ -102,6 +102,7 @@ class Test:
 			# Setup Test Case
 			#------------------------------------------------------------------
 			self.log.test_step( desc )
+			time.sleep(.5)
 
 			#------------------------------------------------------------------
 			# Send raw TX over low-level interfaces

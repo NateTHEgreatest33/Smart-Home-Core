@@ -54,7 +54,7 @@ class pi_pico:
 		GPIO.setmode(GPIO.BCM)
 		self.power_cycle_pin = power_cycle_pin
 	
-		GPIO.setup(self.power_cycle_pin, GPIO.OUT, pull_up_down=GPIO.PUD_DOWN )
+		GPIO.setup(self.power_cycle_pin, GPIO.OUT )#, pull_up_down=GPIO.PUD_DOWN )
 		GPIO.output(self.power_cycle_pin, GPIO.HIGH ) 
 		
 	# ==================================
@@ -127,7 +127,7 @@ class pi_pico:
 		# ------------------------------------
 		# un-implemented
 		# ------------------------------------
-		# raise Exception( "Un-implemented Currently")
+		raise Exception( "Un-implemented Currently")
 	
 		# ------------------------------------
 		# Power Off, Sleep 2s, Power On

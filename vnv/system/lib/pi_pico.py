@@ -48,14 +48,15 @@ class pi_pico:
 		# ------------------------------------
 		# setup power cycle pin. Power cycle
 		# happens when RUN pin on the pico
-		# is connected to ground. This is done
-		# here using a pull down resistor
+		# is connected to ground. To implement
+		# this a relay, controlled by the 3B+,
+		# connects or disconnects the circuit
 		# ------------------------------------
-		GPIO.setmode(GPIO.BCM)
 		self.power_cycle_pin = power_cycle_pin
-	
-		GPIO.setup(self.power_cycle_pin, GPIO.OUT )#, pull_up_down=GPIO.PUD_DOWN )
-		GPIO.output(self.power_cycle_pin, GPIO.HIGH ) 
+
+		GPIO.setmode(GPIO.BCM)
+		GPIO.setup(self.power_cycle_pin, GPIO.OUT )
+		GPIO.output(self.power_cycle_pin, GPIO.LOW ) 
 		
 	# ==================================
 	# write_read_uart()
@@ -125,16 +126,11 @@ class pi_pico:
 	# ==================================
 	def power_cycle( self ):
 		# ------------------------------------
-		# un-implemented
-		# ------------------------------------
-		raise Exception( "Un-implemented Currently")
-	
-		# ------------------------------------
 		# Power Off, Sleep 2s, Power On
 		# ------------------------------------
-		GPIO.output(self.power_cycle_pin, GPIO.LOW)
-		time.sleep(2)
 		GPIO.output(self.power_cycle_pin, GPIO.HIGH)
+		time.sleep(2)
+		GPIO.output(self.power_cycle_pin, GPIO.LOW)
 
 	
 

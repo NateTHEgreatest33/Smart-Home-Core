@@ -13,3 +13,6 @@
 [submodule "lib/util"]
 	path = lib/util
 	url = https://NateTHEgreatest33@github.com/NateTHEgreatest33/utilities.git
+[submodule "vnv/system/lib"]
+	path = vnv/system/lib
+	url = https://github.com/NateTHEgreatest33/STF.git

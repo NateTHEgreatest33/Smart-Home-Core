@@ -53,15 +53,15 @@ class pi_pico:
 		# connects or disconnects the circuit
 		# ------------------------------------
 		self.power_cycle_pin = power_cycle_pin
-
 		GPIO.setmode(GPIO.BCM)
 		GPIO.setup(self.power_cycle_pin, GPIO.OUT )
-		GPIO.output(self.power_cycle_pin, GPIO.LOW ) 
+
+		self.power_cycle()
 		
 	# ==================================
 	# write_read_uart()
 	# ==================================
-	def write_read_uart(self, str, return_carrige = True, read_limit = 500 ):
+	def write_read_uart(self, str, return_carrige = True, read_limit = 500 ) -> 'list':
 		# ------------------------------------
 		# Clear TX buffer with \r and clear 
 		# input buffer by flushing
@@ -97,7 +97,7 @@ class pi_pico:
 	# ==================================
 	# set_test_mode()
 	# ==================================
-	def set_test_mode( self, enabled ):
+	def set_test_mode( self, enabled ) -> 'bool':
 		# ------------------------------------
 		# attempt to place pico into test mode
 		# ------------------------------------
@@ -124,7 +124,7 @@ class pi_pico:
 	# ==================================
 	# power_cycle()
 	# ==================================
-	def power_cycle( self ):
+	def power_cycle( self ) -> 'None':
 		# ------------------------------------
 		# Power Off, Sleep 2s, Power On
 		# ------------------------------------
@@ -137,14 +137,14 @@ class pi_pico:
 	# ==================================
 	# helper function: __verify_test_mode()
 	# ==================================
-	def __verify_test_mode( self, rtn_str, enabled ):
+	def __verify_test_mode( self, rtn_str, enabled ) -> 'bool':
 		expected_str = ( "testmode\r\nTest Mode: enabled\r\n" if enabled  else "testmode\r\nTest Mode: disabled\r\n")
 		return ( rtn_str == expected_str )
 
 	# ==================================
     # helper function: str_to_hex()
     # ==================================
-	def __str_to_hex_list(self, str):
+	def __str_to_hex_list(self, str) -> 'list':
 		hex_list = []
 		for i in str:
 			hex_list.append( ord( i ) )
@@ -157,4 +157,4 @@ class pi_pico:
 	def __del__(self):
 		# Reset test mode at end of test
 		self.set_test_mode( False )
-		GPIO.power_cycle_pin()
+		self.power_cycle()

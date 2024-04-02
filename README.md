@@ -1,6 +1,6 @@
-# Module Base
+# Smart Home Core
 
-Module_base is a fully customizable template for using the suite of utlities and messaging formats developed by myself. It is written with in style and intent of DO-178, with requirements, tests, and code all tracing to each other!
+Smart Home Core is a fully customizable template for using the suite of utlities and messaging formats developed by myself. It is written with in style of DO-178 projects, with requirements, tests, and code all tracing to each other!
 
 Modules included†
 - **MessageAPI**: A full messaging layer built upon loraAPI

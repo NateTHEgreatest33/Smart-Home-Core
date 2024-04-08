@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 include(pico_sdk_import.cmake)
-project(PicoModule C CXX ASM)
+project(SmartHomeCore C CXX ASM)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 20)
@@ -14,7 +14,7 @@ add_subdirectory( lib/console )
 
 pico_sdk_init()
 
-add_executable( PicoModule
+add_executable( SmartHomeCore
   src/main.cpp
 
   src/background_task.cpp
@@ -25,13 +25,13 @@ add_executable( PicoModule
 )
 
 # Debugger Attached
-pico_enable_stdio_usb( PicoModule 0)
-pico_enable_stdio_uart( PicoModule 1)
+pico_enable_stdio_usb( SmartHomeCore 0)
+pico_enable_stdio_uart( SmartHomeCore 1)
 
 # # No Debugger
 # pico_enable_stdio_usb( {PROJECTNAME} 1)
 
-target_link_libraries(PicoModule
+target_link_libraries(SmartHomeCore
   pico_stdlib
   hardware_spi
   pico_multicore

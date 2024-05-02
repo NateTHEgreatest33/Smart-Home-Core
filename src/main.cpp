@@ -20,17 +20,13 @@
 #include "hardware/spi.h"
 #include "hardware/gpio.h"
 
+#include "background_task.hpp"
 #include "button.hpp"
 #include "console.hpp"
-#include "background_task.hpp"
+#include "messageAPI.hpp"
 #include "test_mode.hpp"
 
 #include <iostream>
-
-extern "C" 
-    {
-    #include "messageAPI.h"
-    }
 
 /*--------------------------------------------------------------------
                           LITERAL CONSTANTS
@@ -48,7 +44,9 @@ const location current_location = PICO_MODULE;
 /*--------------------------------------------------------------------
                               VARIABLES
 --------------------------------------------------------------------*/
-core::console console( uart0 );            /* console API           */
+core::console console( uart0 );                     /* console API  */
+core::loraInterface loRa( spi_default ,console );   /* Lora API     */
+core::messageInterface messageAPI( loRa, console ); /* Message API  */
 
 /*--------------------------------------------------------------------
                                GLOBALS
@@ -126,7 +124,7 @@ Local variables
 ----------------------------------------------------------*/
 rx_message       rx_msg;    /* returned message structure */
 tx_message       tx_msg;    /* transmit message structure */
-lora_errors      lora_err_var; /* lora errors             */
+message_errors   msg_err_var; /* message errors           */
 bool             sdio_err_var; /* stdio init errors       */
 pico_error_codes wifi_err_var; /* wifi init errors        */
 bool             msgRxed;  /* message rx'ed               */
@@ -137,7 +135,6 @@ Initialize local variables
 memset( &rx_msg, 0, sizeof( rx_message ) );
 memset( &tx_msg, 0, sizeof( tx_message ) );
 
-lora_err_var = RX_NO_ERROR;
 sdio_err_var = false;
 wifi_err_var = PICO_ERROR_GENERIC;
 
@@ -146,14 +143,13 @@ Initialize all subsystems
 ----------------------------------------------------------*/
 sdio_err_var = stdio_init_all();
 wifi_err_var = (pico_error_codes) cyw43_arch_init();
-lora_err_var = init_message( spi_default );
 
 gpio_set_irq_callback( gpio_int_handler );
 
 /*----------------------------------------------------------
 If issue with subsystem initilization do not move forward
 ----------------------------------------------------------*/
-if ( lora_err_var != RX_NO_ERROR || wifi_err_var != PICO_OK || !sdio_err_var )
+if ( wifi_err_var != PICO_OK || !sdio_err_var )
     {
     console.add_assert( "System unable to initilize" );
 
@@ -196,12 +192,12 @@ while( true )
 	/*------------------------------------------------------
     Check for new messages
     ------------------------------------------------------*/
-    msgRxed = get_message( &rx_msg, &lora_err_var );
+    msgRxed = messageAPI.get_message( &rx_msg, msg_err_var );
     
     /*------------------------------------------------------
     Example TX message 
     ------------------------------------------------------*/
-    if(  msgRxed == true && lora_err_var == RX_NO_ERROR )
+    if(  msgRxed == true && msg_err_var == MSG_NO_ERROR )
         {
         memset( &tx_msg, 0, sizeof( tx_message ) );
         tx_msg.destination = rx_msg.source;
@@ -209,14 +205,14 @@ while( true )
         tx_msg.message[1]  = 0xFF;
         tx_msg.size        = 2;
 
-        send_message(tx_msg);
+        messageAPI.send_message(tx_msg);
         }
 
     /*----------------------------------------------------------
     Clear errors and rx message for next round
     ----------------------------------------------------------*/
     memset( &rx_msg, 0, sizeof( rx_msg ) );
-    lora_err_var = RX_NO_ERROR;
+    msg_err_var = MSG_NO_ERROR;
     msgRxed = false;
 
 	} /* while(true) */

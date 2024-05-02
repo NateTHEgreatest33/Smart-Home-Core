@@ -17,9 +17,10 @@
                               INCLUDES
 --------------------------------------------------------------------*/
 #include "test_mode.hpp"
+#include "messageAPI.hpp"
 
 extern "C" { 
-    #include "messageAPI.h" 
+    // #include "messageAPI.h" 
     #include <cstring>
     }
 
@@ -55,7 +56,7 @@ extern "C" {
                                 EXTERNS
 --------------------------------------------------------------------*/
 extern bool g_test_mode_enable;
-
+extern core::messageInterface messageAPI;
 /*--------------------------------------------------------------------
                               PROCEDURES
 --------------------------------------------------------------------*/
@@ -80,19 +81,19 @@ Local variables
 ----------------------------------------------------------*/
 rx_message       rx_msg;    /* returned message structure */
 tx_message       tx_msg;    /* transmit message structure */
-lora_errors      lora_err_var; /* lora errors             */
+message_errors   msg_err_var; /* MessageAPI errors        */
 bool             msgRxed;  /* message rx'ed               */
 
 /*------------------------------------------------------
 Check for new messages
 ------------------------------------------------------*/
-msgRxed = get_message( &rx_msg, &lora_err_var );
+msgRxed = messageAPI.get_message( &rx_msg, msg_err_var );
 
 /*------------------------------------------------------
 Message API Testing:
 Non distructive testing replies
 ------------------------------------------------------*/
-if(  msgRxed == true && lora_err_var == RX_NO_ERROR )
+if(  msgRxed == true && msg_err_var == MSG_NO_ERROR )
     {
     memset( &tx_msg, 0, sizeof( tx_message ) );
     tx_msg.destination = RPI_MODULE;
@@ -111,31 +112,31 @@ if(  msgRxed == true && lora_err_var == RX_NO_ERROR )
             tx_msg.message[1] = 0xFF;
             break;
         }
-    send_message(tx_msg);
+    messageAPI.send_message(tx_msg);
     }
 
 /*----------------------------------------------------------
 Distructive testing
 ----------------------------------------------------------*/
-if(lora_err_var != RX_NO_ERROR )
+if( msg_err_var != RX_NO_ERROR )
     {
     memset( &tx_msg, 0, sizeof( tx_message ) );
     tx_msg.destination = RPI_MODULE;
 
     tx_msg.message[0] = 0xBB;
     tx_msg.size       = 2;
-    switch( lora_err_var )  
+    switch( msg_err_var )  
         {
-        case RX_CRC_ERROR:
+        case MSG_CRC_ERROR:
             tx_msg.message[1] = 0x01;
             break;
-        case RX_INVALID_HEADER:
+        case MSG_INVALID_HEADER:
             tx_msg.message[1] = 0x02;
             break;
-        case RX_SIZING:
+        case MSG_SIZING:
             tx_msg.message[1] = 0x03;
             break;
-        case RX_KEY_ERR:
+        case MSG_KEY_ERR:
             tx_msg.message[1] = 0x04;
             break;
         default:
@@ -143,14 +144,14 @@ if(lora_err_var != RX_NO_ERROR )
             break;
         }
 
-    send_message(tx_msg); //need to add error handling here
+    messageAPI.send_message(tx_msg); //need to add error handling here
     }
 
     /*----------------------------------------------------------
     Clear errors and rx message for next round
     ----------------------------------------------------------*/
     memset( &rx_msg, 0, sizeof( rx_msg ) );
-    lora_err_var = RX_NO_ERROR;
+    msg_err_var = MSG_NO_ERROR;
     msgRxed = false;
 
 } /* test_mode_runtime() */

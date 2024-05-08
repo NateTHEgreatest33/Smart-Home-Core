@@ -35,7 +35,14 @@ extern "C" {
 /*--------------------------------------------------------------------
                                 TYPES
 --------------------------------------------------------------------*/
-
+typedef enum
+    {
+    TEST_MODE_DISABLED,                   /* test mode disabled     */
+    TEST_MODE_START,                      /* test mode starting up  */
+    TEST_MODE_ENABLED,                    /* test mode enabled      */
+    TEST_MODE_EXIT,                       /* test mode exiting      */
+    NUM_TEST_MODE                         /* number of test modes   */
+    }test_mode_modes;
 /*--------------------------------------------------------------------
                            MEMORY CONSTANTS
 --------------------------------------------------------------------*/
@@ -177,7 +184,7 @@ static void test_mode_powerdown
 /*********************************************************************
 *
 *   PROCEDURE NAME:
-*       test_mode_runtime
+*       test_mode
 *
 *   DESCRIPTION:
 *       handle all test mode changes
@@ -192,41 +199,61 @@ void test_mode
 /*----------------------------------------------------------
 Local Variables
 ----------------------------------------------------------*/
-static bool test_mode_prev = false;
+static test_mode_modes s_current_mode = TEST_MODE_DISABLED;
 
 /*----------------------------------------------------------
-Exit if test mode is not currently enabled and was not enabled
-on last run of this function. This is done to allow the power
-down function to be run on test mode exit
+Requested mode state machine
 ----------------------------------------------------------*/
-if( test_mode == false && test_mode_prev == false )
-    return;
-
-/*----------------------------------------------------------
-If this is the initial entry into test mode, assert
-----------------------------------------------------------*/
-if( test_mode == true && test_mode_prev == false )
-    c.add_assert( "Entering test mode");
-
-/*----------------------------------------------------------
-if test mode is currently enabled, run runtime changes
-----------------------------------------------------------*/
-if( test_mode )
-    test_mode_runtime( c );
-
-/*----------------------------------------------------------
-If test mode is disabled but was prevously enabled on the
-last run of this function, run powerdown function. 
-----------------------------------------------------------*/
-if( test_mode == false && test_mode_prev == true )
+switch( s_current_mode )
     {
-    test_mode_powerdown( c );
-    c.add_assert( "Exiting test mode");
+    /*------------------------------
+    Test mode has fully toggled off
+    ------------------------------*/
+    case TEST_MODE_DISABLED:
+        if( test_mode )
+            {
+            s_current_mode = TEST_MODE_START;
+            }
+        break;    
+
+    /*------------------------------
+    Test mode has fully toggled on:
+    Run main process
+    ------------------------------*/
+    case TEST_MODE_ENABLED:
+        test_mode_runtime( c );
+        if( !test_mode )
+            {
+            s_current_mode = TEST_MODE_EXIT;
+            }
+        break;    
+
+    /*------------------------------
+    Test mode in the process of 
+    turning off. Run powerdown process
+    ------------------------------*/
+    case TEST_MODE_EXIT:
+        test_mode_powerdown( c );
+        c.add_assert( "Exiting test mode");
+        s_current_mode = TEST_MODE_DISABLED;
+        break;   
+
+    /*------------------------------
+    Test mode in the process of 
+    turning on
+    ------------------------------*/
+    case TEST_MODE_START:
+        c.add_assert( "Entering test mode");
+        s_current_mode = TEST_MODE_ENABLED;
+        break;  
+
+    /*------------------------------
+    default case
+    ------------------------------*/  
+    default:
+        c.add_assert( "Unsupported test mode, should never get here");
+        break;
     }
 
-/*----------------------------------------------------------
-update local copy of test_mode
-----------------------------------------------------------*/
-test_mode_prev = test_mode;
 
 } /* test_mode() */

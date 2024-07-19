@@ -11,6 +11,7 @@ add_subdirectory( lib/LoRa )
 add_subdirectory( lib/button )
 add_subdirectory( lib/util )
 add_subdirectory( lib/console )
+add_subdirectory( lib/mailbox )
 
 pico_sdk_init()
 
@@ -44,5 +45,6 @@ target_link_libraries(SmartHomeCore
   buttonComponent
   utilLib
   consoleAPI
+  mailboxAPI
 
 )

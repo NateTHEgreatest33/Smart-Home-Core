@@ -122,12 +122,11 @@ int main
 /*----------------------------------------------------------
 Local variables
 ----------------------------------------------------------*/
-rx_message       rx_msg;    /* returned message structure */
+rx_multi         rx_msg;    /* returned message structure */
 tx_message       tx_msg;    /* transmit message structure */
-message_errors   msg_err_var; /* message errors           */
 bool             sdio_err_var; /* stdio init errors       */
 pico_error_codes wifi_err_var; /* wifi init errors        */
-bool             msgRxed;  /* message rx'ed               */
+uint8_t          i;            /* index                   */
 
 /*----------------------------------------------------------
 Initialize local variables
@@ -192,28 +191,25 @@ while( true )
 	/*------------------------------------------------------
     Check for new messages
     ------------------------------------------------------*/
-    msgRxed = messageAPI.get_message( &rx_msg, msg_err_var );
+    rx_msg = messageAPI.get_multi_message();
     
     /*------------------------------------------------------
-    Example TX message 
+    Example TX message for each rx message
     ------------------------------------------------------*/
-    if(  msgRxed == true && msg_err_var == MSG_NO_ERROR )
+    for( i = 0; i < rx_msg.num_messages; i++ )
         {
         memset( &tx_msg, 0, sizeof( tx_message ) );
-        tx_msg.destination = rx_msg.source;
+        
+        tx_msg.destination = rx_msg.messages[i].source;
         tx_msg.message[0]  = 0xFF;
         tx_msg.message[1]  = 0xFF;
         tx_msg.size        = 2;
 
-        messageAPI.send_message(tx_msg);
+        if( !messageAPI.send_message(tx_msg) )
+            {
+            console.add_assert("MessageAPI send message failed!");
+            }
         }
-
-    /*----------------------------------------------------------
-    Clear errors and rx message for next round
-    ----------------------------------------------------------*/
-    memset( &rx_msg, 0, sizeof( rx_msg ) );
-    msg_err_var = MSG_NO_ERROR;
-    msgRxed = false;
 
 	} /* while(true) */
 

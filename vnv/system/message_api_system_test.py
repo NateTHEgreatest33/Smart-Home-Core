@@ -32,11 +32,13 @@ test_case_group = [ ( "Test 1 byte message",  		[0xFF],															unit_under
 					( "Send 0 byte message",  		[], 															unit_under_test, [0xBB, 0x03] 	),
 					( "send to unsupported module", [0xFF],															(num_units+1),   []			    ) ]
 
-#								("description",    			[dest, src,  pad, ver/size, key, DATA... crc],              (Rx'd, source, data, valid) )
-distructive_test_case_group = [ ("Test CRC Error", 			[unit_under_test, 0x01, 0x00, 0x11, 0x00, 0xFF, 0xFF], 	    (True, unit_under_test, [0xBB, 0x01], True) ),
-								("Test Size (Big) Error", 	[unit_under_test, 0x01, 0x00, 0x1F, 0x00, 0xFF, 0xFF], 	    (True, unit_under_test, [0xBB, 0x02], True) ),
-								("Test Size (Small) Error", [unit_under_test, 0x01, 0x00, 0x10, 0x00, 0xFF], 			(True, unit_under_test, [0xBB, 0x03], True) ),
-								("Test Key Error", 			[unit_under_test, 0x01, 0x00, 0x11, 0xFF, 0xFF, 0xF9 ], 	(True, unit_under_test, [0xBB, 0x04], True) ) ]
+#								("description",    		      	   [dest, src,  pad, ver/size, key, DATA... crc],              (Rx'd, source, data, valid) )
+distructive_test_case_group = [ ("Test CRC Error", 			       [unit_under_test, 0x01, 0x00, 0x21, 0x00, 0xFF, 0xFF], 	    (True, unit_under_test, [0xBB, 0x01], True) ),
+								("Test Size (Big) Error", 	       [unit_under_test, 0x01, 0x00, 0x2F, 0x00, 0xFF, 0xFF], 	    (True, unit_under_test, [0xBB, 0x02], True) ),
+								("Test Size (Small) Error",        [unit_under_test, 0x01, 0x00, 0x20, 0x00, 0xFF], 			(True, unit_under_test, [0xBB, 0x03], True) ),
+								("Test Key Error", 			       [unit_under_test, 0x01, 0x00, 0x21, 0xFF, 0xFF, 0xF9 ], 	    (True, unit_under_test, [0xBB, 0x04], True) ),
+								("Test multi-message processing"), [unit_under_test, 0x01, 0x00, 0x21, 0x00, 0xAA, CRC,
+											                        unit_under_test, 0x01, 0x00, 0x21, 0x00, 0xBB, CRC  ],      (True, unit_under_test, [0xBB, 0x05], True) )]
 
 #---------------------------------------------------------------------
 #                             CLASSES

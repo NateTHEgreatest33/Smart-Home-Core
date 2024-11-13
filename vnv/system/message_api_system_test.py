@@ -26,20 +26,23 @@ num_units 		= 0x03         # number of units in system
 #---------------------------------------------------------------------
 #                      TEST CASE VARIABLES
 #---------------------------------------------------------------------
-#					  test_description		  		 send_data													    dest             expected data
-test_case_group = [ ( "Test 1 byte message",  		[0xFF],															unit_under_test, [0xAA, 0x11] 	),
-					( "Test 10 byte message", 		[0x01, 	0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A],  unit_under_test, [0xAA, 0x22 ]  ),
-					( "Send 0 byte message",  		[], 															unit_under_test, [0xBB, 0x03] 	),
-					( "send to unsupported module", [0xFF],															(num_units+1),   []			    ) ]
+#					  test_description		  		 		 send_data													        dest             expected data
+test_case_group = [ ( "Test 1 byte message",  				 [0xFF],															unit_under_test, [0xAA, 0x11] 	),
+					( "Test 10 byte message", 				 [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A],      unit_under_test, [0xAA, 0x22 ]  ),
+					( "Send 0 byte message",  				 [], 																unit_under_test, [0xBB, 0x03] 	),
+					( "send to unsupported module", 		 [0xFF],															(num_units+1),   []			    ) ]
 
-#								("description",    		      	   [dest, src,  pad, ver/size, key, DATA... crc],              (Rx'd, source, data, valid) )
-distructive_test_case_group = [ ("Test CRC Error", 			       [unit_under_test, 0x01, 0x00, 0x21, 0x00, 0xFF, 0xFF], 	    (True, unit_under_test, [0xBB, 0x01], True) ),
-								("Test Size (Big) Error", 	       [unit_under_test, 0x01, 0x00, 0x2F, 0x00, 0xFF, 0xFF], 	    (True, unit_under_test, [0xBB, 0x02], True) ),
-								("Test Size (Small) Error",        [unit_under_test, 0x01, 0x00, 0x20, 0x00, 0xFF], 			(True, unit_under_test, [0xBB, 0x03], True) ),
-								("Test Key Error", 			       [unit_under_test, 0x01, 0x00, 0x21, 0xFF, 0xFF, 0xF9 ], 	    (True, unit_under_test, [0xBB, 0x04], True) ),
-								("Test multi-message processing"), [unit_under_test, 0x01, 0x00, 0x21, 0x00, 0xAA, CRC,
-											                        unit_under_test, 0x01, 0x00, 0x21, 0x00, 0xBB, CRC  ],      (True, unit_under_test, [0xBB, 0x05], True) )]
+#								("description",    		      	   [dest, src,  pad, ver/size, key, DATA... crc],                (Rx'd, source, data, valid) )
+distructive_test_case_group = [ ("Test CRC Error", 			       [unit_under_test, 0x01, 0x00, 0x21, 0x00, 0xFF, 0xFF], 	     (True, unit_under_test, [0xBB, 0x01], True) ),
+								("Test Size (Big) Error", 	       [unit_under_test, 0x01, 0x00, 0x2F, 0x00, 0xFF, 0xFF], 	     (True, unit_under_test, [0xBB, 0x02], True) ),
+								("Test Size (Small) Error",        [unit_under_test, 0x01, 0x00, 0x20, 0x00, 0xFF], 			 (True, unit_under_test, [0xBB, 0x03], True) ),
+								("Test Key Error", 			       [unit_under_test, 0x01, 0x00, 0x21, 0xFF, 0xFF, 0xF9 ], 	     (True, unit_under_test, [0xBB, 0x04], True) ) ]
 
+#                         test step description           send data            destination      expected data
+multi_msg_test_group = [ ("Test multi-message: setup", [0xCC, 0x00, 0x00 ], unit_under_test, [0xAA, 0x44 ]                              ),
+						 ("Test multi-message: msg 1", [0xCC, 0x01, 0x00 ], unit_under_test, []                                         ),
+						 ("Test multi-message: msg 1", [0xCC, 0x02, 0x00 ], unit_under_test, []                                         ),
+						 ("Test multi-message: msg 1", [0xCC, 0x03, 0x00 ], unit_under_test, [[0xAA, 0x01], [0xAA, 0x02], [0xAA, 0x03]] ) ]
 #---------------------------------------------------------------------
 #                             CLASSES
 #---------------------------------------------------------------------
@@ -65,6 +68,7 @@ class Test:
 
 		self.normal_cases()
 		self.distructive_cases()
+		self.multi_msg_cases()
 
     # ==================================
     # normal_cases()
@@ -120,6 +124,43 @@ class Test:
 			#------------------------------------------------------------------
 			self.log.compare_equal( rx_msg, rtn_data, "Verify return data is as expected" )
 		
+
+    # ==================================
+    # multi_msg_cases()
+    # ==================================
+	def multi_msg_cases(self):
+		self.log.test_step( "Testing multi-message support")
+		for [desc, send_data, dest, expected_rtn_data ] in multi_msg_test_group:
+			#------------------------------------------------------------------
+			# Setup Test Case
+			#------------------------------------------------------------------
+			self.log.test_step( desc )
+			time.sleep(.5)
+
+			self.pico.msg_conn.TXMessage( message = send_data, destination = dest )
+			
+			if( expected_rtn_data != [] ):
+				while( not self.pico.msg_conn.__LoraCheckMessage() ):
+					#do nothing
+			
+				rx_msg = self.pico.msg_conn.RXMessage()
+				
+				#------------------------------------------------------------------
+				# Because RXMessage() returns an array of [ Msg Rx'ed, source, data, 
+				# validity ], we need to format the expexted rtn data as such
+				#------------------------------------------------------------------
+				if expected_rtn_data == []:
+					#format for no message recieved is as follows
+					rtn_list = ( False, 0xFF, [], True )
+				else:
+					rtn_list =  (True, dest, expected_rtn_data, True)
+				#------------------------------------------------------------------
+				# Verify Message
+				#------------------------------------------------------------------
+				self.log.compare_equal( rx_msg, expected_rtn_data, "Verify return data is as expected" )
+
+
+
 #---------------------------------------------------------------------
 #                      MAIN FUNCTION
 #---------------------------------------------------------------------

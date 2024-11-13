@@ -91,8 +91,14 @@ Local variables
 rx_multi         rx_msg;    /* returned message structure */
 tx_message       tx_msg;    /* transmit message structure */
 uint8_t          i;         /* index                      */
+uint16_t         sleep;     /* sleep variable             */
 utl::queue<MAX_MSG_RX, tx_message> tx_queue; 
                             /* queue for transmitting msg */
+
+/*----------------------------------------------------------
+Init local variables
+----------------------------------------------------------*/
+sleep             = 0;
 
 /*------------------------------------------------------
 Check for new messages
@@ -110,7 +116,7 @@ for( i = 0; i < rx_msg.num_messages; i++ )
     ------------------------------------------------------*/
     memset( &tx_msg, 0, sizeof( tx_message ) );
     tx_msg.destination = RPI_MODULE;
-    tx_msg.size       = 2;
+    tx_msg.size       = 2 ;
 
     /*------------------------------------------------------
     Non distructive testing replies
@@ -123,6 +129,20 @@ for( i = 0; i < rx_msg.num_messages; i++ )
             {
             case 0x01:
                 tx_msg.message[1] = 0x11;
+                break;
+            case 0x02:
+                tx_msg.message[1] = rx_msg.messages[i].message[0];
+                break;
+            case 0x03:
+                /*--------------------------------
+                multi-message testing requires not
+                reading from the lora transciver
+                hence the 5 second sleep
+                ---------------------------------*/
+                if( rx_msg.messages[i].message[1] == 0x00 )
+                    sleep = 5000;
+
+                tx_msg.message[1] = 0x44;
                 break;
             case 0x0A:
                 tx_msg.message[1] = 0x22;
@@ -171,7 +191,12 @@ for( i = 0; i < rx_msg.num_messages; i++ )
         messageAPI.send_message( tx_queue.front() );
         tx_queue.pop();
         }
-    
+
+    /*----------------------------------------------------------
+    sleep if requested
+    ----------------------------------------------------------*/
+    if( sleep != 0 )
+        sleep_ms( sleep );
     
 } /* test_mode_runtime() */
 

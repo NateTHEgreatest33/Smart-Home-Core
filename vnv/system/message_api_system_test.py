@@ -38,11 +38,11 @@ distructive_test_case_group = [ ("Test CRC Error", 			       [unit_under_test, 0
 								("Test Size (Small) Error",        [unit_under_test, 0x01, 0x00, 0x20, 0x00, 0xFF], 			 (True, unit_under_test, [0xBB, 0x03], True) ),
 								("Test Key Error", 			       [unit_under_test, 0x01, 0x00, 0x21, 0xFF, 0xFF, 0xF9 ], 	     (True, unit_under_test, [0xBB, 0x04], True) ) ]
 
-#                         test step description           send data            destination      expected data
-multi_msg_test_group = [ ("Test multi-message: setup", [0xCC, 0x00, 0x00 ], unit_under_test, [0xAA, 0x44 ]                              ),
-						 ("Test multi-message: msg 1", [0xCC, 0x01, 0x00 ], unit_under_test, []                                         ),
-						 ("Test multi-message: msg 1", [0xCC, 0x02, 0x00 ], unit_under_test, []                                         ),
-						 ("Test multi-message: msg 1", [0xCC, 0x03, 0x00 ], unit_under_test, [[0xAA, 0x01], [0xAA, 0x02], [0xAA, 0x03]] ) ]
+#                         test step description        sleep-flag, send data            destination      expected data
+multi_msg_test_group = [ ("Test multi-message: setup", False,      [0xCC, 0x00, 0x00 ], unit_under_test, (unit_under_test, [0xAA, 0x44 ], True)                   															   ),
+						 ("Test multi-message: msg 1", False,      [0xCC, 0x01, 0x00 ], unit_under_test, []                                         																		   ),
+						 ("Test multi-message: msg 1", False,      [0xCC, 0x02, 0x00 ], unit_under_test, []                                         																		   ),
+						 ("Test multi-message: msg 1", True,       [0xCC, 0x03, 0x00 ], unit_under_test, [(unit_under_test, [0xAA, 0x01], True), (unit_under_test, [0xAA, 0x02], True), (unit_under_test, [0xAA, 0x03], True)] ) ]
 #---------------------------------------------------------------------
 #                             CLASSES
 #---------------------------------------------------------------------
@@ -82,7 +82,7 @@ class Test:
 
 			self.pico.msg_conn.TXMessage( message = send_data, destination = dest )
 			time.sleep(2)
-			return_msg = self.pico.msg_conn.RXMessage()
+			return_msg = self.pico.msg_conn.RX_Single()
 
 			#------------------------------------------------------------------
 			# Because RXMessage() returns an array of [ Msg Rx'ed, source, data, 
@@ -117,7 +117,7 @@ class Test:
 			self.pico.msg_conn._messageAPI__LoraSetRxMode()
 
 			time.sleep(1)
-			rx_msg = self.pico.msg_conn.RXMessage()
+			rx_msg = self.pico.msg_conn.RX_Single()
 
 			#------------------------------------------------------------------
 			# Verify Message
@@ -130,7 +130,7 @@ class Test:
     # ==================================
 	def multi_msg_cases(self):
 		self.log.test_step( "Testing multi-message support")
-		for [desc, send_data, dest, expected_rtn_data ] in multi_msg_test_group:
+		for [desc, sleep, send_data, dest, expected_rtn_data ] in multi_msg_test_group:
 			#------------------------------------------------------------------
 			# Setup Test Case
 			#------------------------------------------------------------------
@@ -139,26 +139,30 @@ class Test:
 
 			self.pico.msg_conn.TXMessage( message = send_data, destination = dest )
 			
-			if( expected_rtn_data != [] ):
-				while( not self.pico.msg_conn.__LoraCheckMessage() ):
-					#do nothing
-			
-				rx_msg = self.pico.msg_conn.RXMessage()
-				
-				#------------------------------------------------------------------
-				# Because RXMessage() returns an array of [ Msg Rx'ed, source, data, 
-				# validity ], we need to format the expexted rtn data as such
-				#------------------------------------------------------------------
-				if expected_rtn_data == []:
-					#format for no message recieved is as follows
-					rtn_list = ( False, 0xFF, [], True )
-				else:
-					rtn_list =  (True, dest, expected_rtn_data, True)
-				#------------------------------------------------------------------
-				# Verify Message
-				#------------------------------------------------------------------
-				self.log.compare_equal( rx_msg, expected_rtn_data, "Verify return data is as expected" )
+			#------------------------------------------------------------------
+			# extra sleep if flag is set
+			#------------------------------------------------------------------
+			if sleep:
+				time.sleep(5)
 
+			#------------------------------------------------------------------
+			# Wait for return data
+			#------------------------------------------------------------------
+			time.sleep(1)
+			actual_return = self.pico.msg_conn.RX_Multi()
+
+			#------------------------------------------------------------------
+			# Verify Message
+			#------------------------------------------------------------------
+			if( expected_rtn_data == [] ):
+				self.log.compare_equal( actual_return, None, "Verify no data was returned (as expected)" )
+			else:
+				num_rx, data_rx = actual_return
+				for src, data, validity in zip(data_rx, expected_rtn_data):
+					self.log.compare_equal( data[0],     data[1],     "Verify return data (data) is as expected" )
+					self.log.compare_equal( src[0],      src[1],      "Verify return data (source) is as expected" )
+					self.log.compare_equal( validity[0], validity[1], "Verify return data (validity) is as expected" )
+					
 
 
 #---------------------------------------------------------------------

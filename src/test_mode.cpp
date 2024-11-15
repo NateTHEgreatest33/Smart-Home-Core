@@ -137,12 +137,20 @@ for( i = 0; i < rx_msg.num_messages; i++ )
                 /*--------------------------------
                 multi-message testing requires not
                 reading from the lora transciver
-                hence the 5 second sleep
+                hence the 5 second sleep. 
+                
+                0x44 is confirmation, otherwise we
+                echo message[1]
                 ---------------------------------*/
                 if( rx_msg.messages[i].message[1] == 0x00 )
+                    {
                     sleep = 5000;
-
-                tx_msg.message[1] = 0x44;
+                    tx_msg.message[1] = 0x44;
+                    }
+                else
+                    {
+                    tx_msg.message[1] = rx_msg.messages[i].message[1];
+                    }
                 break;
             case 0x0A:
                 tx_msg.message[1] = 0x22;

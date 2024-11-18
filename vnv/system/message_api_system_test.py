@@ -156,6 +156,8 @@ class Test:
 			#------------------------------------------------------------------
 			if( expected_rtn_data == [] ):
 				self.log.compare_equal( actual_return, None, "Verify no data was returned (as expected)" )
+			elif( actual_return == None ):
+				self.log.compare_equal( True, False, "Data was expected but was not sent" )
 			else:
 				num_rx, data_rx = actual_return
 				for src, data, validity in zip(data_rx, expected_rtn_data):

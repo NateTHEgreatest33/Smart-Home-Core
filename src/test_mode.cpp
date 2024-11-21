@@ -121,7 +121,7 @@ for( i = 0; i < rx_msg.num_messages; i++ )
     /*------------------------------------------------------
     Non distructive testing replies
     ------------------------------------------------------*/
-    if( rx_msg.errors[i] == MSG_NO_ERROR )
+    if( rx_msg.errors[i] == MSG_NO_ERROR && rx_msg.global_errors == MSG_NO_ERROR )
         {
         tx_msg.message[0] = 0xAA;
 
@@ -164,7 +164,7 @@ for( i = 0; i < rx_msg.num_messages; i++ )
     /*----------------------------------------------------------
     Distructive testing
     ----------------------------------------------------------*/
-    if( rx_msg.errors[i] != RX_NO_ERROR )
+    if( rx_msg.errors[i] != MSG_NO_ERROR || rx_msg.global_errors != MSG_NO_ERROR )
         {
         tx_msg.message[0] = 0xBB;
 
@@ -176,9 +176,6 @@ for( i = 0; i < rx_msg.num_messages; i++ )
             case MSG_INVALID_HEADER:
                 tx_msg.message[1] = 0x02;
                 break;
-            case MSG_SIZING:
-                tx_msg.message[1] = 0x03;
-                break;
             case MSG_KEY_ERR:
                 tx_msg.message[1] = 0x04;
                 break;
@@ -186,9 +183,24 @@ for( i = 0; i < rx_msg.num_messages; i++ )
                 tx_msg.message[1] = 0xFF;
                 break;
             }
+
+        switch( rx_msg.global_errors )
+            {
+            case MSG_SIZING:
+                tx_msg.message[1] = 0x03;
+                break;
+            case MSG_INVALID_HEADER:
+                tx_msg.message[1] = 0x02;
+                break;
+            case MSG_NO_ERROR:
+            default:
+                break;
+            }
+
         }
 
-    tx_queue.push( tx_msg );
+    tx_queue.push( tx_msg )
+
     }
 
     /*----------------------------------------------------------

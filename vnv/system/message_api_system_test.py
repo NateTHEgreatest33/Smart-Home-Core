@@ -32,11 +32,11 @@ test_case_group = [ ( "Test 1 byte message",  				 [0xFF],															unit_un
 					( "Send 0 byte message",  				 [], 																unit_under_test, [0xBB, 0x03] 	),
 					( "send to unsupported module", 		 [0xFF],															(num_units+1),   []			    ) ]
 
-#								("description",    		      	   [dest, src,  pad, ver/size, key, DATA... crc],                (Rx'd, source, data, valid) )
-distructive_test_case_group = [ ("Test CRC Error", 			       [unit_under_test, 0x01, 0x00, 0x21, 0x00, 0xFF, 0xFF], 	     (True, unit_under_test, [0xBB, 0x01], True) ),
-								("Test Size (Big) Error", 	       [unit_under_test, 0x01, 0x00, 0x2F, 0x00, 0xFF, 0xFF], 	     (True, unit_under_test, [0xBB, 0x02], True) ),
-								("Test Size (Small) Error",        [unit_under_test, 0x01, 0x00, 0x20, 0x00, 0xFF], 			 (True, unit_under_test, [0xBB, 0x03], True) ),
-								("Test Key Error", 			       [unit_under_test, 0x01, 0x00, 0x21, 0xFF, 0xFF, 0xF9 ], 	     (True, unit_under_test, [0xBB, 0x04], True) ) ]
+#								("description",    		      	   gen CRC, [dest, src,  pad, ver/size, key, DATA... crc],                (Rx'd, source, data, valid) )
+distructive_test_case_group = [ ("Test CRC Error", 			       False,   [unit_under_test, 0x01, 0x00, 0x21, 0x00, 0xFF, 0xFF], 	      (True, unit_under_test, [0xBB, 0x01], True) ),
+								("Test Size (Big) Error", 	       False,   [unit_under_test, 0x01, 0x00, 0x2F, 0x00, 0xFF, 0xFF], 	      (True, unit_under_test, [0xBB, 0x02], True) ),
+								("Test Size (Small) Error",        True,    [unit_under_test, 0x01, 0x00, 0x20, 0x00            ], 	      (True, unit_under_test, [0xBB, 0x03], True) ),
+								("Test Key Error", 			       True,    [unit_under_test, 0x01, 0x00, 0x21, 0xFF, 0xFF      ], 	      (True, unit_under_test, [0xBB, 0x04], True) ) ]
 
 #                         test step description        sleep-flag, send data            destination      expected data
 multi_msg_test_group = [ ("Test multi-message: setup", False,      [0xCC, 0x00, 0x00 ], unit_under_test, (unit_under_test, [0xAA, 0x44 ], True)                   															   ),
@@ -103,12 +103,18 @@ class Test:
     # distructive_cases()
     # ==================================
 	def distructive_cases(self):
-		for [ desc, raw_tx, rtn_data ] in distructive_test_case_group:
+		for [ desc, crc_gen, raw_tx, rtn_data ] in distructive_test_case_group:
 			#------------------------------------------------------------------
 			# Setup Test Case
 			#------------------------------------------------------------------
 			self.log.test_step( desc )
 			time.sleep(.5)
+
+			#------------------------------------------------------------------
+			# If we want to auto-generate CRC, generate and append
+			#------------------------------------------------------------------
+			if( crc_gen ):
+				raw_tx.append( self.pico.msg_conn._messageAPI__updateCRC( raw_tx ) )
 
 			#------------------------------------------------------------------
 			# Send raw TX over low-level interfaces
@@ -160,10 +166,19 @@ class Test:
 				self.log.compare_equal( True, False, "Data was expected but was not sent" )
 			else:
 				num_rx, data_rx = actual_return
-				for src, data, validity in zip(data_rx, expected_rtn_data):
-					self.log.compare_equal( data[0],     data[1],     "Verify return data (data) is as expected" )
-					self.log.compare_equal( src[0],      src[1],      "Verify return data (source) is as expected" )
-					self.log.compare_equal( validity[0], validity[1], "Verify return data (validity) is as expected" )
+
+				#skip compare and add debug prints if value length is not as expected
+				if( num_rx != len(expected_rtn_data) ):
+					self.log.compare_equal( True, False, "Data returned was missing messages" )
+					for src, data, validity in data_rx:
+						print( "src: {}, valdity: {}, data, {}, ".format(src, validity, data ) )
+
+				#compare message details
+				else:
+					for src, data, validity in zip(data_rx, expected_rtn_data):
+						self.log.compare_equal( data[0],     data[1],     "Verify return data (data) is as expected" )
+						self.log.compare_equal( src[0],      src[1],      "Verify return data (source) is as expected" )
+						self.log.compare_equal( validity[0], validity[1], "Verify return data (validity) is as expected" )
 					
 
 

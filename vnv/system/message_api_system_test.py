@@ -39,10 +39,10 @@ distructive_test_case_group = [ ("Test CRC Error", 			       False,   [unit_unde
 								("Test Key Error", 			       True,    [unit_under_test, 0x01, 0x00, 0x21, 0xFF, 0xFF      ], 	      (True, unit_under_test, [0xBB, 0x04], True) ) ]
 
 #                         test step description        sleep-flag, send data            destination      expected data
-multi_msg_test_group = [ ("Test multi-message: setup", False,      [0xCC, 0x00, 0x00 ], unit_under_test, (unit_under_test, [0xAA, 0x44 ], True)                   															   ),
+multi_msg_test_group = [ ("Test multi-message: setup", False,      [0xCC, 0x00, 0x00 ], unit_under_test, [(unit_under_test, [0xAA, 0x44 ], True)]                   												     	   ),
 						 ("Test multi-message: msg 1", False,      [0xCC, 0x01, 0x00 ], unit_under_test, []                                         																		   ),
-						 ("Test multi-message: msg 1", False,      [0xCC, 0x02, 0x00 ], unit_under_test, []                                         																		   ),
-						 ("Test multi-message: msg 1", True,       [0xCC, 0x03, 0x00 ], unit_under_test, [(unit_under_test, [0xAA, 0x01], True), (unit_under_test, [0xAA, 0x02], True), (unit_under_test, [0xAA, 0x03], True)] ) ]
+						 ("Test multi-message: msg 2", False,      [0xCC, 0x02, 0x00 ], unit_under_test, []                                         																		   ),
+						 ("Test multi-message: msg 3", True,       [0xCC, 0x03, 0x00 ], unit_under_test, [(unit_under_test, [0xAA, 0x01], True), (unit_under_test, [0xAA, 0x02], True), (unit_under_test, [0xAA, 0x03], True)] ) ]
 #---------------------------------------------------------------------
 #                             CLASSES
 #---------------------------------------------------------------------
@@ -168,7 +168,7 @@ class Test:
 				num_rx, data_rx = actual_return
 
 				#skip compare and add debug prints if value length is not as expected
-				if( num_rx != len(expected_rtn_data) ):
+				if( len(data_rx) != len(expected_rtn_data) ):
 					self.log.compare_equal( True, False, "Data returned was missing messages" )
 					for src, data, validity in data_rx:
 						print( "src: {}, valdity: {}, data, {}, ".format(src, validity, data ) )

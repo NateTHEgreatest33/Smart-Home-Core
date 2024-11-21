@@ -199,7 +199,7 @@ for( i = 0; i < rx_msg.num_messages; i++ )
 
         }
 
-    tx_queue.push( tx_msg )
+    tx_queue.push( tx_msg );
 
     }
 

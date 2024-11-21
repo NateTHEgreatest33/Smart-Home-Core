@@ -176,6 +176,9 @@ for( i = 0; i < rx_msg.num_messages; i++ )
             case MSG_INVALID_HEADER:
                 tx_msg.message[1] = 0x02;
                 break;
+            case MSG_SIZING:
+                tx_msg.message[1] = 0x03;
+                break;
             case MSG_KEY_ERR:
                 tx_msg.message[1] = 0x04;
                 break;
@@ -187,10 +190,10 @@ for( i = 0; i < rx_msg.num_messages; i++ )
         switch( rx_msg.global_errors )
             {
             case MSG_SIZING:
-                tx_msg.message[1] = 0x03;
+                tx_msg.message[1] = 0x05;
                 break;
             case MSG_INVALID_HEADER:
-                tx_msg.message[1] = 0x02;
+                tx_msg.message[1] = 0x06;
                 break;
             case MSG_NO_ERROR:
             default:

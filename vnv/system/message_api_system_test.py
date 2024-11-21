@@ -34,7 +34,7 @@ test_case_group = [ ( "Test 1 byte message",  				 [0xFF],															unit_un
 
 #								("description",    		      	   gen CRC, [dest, src,  pad, ver/size, key, DATA... crc],                (Rx'd, source, data, valid) )
 distructive_test_case_group = [ ("Test CRC Error", 			       False,   [unit_under_test, 0x01, 0x00, 0x21, 0x00, 0xFF, 0xFF], 	      (True, unit_under_test, [0xBB, 0x01], True) ),
-								("Test Size (Big) Error", 	       False,   [unit_under_test, 0x01, 0x00, 0x2F, 0x00, 0xFF, 0xFF], 	      (True, unit_under_test, [0xBB, 0x02], True) ),
+								("Test Size (Big) Error", 	       False,   [unit_under_test, 0x01, 0x00, 0x2F, 0x00, 0xFF, 0xFF], 	      (True, unit_under_test, [0xBB, 0x05], True) ),
 								("Test Size (Small) Error",        True,    [unit_under_test, 0x01, 0x00, 0x20, 0x00            ], 	      (True, unit_under_test, [0xBB, 0x03], True) ),
 								("Test Key Error", 			       True,    [unit_under_test, 0x01, 0x00, 0x21, 0xFF, 0xFF      ], 	      (True, unit_under_test, [0xBB, 0x04], True) ) ]
 

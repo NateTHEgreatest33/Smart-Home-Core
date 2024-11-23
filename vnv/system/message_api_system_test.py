@@ -173,13 +173,14 @@ class Test:
 					self.log.compare_equal( True, False, "Data returned was missing messages" )
 					for src, data, validity in data_rx:
 						print( "src: {}, valdity: {}, data, {}, ".format(src, validity, data ) )
-
-				#compare message details
 				else:
-					actual, expected = zip(data_rx, expected_rtn_data)
-					self.log.compare_equal( expected=expected[0], actual=actual[0], case="Verify return data (source) is as expected" )
-					self.log.compare_equal( expected=expected[1], actual=actual[1], case="Verify return data (data) is as expected" )
-					self.log.compare_equal( expected=expected[2], actual=actual[2], case="Verify return data (validity) is as expected" )
+					for msg in range(num_rx):
+						actual_src, actual_data, actual_valid = data_rx[msg]
+						expected_src, expected_data, expected_valid = expected_rtn_data[msg]
+					
+						self.log.compare_equal( expected=expected_src,   actual=actual_src,   case="Verify return data (source) is as expected" )
+						self.log.compare_equal( expected=expected_data,  actual=actual_data,  case="Verify return data (data) is as expected" )
+						self.log.compare_equal( expected=expected_valid, actual=actual_valid, case="Verify return data (validity) is as expected" )
 				
 
 

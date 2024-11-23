@@ -18,6 +18,7 @@
 --------------------------------------------------------------------*/
 #include "test_mode.hpp"
 #include "messageAPI.hpp"
+#include "queue.hpp"
 
 extern "C" { 
     // #include "messageAPI.h" 
@@ -64,6 +65,7 @@ typedef enum
 --------------------------------------------------------------------*/
 extern bool g_test_mode_enable;
 extern core::messageInterface messageAPI;
+
 /*--------------------------------------------------------------------
                               PROCEDURES
 --------------------------------------------------------------------*/
@@ -86,82 +88,152 @@ static void test_mode_runtime
 /*----------------------------------------------------------
 Local variables
 ----------------------------------------------------------*/
-rx_message       rx_msg;    /* returned message structure */
+rx_multi         rx_msg;    /* returned message structure */
 tx_message       tx_msg;    /* transmit message structure */
-message_errors   msg_err_var; /* MessageAPI errors        */
-bool             msgRxed;  /* message rx'ed               */
+uint8_t          i;         /* index                      */
+uint16_t         sleep;     /* sleep variable             */
+utl::queue<MAX_MSG_RX, tx_message> tx_queue; 
+                            /* queue for transmitting msg */
+
+/*----------------------------------------------------------
+Init local variables
+----------------------------------------------------------*/
+sleep             = 0;
 
 /*------------------------------------------------------
 Check for new messages
 ------------------------------------------------------*/
-msgRxed = messageAPI.get_message( &rx_msg, msg_err_var );
+rx_msg = messageAPI.get_multi_message();
 
 /*------------------------------------------------------
-Message API Testing:
-Non distructive testing replies
+Handle each message
 ------------------------------------------------------*/
-if(  msgRxed == true && msg_err_var == MSG_NO_ERROR )
+for( i = 0; i < rx_msg.num_messages; i++ )
     {
+    /*------------------------------------------------------
+    Message API Testing:
+    setup common data 
+    ------------------------------------------------------*/
     memset( &tx_msg, 0, sizeof( tx_message ) );
     tx_msg.destination = RPI_MODULE;
+    tx_msg.size       = 2 ;
 
-    tx_msg.message[0] = 0xAA;
-    tx_msg.size       = 2;
-    switch( rx_msg.size )
+    /*------------------------------------------------------
+    Non distructive testing replies
+    ------------------------------------------------------*/
+    if( rx_msg.errors[i] == MSG_NO_ERROR && rx_msg.global_errors == MSG_NO_ERROR )
         {
-        case 0x01:
-            tx_msg.message[1] = 0x11;
-            break;
-        case 0x0A:
-            tx_msg.message[1] = 0x22;
-            break;
-        default:
-            tx_msg.message[1] = 0xFF;
-            break;
+        tx_msg.message[0] = 0xAA;
+
+        switch( rx_msg.messages[i].size )
+            {
+            case 0x01:
+                tx_msg.message[1] = 0x11;
+                break;
+            case 0x02:
+                tx_msg.message[1] = rx_msg.messages[i].message[0];
+                break;
+            case 0x03:
+                /*--------------------------------
+                multi-message testing requires not
+                reading from the lora transciver
+                hence the 5 second sleep. 
+                
+                0x44 is confirmation, otherwise we
+                echo message[1]
+                ---------------------------------*/
+                if( rx_msg.messages[i].message[1] == 0x00 )
+                    {
+                    sleep = 5000;
+                    tx_msg.message[1] = 0x44;
+                    }
+                else
+                    {
+                    tx_msg.message[1] = rx_msg.messages[i].message[1];
+                    }
+                break;
+            case 0x0A:
+                tx_msg.message[1] = 0x22;
+                break;
+            default:
+                tx_msg.message[1] = 0xFF;
+                break;
+            }
         }
-    messageAPI.send_message(tx_msg);
+
+    /*----------------------------------------------------------
+    Distructive testing
+    ----------------------------------------------------------*/
+    if( rx_msg.errors[i] != MSG_NO_ERROR || rx_msg.global_errors != MSG_NO_ERROR )
+        {
+        tx_msg.message[0] = 0xBB;
+
+        switch( rx_msg.errors[i] )  
+            {
+            case MSG_CRC_ERROR:
+                tx_msg.message[1] = 0x01;
+                break;
+            case MSG_INVALID_HEADER:
+                tx_msg.message[1] = 0x02;
+                break;
+            case MSG_SIZING:
+                tx_msg.message[1] = 0x03;
+                break;
+            case MSG_KEY_ERR:
+                tx_msg.message[1] = 0x04;
+                break;
+            default:
+                tx_msg.message[1] = 0xFF;
+                break;
+            }
+        }
+
+    tx_queue.push( tx_msg );
+    
     }
 
 /*----------------------------------------------------------
-Distructive testing
+Handle global errors if they exist
 ----------------------------------------------------------*/
-if( msg_err_var != RX_NO_ERROR )
+if( rx_msg.global_errors != MSG_NO_ERROR)
     {
+    /*------------------------------------------------------
+    Message API Testing:
+    setup common data 
+    ------------------------------------------------------*/
     memset( &tx_msg, 0, sizeof( tx_message ) );
     tx_msg.destination = RPI_MODULE;
+    tx_msg.size       = 2 ;
 
     tx_msg.message[0] = 0xBB;
-    tx_msg.size       = 2;
-    switch( msg_err_var )  
-        {
-        case MSG_CRC_ERROR:
-            tx_msg.message[1] = 0x01;
-            break;
-        case MSG_INVALID_HEADER:
-            tx_msg.message[1] = 0x02;
-            break;
-        case MSG_SIZING:
-            tx_msg.message[1] = 0x03;
-            break;
-        case MSG_KEY_ERR:
-            tx_msg.message[1] = 0x04;
-            break;
-        default:
-            tx_msg.message[1] = 0xFF;
-            break;
-        }
+    tx_msg.message[1] = 0xFF;
 
-    messageAPI.send_message(tx_msg); //need to add error handling here
+    if( rx_msg.global_errors == MSG_SIZING )
+        tx_msg.message[1] = 0x05;
+        
+    if( rx_msg.global_errors == MSG_INVALID_HEADER )
+        tx_msg.message[1] = 0x06;
+
+    tx_queue.push( tx_msg );
     }
 
-    /*----------------------------------------------------------
-    Clear errors and rx message for next round
-    ----------------------------------------------------------*/
-    memset( &rx_msg, 0, sizeof( rx_msg ) );
-    msg_err_var = MSG_NO_ERROR;
-    msgRxed = false;
+/*----------------------------------------------------------
+transmit tx queue until empty
+----------------------------------------------------------*/
+while( !tx_queue.is_empty() )
+    {
+    messageAPI.send_message( tx_queue.front() );
+    tx_queue.pop();
+    }
 
+/*----------------------------------------------------------
+sleep if requested
+----------------------------------------------------------*/
+if( sleep != 0 )
+    sleep_ms( sleep );
+    
 } /* test_mode_runtime() */
+
 
 /*********************************************************************
 *

@@ -46,3 +46,6 @@ target_link_libraries(SmartHomeCore
   consoleAPI
 
 )
+
+#make uf2
+pico_add_extra_outputs(SmartHomeCore)

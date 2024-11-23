@@ -186,40 +186,51 @@ for( i = 0; i < rx_msg.num_messages; i++ )
                 tx_msg.message[1] = 0xFF;
                 break;
             }
-
-        switch( rx_msg.global_errors )
-            {
-            case MSG_SIZING:
-                tx_msg.message[1] = 0x05;
-                break;
-            case MSG_INVALID_HEADER:
-                tx_msg.message[1] = 0x06;
-                break;
-            case MSG_NO_ERROR:
-            default:
-                break;
-            }
-
         }
 
     tx_queue.push( tx_msg );
-
+    
     }
 
-    /*----------------------------------------------------------
-    transmit tx queue until empty
-    ----------------------------------------------------------*/
-    while( !tx_queue.is_empty() )
-        {
-        messageAPI.send_message( tx_queue.front() );
-        tx_queue.pop();
-        }
+/*----------------------------------------------------------
+Handle global errors if they exist
+----------------------------------------------------------*/
+if( rx_msg.global_errors != MSG_NO_ERROR)
+    {
+    /*------------------------------------------------------
+    Message API Testing:
+    setup common data 
+    ------------------------------------------------------*/
+    memset( &tx_msg, 0, sizeof( tx_message ) );
+    tx_msg.destination = RPI_MODULE;
+    tx_msg.size       = 2 ;
 
-    /*----------------------------------------------------------
-    sleep if requested
-    ----------------------------------------------------------*/
-    if( sleep != 0 )
-        sleep_ms( sleep );
+    tx_msg.message[0] = 0xBB;
+    tx_msg.message[1] = 0xFF;
+
+    if( rx_msg.global_errors == MSG_SIZING )
+        tx_msg.message[1] = 0x05;
+        
+    if( rx_msg.global_errors == MSG_INVALID_HEADER )
+        tx_msg.message[1] = 0x06;
+
+    tx_queue.push( tx_msg );
+    }
+
+/*----------------------------------------------------------
+transmit tx queue until empty
+----------------------------------------------------------*/
+while( !tx_queue.is_empty() )
+    {
+    messageAPI.send_message( tx_queue.front() );
+    tx_queue.pop();
+    }
+
+/*----------------------------------------------------------
+sleep if requested
+----------------------------------------------------------*/
+if( sleep != 0 )
+    sleep_ms( sleep );
     
 } /* test_mode_runtime() */
 

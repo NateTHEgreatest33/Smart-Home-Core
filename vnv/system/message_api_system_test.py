@@ -34,7 +34,7 @@ test_case_group = [ ( "Test 1 byte message",  				 [0xFF],															unit_un
 
 #								("description",    		      	   gen CRC, [dest, src,  pad, ver/size, key, DATA... crc],                (Rx'd, source, data, valid) )
 distructive_test_case_group = [ ("Test CRC Error", 			       False,   [unit_under_test, 0x01, 0x00, 0x21, 0x00, 0xFF, 0xFF], 	      (True, unit_under_test, [0xBB, 0x01], True) ),
-								("Test Size (Big) Error", 	       False,   [unit_under_test, 0x01, 0x00, 0x2F, 0x00, 0xFF, 0xFF], 	      (True, unit_under_test, [0xBB, 0x05], True) ),
+								("Test Size (Big) Error", 	       False,   [unit_under_test, 0x01, 0x00, 0x2F, 0x00, 0xFF, 0xFF], 	      (True, unit_under_test, [0xBB, 0x06], True) ),
 								("Test Size (Small) Error",        True,    [unit_under_test, 0x01, 0x00, 0x20, 0x00            ], 	      (True, unit_under_test, [0xBB, 0x03], True) ),
 								("Test Key Error", 			       True,    [unit_under_test, 0x01, 0x00, 0x21, 0xFF, 0xFF      ], 	      (True, unit_under_test, [0xBB, 0x04], True) ) ]
 
@@ -165,6 +165,7 @@ class Test:
 			elif( actual_return == None ):
 				self.log.compare_equal( True, False, "Data was expected but was not sent" )
 			else:
+				#parse data
 				num_rx, data_rx = actual_return
 
 				#skip compare and add debug prints if value length is not as expected
@@ -175,11 +176,11 @@ class Test:
 
 				#compare message details
 				else:
-					for src, data, validity in zip(data_rx, expected_rtn_data):
-						self.log.compare_equal( data[0],     data[1],     "Verify return data (data) is as expected" )
-						self.log.compare_equal( src[0],      src[1],      "Verify return data (source) is as expected" )
-						self.log.compare_equal( validity[0], validity[1], "Verify return data (validity) is as expected" )
-					
+					actual, expected = zip(data_rx, expected_rtn_data)
+					self.log.compare_equal( expected=expected[0], actual=actual[0], case="Verify return data (source) is as expected" )
+					self.log.compare_equal( expected=expected[1], actual=actual[1], case="Verify return data (data) is as expected" )
+					self.log.compare_equal( expected=expected[2], actual=actual[2], case="Verify return data (validity) is as expected" )
+				
 
 
 #---------------------------------------------------------------------

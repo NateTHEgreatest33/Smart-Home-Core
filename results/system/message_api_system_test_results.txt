@@ -1,0 +1,70 @@
+file under test: message_api_system_test.py
+current test:    message_api_system_test_results.txt
+FUT sha:         ac27a41e4a72d381ffddf4e55f3da1bb158a97aa
+date:            Sat Nov 23 16:39:52 2024
+
+Requirements Tested: 
+SWRD001
+SWRD002
+
+Test Cases: 
+> Test 1 byte message
+Verify return data is as expected: (True, 2, [170, 17], True) == (True, 2, [170, 17], True)
+RESULT: True
+> Test 10 byte message
+Verify return data is as expected: (True, 2, [170, 34], True) == (True, 2, [170, 34], True)
+RESULT: True
+> Send 0 byte message
+Verify return data is as expected: (True, 2, [187, 3], True) == (True, 2, [187, 3], True)
+RESULT: True
+> send to unsupported module
+Verify return data is as expected: (False, 255, [], True) == (False, 255, [], True)
+RESULT: True
+> Test CRC Error
+Verify return data is as expected: (True, 2, [187, 1], True) == (True, 2, [187, 1], True)
+RESULT: True
+> Test Size (Big) Error
+Verify return data is as expected: (True, 2, [187, 6], True) == (True, 2, [187, 6], True)
+RESULT: True
+> Test Size (Small) Error
+Verify return data is as expected: (True, 2, [187, 3], True) == (True, 2, [187, 3], True)
+RESULT: True
+> Test Key Error
+Verify return data is as expected: (True, 2, [187, 4], True) == (True, 2, [187, 4], True)
+RESULT: True
+> Testing multi-message support
+> Test multi-message: setup
+Verify return data (source) is as expected: 2 == 2
+RESULT: True
+Verify return data (data) is as expected: [170, 68] == [170, 68]
+RESULT: True
+Verify return data (validity) is as expected: True == True
+RESULT: True
+> Test multi-message: msg 1
+Verify no data was returned (as expected): None == None
+RESULT: True
+> Test multi-message: msg 2
+Verify no data was returned (as expected): None == None
+RESULT: True
+> Test multi-message: msg 3
+Verify return data (source) is as expected: 2 == 2
+RESULT: True
+Verify return data (data) is as expected: [170, 1] == [170, 1]
+RESULT: True
+Verify return data (validity) is as expected: True == True
+RESULT: True
+Verify return data (source) is as expected: 2 == 2
+RESULT: True
+Verify return data (data) is as expected: [170, 2] == [170, 2]
+RESULT: True
+Verify return data (validity) is as expected: True == True
+RESULT: True
+Verify return data (source) is as expected: 2 == 2
+RESULT: True
+Verify return data (data) is as expected: [170, 3] == [170, 3]
+RESULT: True
+Verify return data (validity) is as expected: True == True
+RESULT: True
+
+
+Overall Result:  True

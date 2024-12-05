@@ -1,0 +1,36 @@
+file under test: console_api_system_test.py
+current test:    console_api_system_test_results.txt
+FUT sha:         1509067bb437b2d3e6fb07e2ff9d9ea84d357446
+date:            Wed Dec  4 20:04:21 2024
+
+Requirements Tested: 
+SWRD004
+
+Test Cases: 
+> Test supported commands
+> Test 'help' command is responded to correctly
+Verify command returns as expected: help\r\nLIST OF COMMANDS:\r\n - bootsel\r\n - clear log\r\n - testmode\r\n - clear\r\n - print log\r\n - help\r\n == help\r\nLIST OF COMMANDS:\r\n - bootsel\r\n - clear log\r\n - testmode\r\n - clear\r\n - print log\r\n - help\r\n
+RESULT: True
+> Test 'testmode' command is responded to correctly
+Verify command returns as expected: testmode\r\nTest Mode: enabled\r\n == testmode\r\nTest Mode: enabled\r\n
+RESULT: True
+> disable test mode
+> Test 'clear log' command is responded to correctly
+Verify command returns as expected: clear log\r\nlog cleared\r\n == clear log\r\nlog cleared\r\n
+RESULT: True
+> Test 'print log' command is responded to correctly
+Verify command returns as expected: print log\r\nASSERT LOG:\r\n/Users/natelenze/Developer/git/Smart-Home-Core/lib/console/console_commands.cpp:212 - assert log cleared\r\n == print log\r\nASSERT LOG:\r\n/Users/natelenze/Developer/git/Smart-Home-Core/lib/console/console_commands.cpp:212 - assert log cleared\r\n
+RESULT: True
+> Test 'clear' command is responded to correctly
+Verify command returns as expected: clear\r\n[clear screen] == clear\r\n[clear screen]
+RESULT: True
+> Test un-supported commands
+> Test console correctly responses to unsupported command
+Verify command returns as expected: unsupported\r\ncommand not found\r\n == unsupported\r\ncommand not found\r\n
+RESULT: True
+> Test console correctly responses to command too long
+Verify command returns as expected: 1234567890123456789012345678901\r\n2345 == 1234567890123456789012345678901\r\n2345
+RESULT: True
+
+
+Overall Result:  True

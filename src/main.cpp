@@ -24,12 +24,10 @@
 #include "button.hpp"
 #include "console.hpp"
 #include "messageAPI.hpp"
-#include "test_mode.hpp"
-
 #include "mailbox.hpp"
+
+#include "test_mode.hpp"
 #include "mailbox_map.hpp"
-
-
 
 #include <iostream>
 
@@ -49,9 +47,9 @@ const location current_location = PICO_MODULE;
 /*--------------------------------------------------------------------
                               VARIABLES
 --------------------------------------------------------------------*/
-core::console console( uart0 );                     /* console API  */
-core::loraInterface loRa( spi_default, console );   /* Lora API     */
-core::messageInterface messageAPI( loRa, console ); /* Message API  */
+core::console Console( uart0 );                     /* console API  */
+core::loraInterface loRa( spi_default, Console );   /* Lora API     */
+core::messageInterface messageAPI( loRa, Console ); /* Message API  */
 core::mailbox< (size_t)mbx_index::NUM_MAILBOX > mailbox( global_mailbox );
 
 /*--------------------------------------------------------------------
@@ -106,7 +104,7 @@ Handle GPIO configured
 switch( gpio )
     {
     default:
-        console.add_assert( "GPIO Handler called on unsupported pin" );
+        Console.add_assert( "GPIO Handler called on unsupported pin" );
         break;
     }
 }
@@ -156,7 +154,7 @@ If issue with subsystem initilization do not move forward
 ----------------------------------------------------------*/
 if ( wifi_err_var != PICO_OK || !sdio_err_var )
     {
-    console.add_assert( "System unable to initilize" );
+    Console.add_assert( "System unable to initilize" );
 
     while( true )
         {
@@ -164,7 +162,7 @@ if ( wifi_err_var != PICO_OK || !sdio_err_var )
         Allow user to retrive error messages if unable to
         initilize.
         --------------------------------------------------*/
-        console.console_runtime();  
+        Console.console_runtime();  
         }
     }
 
@@ -189,7 +187,7 @@ while( true )
 
     Test mode is primarly for system level functionality
     ------------------------------------------------------*/
-    test_mode( g_test_mode_enable, console ) ;
+    test_mode( g_test_mode_enable, Console ) ;
 
     if( g_test_mode_enable )
         continue;
@@ -213,7 +211,7 @@ while( true )
 
         if( !messageAPI.send_message(tx_msg) )
             {
-            console.add_assert("MessageAPI send message failed!");
+            Console.add_assert("MessageAPI send message failed!");
             }
         }
 

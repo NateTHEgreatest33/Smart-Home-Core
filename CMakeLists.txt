@@ -25,6 +25,7 @@ add_executable( SmartHomeCore
   src/test_mode.cpp
 
   src/mailbox_map.hpp
+  # src/mailbox_map_types.hpp
 )
 
 # Debugger Attached

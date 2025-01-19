@@ -16,6 +16,7 @@
 --------------------------------------------------------------------*/
 #include "background_task.hpp"
 #include "console.hpp"
+#include "mailbox.hpp"
 
 /*--------------------------------------------------------------------
                           GLOBAL NAMESPACES
@@ -41,6 +42,7 @@
                               EXTERNS
 --------------------------------------------------------------------*/
 extern core::console Console;
+extern core::mailbox< (size_t)mbx_index::NUM_MAILBOX > Mailbox;
 
 /*--------------------------------------------------------------------
                                 MACROS
@@ -67,6 +69,7 @@ void background_task
 /*----------------------------------------------------------
 Local Variables
 ----------------------------------------------------------*/
+static absolute_time_t s_current_100ms_timeout = delayed_by_ms( get_absolute_time(), 100 );
 
 /*----------------------------------------------------------
 Main Loop
@@ -79,8 +82,19 @@ while( true )
     Console.console_runtime();
 
     /*------------------------------------------------------
-    Run mailbox periodic
+    Run mailbox rx periodic
     ------------------------------------------------------*/
+    Mailbox.rx_runtime();
 
+    /*------------------------------------------------------
+    Run mailbox tx periodic every 100ms & update timeout
+    after a run
+    ------------------------------------------------------*/
+    if( s_current_100ms_timeout < get_absolute_time() )
+        {
+        Mailbox.tx_runtime();
+        s_current_100ms_timeout = delayed_by_ms( get_absolute_time(), 100 );
+        }
+        
     }
 }

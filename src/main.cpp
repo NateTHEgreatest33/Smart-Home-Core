@@ -28,6 +28,7 @@
 
 #include "test_mode.hpp"
 #include "mailbox_map.hpp"
+// #include "mailbox_map_types.hpp"
 
 #include <iostream>
 
@@ -50,7 +51,8 @@ const location current_location = PICO_MODULE;
 core::console Console( uart0 );                     /* console API  */
 core::loraInterface loRa( spi_default, Console );   /* Lora API     */
 core::messageInterface messageAPI( loRa, Console ); /* Message API  */
-core::mailbox< (size_t)mbx_index::NUM_MAILBOX > mailbox( global_mailbox );
+core::mailbox< (size_t)mbx_index::NUM_MAILBOX > Mailbox( global_mailbox );
+                                                    /* Mailbox API  */
 
 /*--------------------------------------------------------------------
                                GLOBALS

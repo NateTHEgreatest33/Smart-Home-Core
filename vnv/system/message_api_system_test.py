@@ -26,11 +26,12 @@ num_units 		= 0x03         # number of units in system
 #---------------------------------------------------------------------
 #                      TEST CASE VARIABLES
 #---------------------------------------------------------------------
-#					  test_description		  		 		 send_data													        dest             expected data
-test_case_group = [ ( "Test 1 byte message",  				 [0xFF],															unit_under_test, [0xAA, 0x11] 	),
-					( "Test 10 byte message", 				 [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A],      unit_under_test, [0xAA, 0x22 ]  ),
-					( "Send 0 byte message",  				 [], 																unit_under_test, [0xBB, 0x03] 	),
-					( "send to unsupported module", 		 [0xFF],															(num_units+1),   []			    ) ]
+#					  test_description		  		 		 send_data													    dest             expected data
+test_case_group = [ ( "Test Tx 1 byte message",  			 [0xFF],														unit_under_test, [0xAA, 0x11] 	                                                ),
+					( "Test Tx 10 byte message", 			 [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A],  unit_under_test, [0xAA, 0x22 ]                                                  ),
+					( "Test Rx 10 byte message", 		     [0xEE, 0xEE, 0xEE, 0xEE],									    unit_under_test, [0xAA, 0xEE, 0xEE, 0xEE, 0xEE, 0xEE, 0xEE, 0xEE, 0xEE, 0xEE ]  ),
+					( "Send 0 byte message",  				 [], 														    unit_under_test, [0xBB, 0x03] 	                                                ),
+					( "send to unsupported module", 		 [0xFF],														(num_units+1),   []			                                                    ) ]
 
 #								("description",    		      	   gen CRC, [dest, src,  pad, ver/size, key, DATA... crc],                (Rx'd, source, data, valid) )
 distructive_test_case_group = [ ("Test CRC Error", 			       False,   [unit_under_test, 0x01, 0x00, 0x21, 0x00, 0xFF, 0xFF], 	      (True, unit_under_test, [0xBB, 0x01], True) ),

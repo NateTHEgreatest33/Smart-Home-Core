@@ -28,14 +28,13 @@
 
 #include "test_mode.hpp"
 #include "mailbox_map.hpp"
-// #include "mailbox_map_types.hpp"
 
 #include <iostream>
 
 /*--------------------------------------------------------------------
                           LITERAL CONSTANTS
 --------------------------------------------------------------------*/
-
+#define TESTING (true)
 /*--------------------------------------------------------------------
                                 TYPES
 --------------------------------------------------------------------*/
@@ -169,6 +168,14 @@ if ( wifi_err_var != PICO_OK || !sdio_err_var )
     }
 
 /*----------------------------------------------------------
+Testing checks  
+----------------------------------------------------------*/
+// #ifdef TESTING
+//     bool stop = true;
+//     while( stop ) {}
+// #endif
+
+/*----------------------------------------------------------
 launch background_task on core 1
 ----------------------------------------------------------*/
 multicore_launch_core1( background_task );
@@ -195,27 +202,8 @@ while( true )
         continue;
 
 	/*------------------------------------------------------
-    Check for new messages
+    Application code goes here!
     ------------------------------------------------------*/
-    rx_msg = messageAPI.get_multi_message();
-    
-    /*------------------------------------------------------
-    Example TX message for each rx message
-    ------------------------------------------------------*/
-    for( i = 0; i < rx_msg.num_messages; i++ )
-        {
-        memset( &tx_msg, 0, sizeof( tx_message ) );
-        
-        tx_msg.destination = rx_msg.messages[i].source;
-        tx_msg.message[0]  = 0xFF;
-        tx_msg.message[1]  = 0xFF;
-        tx_msg.size        = 2;
-
-        if( !messageAPI.send_message(tx_msg) )
-            {
-            Console.add_assert("MessageAPI send message failed!");
-            }
-        }
 
 	} /* while(true) */
 

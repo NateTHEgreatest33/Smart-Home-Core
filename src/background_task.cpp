@@ -44,6 +44,8 @@
 extern core::console Console;
 extern core::mailbox< (size_t)mbx_index::NUM_MAILBOX > Mailbox;
 
+extern bool g_test_mode_enable;                  //I want to create a thread safe object class, something that just wraps access in a mutex lock
+
 /*--------------------------------------------------------------------
                                 MACROS
 --------------------------------------------------------------------*/
@@ -80,6 +82,13 @@ while( true )
     Run console periodic
     ------------------------------------------------------*/
     Console.console_runtime();
+
+    /*------------------------------------------------------
+    If testmode is enableed, do not run anything other
+    than Console
+    ------------------------------------------------------*/
+    if( g_test_mode_enable )
+        continue;
 
     /*------------------------------------------------------
     Run mailbox rx periodic

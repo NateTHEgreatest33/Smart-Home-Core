@@ -43,7 +43,10 @@ std::array<mailbox_type, (size_t)mbx_index::NUM_MAILBOX > global_mailbox
 {{
 /* data, type,                     updt_rt,                  flag,               direction,     destination, source       */
 { 0,     data_type::UINT_32_TYPE,  update_rate::RT_ASYNC,    flag_type::NO_FLAG, direction::RX, RPI_MODULE,  PICO_MODULE },  /* EXAMPLE_INT_MSG */
-{ 0.0f,  data_type::FLOAT_32_TYPE, update_rate::RT_5_ROUND,  flag_type::NO_FLAG, direction::TX, PICO_MODULE, RPI_MODULE  },  /* EXAMPLE_FLT_MSG */
+{ 0.0f,  data_type::FLOAT_32_TYPE, update_rate::RT_1_ROUND,  flag_type::NO_FLAG, direction::TX, PICO_MODULE, RPI_MODULE  },  /* EXAMPLE_FLT_MSG */
+{ 0,     data_type::UINT_32_TYPE,  update_rate::RT_5_ROUND,  flag_type::NO_FLAG, direction::RX, PICO_MODULE, RPI_MODULE  },  /* EXAMPLE_RX_MSG  */
+{ 0.0f,  data_type::FLOAT_32_TYPE, update_rate::RT_5_ROUND,  flag_type::NO_FLAG, direction::RX, PICO_MODULE, RPI_MODULE  }   /* EXAMPLE_FLT_RX_MSG  */
+
 }};
 /*--------------------------------------------------------------------
                                 MACROS

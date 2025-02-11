@@ -40,21 +40,27 @@ def LoraInit():
     print("Lora Initilized Succesfully")
 
 def CheckMessage():
+    #read from status register 
     msg = [0x00 | 0x12, 0x00]
     result = spi.xfer2(msg)
-#    print("got here 1")
-    if(result[1] & 0x40 == 0x40 and result[1] & 0x10 == 0x10): 
-        #0x40 = Rx recived!
-#        print("check message found message")
-        #verify legitness
-        msg = [0x00 | 0x13, 0x00]
-        result = spi.xfer2(msg)
-        numBytesReceived = result[1]
-        if numBytesReceived > 10:
-            msg = [0x80 | 0x12, 0xFF]
+
+    #Rx done flag
+    if( result[1] & 0x40 == 0x40 ):
+        #valid header flag
+        if( result[1] & 0x10 != 0x10): 
+            print("Mg Rx'ed with invalid header (0x10) data {}".format( result[1] ) )
+        else:
+            #read msg size
+            msg = [0x00 | 0x13, 0x00]
             result = spi.xfer2(msg)
-            return False
-        return True
+            numBytesReceived = result[1]
+
+            
+            if numBytesReceived > 10:
+                msg = [0x80 | 0x12, 0xFF]
+                result = spi.xfer2(msg)
+                return False
+            return True
     elif(result[1] & 0x80 == 0x80 or result[1] & 0x20 == 0x20):
         #0x80 = RX timeout
         #0x20 = CRC error

@@ -33,6 +33,7 @@
 /*--------------------------------------------------------------------
                            MEMORY CONSTANTS
 --------------------------------------------------------------------*/
+#define HUNDRED_SEC_AS_MS   (1000*100) /* 100 sec represented as ms */
 
 /*--------------------------------------------------------------------
                               VARIABLES
@@ -71,7 +72,9 @@ void background_task
 /*----------------------------------------------------------
 Local Variables
 ----------------------------------------------------------*/
-static absolute_time_t s_current_100ms_timeout = delayed_by_ms( get_absolute_time(), 100 );
+static absolute_time_t s_current_100ms_timeout   = delayed_by_ms( get_absolute_time(), 100 );
+static absolute_time_t s_current_100sec_timeout = delayed_by_ms( get_absolute_time(), HUNDRED_SEC_AS_MS );
+
 
 /*----------------------------------------------------------
 Main Loop
@@ -104,6 +107,16 @@ while( true )
         Mailbox.tx_runtime();
         s_current_100ms_timeout = delayed_by_ms( get_absolute_time(), 100 );
         }
+
+    /*------------------------------------------------------
+    Run mailbox watchdog every 100s
+    ------------------------------------------------------*/
+    if( s_current_100sec_timeout < get_absolute_time() )
+        {
+        Mailbox.watchdog();
+        s_current_100sec_timeout = delayed_by_ms( get_absolute_time(), HUNDRED_SEC_AS_MS );
+        }
+        
         
     }
 }

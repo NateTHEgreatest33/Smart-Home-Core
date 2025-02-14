@@ -16,21 +16,25 @@ from lib.results import results
 from lib.mailbox import Mailbox, modules, special_response, mailbox_idx
 from lib.pi_pico import pi_pico
 
+from enum import IntEnum
+import time
 
 #---------------------------------------------------------------------
 #                            Defintions
 #---------------------------------------------------------------------
 class global_mbx(IntEnum):
-    Float_Tx = 0
-    Float_Rx = 1
-    Int_Tx   = 2
-    Int_Rx   = 3
-    Bool_Tx  = 4
-    Bool_Rx  = 5
-    Async_Tx = 6
-    Async_Rx = 7
-    Rnd_5_Tx = 6
-    Rnd_5_Rx = 7
+    Float_Tx    = 0
+    Float_Rx    = 1
+    Int_Tx      = 2
+    Int_Rx      = 3
+    Bool_Tx     = 4
+    Bool_Rx     = 5
+    Async_Tx    = 6
+    Async_Rx    = 7
+    Rnd_5_Tx    = 6
+    Rnd_5_Rx    = 7
+    Test_Tx     = 8
+    Test_Rx     = 9
 
 #---------------------------------------------------------------------
 #                      TEST CASE VARIABLES
@@ -47,15 +51,32 @@ global_mailbox = [
 [ 0,     'ASYNC', False, 'RX', modules.PICO_MODULE, modules.RPI_MODULE  ], # Async - int RX message
 [ 0,     '5',     False, 'TX', modules.RPI_MODULE,  modules.PICO_MODULE ], # RND 5 - int TX message
 [ 0,     '5',     False, 'RX', modules.PICO_MODULE, modules.RPI_MODULE  ], # RND 5 - int RX message
+[ 0,     'ASYNC', False, 'RX', modules.PICO_MODULE, modules.RPI_MODULE  ], # Test Results RX
+[ 0,     'ASYNC', False, 'TX', modules.RPI_MODULE,  modules.PICO_MODULE ], # Test Results TX
  ]
 
+test_cases_tx = [
+# send index,          Tx Data, Rx Data, round_expected, test string 
+[ global_mbx.Float_Tx, 5.5,     5.5,     1,              "Test Sending float data"     ],
+[ global_mbx.Int_Tx,   5,       5,       1,              "Test Receiving int data"     ],
+[ global_mbx.Bool_Tx,  True,    True,    1,              "Test Sending boolean data"   ],
+[ global_mbx.Async_Tx, 10,      10,      1,              "Test Sending async data"     ],
+[ global_mbx.Rnd_5_Tx, 15,      15,      5,              "Test Sending rnd 5 data"     ],
+]
 
+test_cases_rx = [
+# send index,          Tx Data, Rx Data, round_expected, test string 
+[ global_mbx.Float_Rx, 20,      5.5,     1,              "Test Receiving float data"   ],
+[ global_mbx.Int_Rx,   21,      5,       1,              "Test Receiving int data"     ],
+[ global_mbx.Bool_Rx,  22,      True,    1,              "Test Receiving boolean data" ],
+[ global_mbx.Async_Rx, 23,      10,      5,              "Test Receiving async data"   ],
+[ global_mbx.Rnd_5_Rx, 24,      5,       1,              "Test Receiving rnd 5 data"   ]
+
+]
 #---------------------------------------------------------------------
 #                             CLASSES
 #---------------------------------------------------------------------
-test_cases = [
-#send index, set data, expect data, round_expected
-]
+
 # ==========================================================
 # Test
 # ==========================================================
@@ -83,20 +104,67 @@ class Test:
     # ==================================
 	def run_cases(self):
 		#----------------------------------------------------------------------
-		# Test Normal Cases
+		# Test TX Cases
 		#----------------------------------------------------------------------
-		self.log.test_step( "Test supported commands")
-		for [ x ] in [0,1]:
+		self.log.test_step( "Test TX test cases")
+		for mbx_index, tx_data, rx_data, within_round, test_case  in test_cases_tx:
 			#------------------------------------------------------------------
 			# Setup Test Case
 			#------------------------------------------------------------------
-			self.log.test_step( "Test \'{}\' command is responded to correctly".format( x ) )
+			self.log.test_step( "{} is properly handled".format(test_case) )
+			self.mailbox.set_data( mbx_index, tx_data )
+			#------------------------------------------------------------------
+			# Run Mailbox for rounds required for Rx/Tx
+			#------------------------------------------------------------------
+			self.__run_mailbox_for( within_round )
 
-			self.log.compare_equal( 1, 0, "Verify command returns as expected" )
+			#------------------------------------------------------------------
+			# Setup Test Case
+			#------------------------------------------------------------------
+			actual_data = self.mailbox.mailbox_map[ global_mbx.Test_Rx ][mailbox_idx.DATA]
+			self.log.compare_equal( expected=rx_data, actual=actual_data case="Verify data return matches expected" )
 
 
+		#----------------------------------------------------------------------
+		# Test RX Cases
+		#----------------------------------------------------------------------
+		self.log.test_step( "Test RX test cases")
+		for mbx_index, tx_data, rx_data, within_round, test_case  in test_cases_tx:
+			#------------------------------------------------------------------
+			# Setup Test Case & set Tx Data
+			#------------------------------------------------------------------
+			self.log.test_step( "{} is properly handled".format(test_case) )
+			self.mailbox.set_data( global_mbx.Text_Tx, tx_data )
 
+			#------------------------------------------------------------------
+			# Run Mailbox for rounds required for Rx/Tx
+			#------------------------------------------------------------------
+			self.__run_mailbox_for( within_round )
 
+			#------------------------------------------------------------------
+			# Verify Rx Data is as expected
+			#------------------------------------------------------------------
+			actual_data = self.mailbox.mailbox_map[ mbx_index ][mailbox_idx.DATA]
+			self.log.compare_equal( expected=rx_data, actual=actual_data case="Verify data return matches expected" )
+
+		#----------------------------------------------------------------------
+		# destructive testing?
+		#----------------------------------------------------------------------
+		
+		#should we test Acks?
+		#round updates?
+
+    # ==================================
+    # __run_mailbox_for()
+    # ==================================
+	def __run_mailbox_for( self, rounds ):
+		current_round = self.mailbox.round_counter
+		#add extra +1 so that RX can transmit a response
+		end_round = ( current_round + 1 + rounds ) % 100
+		while( current_round != end_round ):
+			time.sleep(1)
+			self.mailbox.runtime()
+			current_round = self.mailbox.round_counter
 
 #---------------------------------------------------------------------
 #                      MAIN FUNCTION
@@ -104,7 +172,7 @@ class Test:
 def main():
 	log = results( __file__ )
 	Pico = pi_pico( test_mode=False )
-	mailbox = Mailbox( msg_conn = Pico.msg_conn, glb_mailbox = [] )
+	mailbox = Mailbox( msg_conn = Pico.msg_conn, glb_mailbox = global_mailbox )
 	test = Test( log, Pico, mailbox )
 
 	test.run()

@@ -8,13 +8,21 @@
 #
 #   Copyright 2025 by Nate Lenze
 #*********************************************************************
+#---------------------------------------------------------------------
+#                          DEBUG CONTROLS
+#---------------------------------------------------------------------
+sim_test = False
 
 #---------------------------------------------------------------------
 #                              IMPORTS
 #---------------------------------------------------------------------
 from lib.results import results
 from lib.mailbox import Mailbox, modules, special_response, mailbox_idx
-from lib.pi_pico import pi_pico
+
+if sim_test:
+	from lib.util.msgAPI_sim import messageAPI
+else:
+	from lib.pi_pico import pi_pico
 
 from enum import IntEnum
 import time
@@ -31,10 +39,10 @@ class global_mbx(IntEnum):
     Bool_Rx     = 5
     Async_Tx    = 6
     Async_Rx    = 7
-    Rnd_5_Tx    = 6
-    Rnd_5_Rx    = 7
-    Test_Tx     = 8
-    Test_Rx     = 9
+    Rnd_5_Tx    = 8
+    Rnd_5_Rx    = 9
+    Test_Tx     = 10
+    Test_Rx     = 11
 
 #---------------------------------------------------------------------
 #                      TEST CASE VARIABLES
@@ -57,11 +65,11 @@ global_mailbox = [
 
 test_cases_tx = [
 # send index,          Tx Data, Rx Data, round_expected, test string 
-[ global_mbx.Float_Tx, 5.5,     5.5,     1,              "Test Sending float data"     ],
-[ global_mbx.Int_Tx,   5,       5,       1,              "Test Receiving int data"     ],
-[ global_mbx.Bool_Tx,  True,    True,    1,              "Test Sending boolean data"   ],
-[ global_mbx.Async_Tx, 10,      10,      1,              "Test Sending async data"     ],
-[ global_mbx.Rnd_5_Tx, 15,      15,      5,              "Test Sending rnd 5 data"     ],
+[ global_mbx.Float_Tx, 5.5,     10,      1,              "Test Sending float data"     ],
+[ global_mbx.Int_Tx,   5,       11,      1,              "Test Receiving int data"     ],
+[ global_mbx.Bool_Tx,  True,    12,      1,              "Test Sending boolean data"   ],
+[ global_mbx.Async_Tx, 10,      13,      1,              "Test Sending async data"     ],
+[ global_mbx.Rnd_5_Tx, 15,      14,      5,              "Test Sending rnd 5 data"     ],
 ]
 
 test_cases_rx = [
@@ -90,7 +98,7 @@ class Test:
 		self.mailbox = mailbox
 
 		#load custom mailbox sw onto board
-		self.pico.load_software("elfPath")
+		# self.pico.load_software("elfPath")
 
     # ==================================
     # run()
@@ -112,7 +120,7 @@ class Test:
 			# Setup Test Case
 			#------------------------------------------------------------------
 			self.log.test_step( "{} is properly handled".format(test_case) )
-			self.mailbox.set_data( mbx_index, tx_data )
+			self.mailbox.set_data( idx=mbx_index, data=tx_data )
 			#------------------------------------------------------------------
 			# Run Mailbox for rounds required for Rx/Tx
 			#------------------------------------------------------------------
@@ -122,19 +130,23 @@ class Test:
 			# Setup Test Case
 			#------------------------------------------------------------------
 			actual_data = self.mailbox.mailbox_map[ global_mbx.Test_Rx ][mailbox_idx.DATA]
-			self.log.compare_equal( expected=rx_data, actual=actual_data case="Verify data return matches expected" )
-
+			self.log.compare_equal( expected=rx_data, actual=actual_data, case="Verify data return matches expected" )
+			
+			#------------------------------------------------------------------
+			# Reset Mailbox data
+			#------------------------------------------------------------------
+			self.mailbox.set_data( idx=mbx_index, data=0 )
 
 		#----------------------------------------------------------------------
 		# Test RX Cases
 		#----------------------------------------------------------------------
 		self.log.test_step( "Test RX test cases")
-		for mbx_index, tx_data, rx_data, within_round, test_case  in test_cases_tx:
+		for mbx_index, tx_data, rx_data, within_round, test_case  in test_cases_rx:
 			#------------------------------------------------------------------
 			# Setup Test Case & set Tx Data
 			#------------------------------------------------------------------
 			self.log.test_step( "{} is properly handled".format(test_case) )
-			self.mailbox.set_data( global_mbx.Text_Tx, tx_data )
+			self.mailbox.set_data( idx=global_mbx.Test_Tx, data=tx_data )
 
 			#------------------------------------------------------------------
 			# Run Mailbox for rounds required for Rx/Tx
@@ -145,7 +157,12 @@ class Test:
 			# Verify Rx Data is as expected
 			#------------------------------------------------------------------
 			actual_data = self.mailbox.mailbox_map[ mbx_index ][mailbox_idx.DATA]
-			self.log.compare_equal( expected=rx_data, actual=actual_data case="Verify data return matches expected" )
+			self.log.compare_equal( expected=rx_data, actual=actual_data, case="Verify data return matches expected" )
+
+			#------------------------------------------------------------------
+			# Reset Mailbox data
+			#------------------------------------------------------------------
+			self.mailbox.set_data( idx=global_mbx.Test_Tx, data=0x00 )
 
 		#----------------------------------------------------------------------
 		# destructive testing?
@@ -158,22 +175,40 @@ class Test:
     # __run_mailbox_for()
     # ==================================
 	def __run_mailbox_for( self, rounds ):
+		watchdog = 0
 		current_round = self.mailbox.round_counter
 		#add extra +1 so that RX can transmit a response
 		end_round = ( current_round + 1 + rounds ) % 100
 		while( current_round != end_round ):
+			watchdog = watchdog + 1
 			time.sleep(1)
 			self.mailbox.runtime()
 			current_round = self.mailbox.round_counter
+
+			if( watchdog > 10 ):
+				print(" no rounds have happened in the last 10 seconds, something seems to be broken. Forcing TX round" )
+				self.mailbox.current_round = modules.RPI_MODULE
+				return
 
 #---------------------------------------------------------------------
 #                      MAIN FUNCTION
 #---------------------------------------------------------------------
 def main():
-	log = results( __file__ )
-	Pico = pi_pico( test_mode=False )
-	mailbox = Mailbox( msg_conn = Pico.msg_conn, glb_mailbox = global_mailbox )
-	test = Test( log, Pico, mailbox )
+
+	if sim_test:
+		log = results( __file__ )
+		msg_conn = messageAPI(  bus = 0, 
+								chip_select = 0, 
+								currentModule = 0x00, 
+								listOfModules=[0x00,0x01,0x02] )
+		mailbox = Mailbox( msg_conn = msg_conn, gbl_mailbox = global_mailbox )
+		test = Test( log, [], mailbox )
+	else:
+		log = results( __file__ )
+		Pico = pi_pico( test_mode=False )
+		mailbox = Mailbox( msg_conn = Pico.msg_conn, glb_mailbox = global_mailbox )
+		test = Test( log, Pico, mailbox )
+
 
 	test.run()
 #---------------------------------------------------------------------

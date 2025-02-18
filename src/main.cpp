@@ -28,13 +28,14 @@
 
 #include "test_mode.hpp"
 #include "mailbox_map.hpp"
+#include "test/mailbox_test.hpp"
 
 #include <iostream>
 
 /*--------------------------------------------------------------------
                           LITERAL CONSTANTS
 --------------------------------------------------------------------*/
-#define TESTING (true)
+
 /*--------------------------------------------------------------------
                                 TYPES
 --------------------------------------------------------------------*/
@@ -132,6 +133,7 @@ tx_message       tx_msg;    /* transmit message structure */
 bool             sdio_err_var; /* stdio init errors       */
 pico_error_codes wifi_err_var; /* wifi init errors        */
 uint8_t          i;            /* index                   */
+static bool      called_once;  /* TESTING asssert flag    */
 
 /*----------------------------------------------------------
 Initialize local variables
@@ -141,6 +143,8 @@ memset( &tx_msg, 0, sizeof( tx_message ) );
 
 sdio_err_var = false;
 wifi_err_var = PICO_ERROR_GENERIC;
+
+called_once = false;
 
 /*----------------------------------------------------------
 Initialize all subsystems   
@@ -168,14 +172,6 @@ if ( wifi_err_var != PICO_OK || !sdio_err_var )
     }
 
 /*----------------------------------------------------------
-Testing checks  
-----------------------------------------------------------*/
-// #ifdef TESTING
-//     bool stop = true;
-//     while( stop ) {}
-// #endif
-
-/*----------------------------------------------------------
 launch background_task on core 1
 ----------------------------------------------------------*/
 multicore_launch_core1( background_task );
@@ -200,6 +196,24 @@ while( true )
 
     if( g_test_mode_enable )
         continue;
+
+    /*----------------------------------------------------------
+    Mailbox testing
+    ----------------------------------------------------------*/
+    #ifdef TESTING
+        /*------------------------------------------------------
+        Assert once and do not spam log
+        ------------------------------------------------------*/
+        if( !called_once )
+            {
+            Console.add_assert( "TESTING defined as true: texting global mailbox enabled");
+            called_once = true;
+            }
+        /*------------------------------------------------------
+        Call runtime
+        ------------------------------------------------------*/
+        mailbox_testing::run();
+    #endif
 
 	/*------------------------------------------------------
     Application code goes here!

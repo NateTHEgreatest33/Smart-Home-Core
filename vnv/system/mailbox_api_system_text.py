@@ -186,7 +186,7 @@ class Test:
 			current_round = self.mailbox.round_counter
 
 			if( watchdog > 10 ):
-				print(" no rounds have happened in the last 10 seconds, something seems to be broken. Forcing TX round" )
+				print(" --> no rounds have happened in the last 10 seconds, something seems to be broken. Forcing TX round" )
 				self.mailbox.current_round = modules.RPI_MODULE
 				return
 
@@ -200,13 +200,13 @@ def main():
 		msg_conn = messageAPI(  bus = 0, 
 								chip_select = 0, 
 								currentModule = 0x00, 
-								listOfModules=[0x00,0x01,0x02] )
+								listOfModules=[0x00,0x01] )
 		mailbox = Mailbox( msg_conn = msg_conn, gbl_mailbox = global_mailbox )
 		test = Test( log, [], mailbox )
 	else:
 		log = results( __file__ )
 		Pico = pi_pico( test_mode=False )
-		mailbox = Mailbox( msg_conn = Pico.msg_conn, glb_mailbox = global_mailbox )
+		mailbox = Mailbox( msg_conn = Pico.msg_conn, gbl_mailbox = global_mailbox )
 		test = Test( log, Pico, mailbox )
 
 

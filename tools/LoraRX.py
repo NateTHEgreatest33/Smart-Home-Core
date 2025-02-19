@@ -56,7 +56,9 @@ def CheckMessage():
             numBytesReceived = result[1]
 
             
-            if numBytesReceived > 10:
+            if numBytesReceived > 16:
+                print("Mg Rx'ed with >16 bytes {}".format( result[1] ) )
+
                 msg = [0x80 | 0x12, 0xFF]
                 result = spi.xfer2(msg)
                 return False

@@ -120,6 +120,8 @@ class Test:
 			# Setup Test Case
 			#------------------------------------------------------------------
 			self.log.test_step( "{} is properly handled".format(test_case) )
+			self.log.test_step( "- setting index {} to {}, expecting {} on index {}".format(mbx_index, tx_data, rx_data, global_mbx.Test_Rx) )
+
 			self.mailbox.set_data( idx=mbx_index, data=tx_data )
 			#------------------------------------------------------------------
 			# Run Mailbox for rounds required for Rx/Tx
@@ -146,6 +148,7 @@ class Test:
 			# Setup Test Case & set Tx Data
 			#------------------------------------------------------------------
 			self.log.test_step( "{} is properly handled".format(test_case) )
+			self.log.test_step( "- setting index {} to {}, expecting {} on index {}".format(global_mbx.Test_Tx, tx_data, rx_data, mbx_index) )
 			self.mailbox.set_data( idx=global_mbx.Test_Tx, data=tx_data )
 
 			#------------------------------------------------------------------

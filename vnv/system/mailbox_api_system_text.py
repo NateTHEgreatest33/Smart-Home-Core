@@ -12,15 +12,17 @@
 #                          DEBUG CONTROLS
 #---------------------------------------------------------------------
 sim_test = False
-
+PC_test  = True
 #---------------------------------------------------------------------
 #                              IMPORTS
 #---------------------------------------------------------------------
-from lib.results import results
+from lib.results import results, consoleColor
 from lib.mailbox import Mailbox, modules, special_response, mailbox_idx
 
 if sim_test:
 	from lib.util.msgAPI_sim import messageAPI
+elif PC_test:
+	from lib.msgAPI import messageAPI
 else:
 	from lib.pi_pico import pi_pico
 
@@ -198,7 +200,7 @@ class Test:
 #---------------------------------------------------------------------
 def main():
 
-	if sim_test:
+	if sim_test or PC_test:
 		log = results( __file__ )
 		msg_conn = messageAPI(  bus = 0, 
 								chip_select = 0, 

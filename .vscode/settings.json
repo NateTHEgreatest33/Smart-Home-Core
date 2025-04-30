@@ -109,7 +109,8 @@
         "__hash_table": "cpp",
         "__node_handle": "cpp",
         "queue.hpp": "c",
-        "*.tpp": "cpp"
+        "*.tpp": "cpp",
+        "regex": "cpp"
     },
-    "cortex-debug.variableUseNaturalFormat": true
+    "cortex-debug.variableUseNaturalFormat": false
 }

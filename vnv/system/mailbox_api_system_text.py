@@ -68,7 +68,7 @@ global_mailbox = [
 test_cases_tx = [
 # send index,          Tx Data, Rx Data, round_expected, test string 
 [ global_mbx.Float_Tx, 5.5,     10,      1,              "Test Sending float data"     ],
-[ global_mbx.Int_Tx,   5,       11,      1,              "Test Receiving int data"     ],
+[ global_mbx.Int_Tx,   5,       11,      1,              "Test Sending int data"       ],
 [ global_mbx.Bool_Tx,  True,    12,      1,              "Test Sending boolean data"   ],
 [ global_mbx.Async_Tx, 10,      13,      1,              "Test Sending async data"     ],
 [ global_mbx.Rnd_5_Tx, 15,      14,      5,              "Test Sending rnd 5 data"     ],
@@ -140,6 +140,7 @@ class Test:
 			# Reset Mailbox data
 			#------------------------------------------------------------------
 			self.mailbox.set_data( idx=mbx_index, data=0 )
+			data = input("Type anything to continue:\n")
 
 		#----------------------------------------------------------------------
 		# Test RX Cases
@@ -168,7 +169,7 @@ class Test:
 			# Reset Mailbox data
 			#------------------------------------------------------------------
 			self.mailbox.set_data( idx=global_mbx.Test_Tx, data=0x00 )
-
+			data = input("Type anything to continue:\n")
 		#----------------------------------------------------------------------
 		# destructive testing?
 		#----------------------------------------------------------------------

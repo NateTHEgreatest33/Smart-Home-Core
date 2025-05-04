@@ -61,8 +61,10 @@ global_mailbox = [
 [ 0,     'ASYNC', False, 'RX', modules.PICO_MODULE, modules.RPI_MODULE  ], # Async - int RX message
 [ 0,     '5',     False, 'TX', modules.RPI_MODULE,  modules.PICO_MODULE ], # RND 5 - int TX message
 [ 0,     '5',     False, 'RX', modules.PICO_MODULE, modules.RPI_MODULE  ], # RND 5 - int RX message
-[ 0,     'ASYNC', False, 'RX', modules.PICO_MODULE, modules.RPI_MODULE  ], # Test Results RX
-[ 0,     'ASYNC', False, 'TX', modules.RPI_MODULE,  modules.PICO_MODULE ], # Test Results TX
+# [ 0,     'ASYNC', False, 'RX', modules.PICO_MODULE, modules.RPI_MODULE  ], # Test Results RX
+# [ 0,     'ASYNC', False, 'TX', modules.RPI_MODULE,  modules.PICO_MODULE ], # Test Results TX
+[ 0,     'ASYNC', False, 'RX', modules.RPI_MODULE, modules.PICO_MODULE  ], # Test Commands TX
+[ 0,     'ASYNC', False, 'RX', modules.PICO_MODULE,  modules.RPI_MODULE ], # Test Results RX
  ]
 
 test_cases_tx = [

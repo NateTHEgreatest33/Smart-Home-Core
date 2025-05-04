@@ -206,7 +206,7 @@ while( true )
         ------------------------------------------------------*/
         if( !called_once )
             {
-            Console.add_assert( "TESTING defined as true: texting global mailbox enabled");
+            Console.add_assert( "TESTING defined as true: testing global mailbox enabled");
             called_once = true;
             }
         /*------------------------------------------------------

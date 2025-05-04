@@ -109,6 +109,21 @@ class Test:
 		self.log.test_requirement( "x" )
 		self.run_cases()
 
+	# ==================================
+    # __set_zero()
+    # ==================================
+	def __set_zero(self, data):
+		#return data type as 0, 0.0, or False, but match input data type
+		if type(data) == type(int()):
+			return int(0)
+		elif type(data) == type(float()):
+			return float(0)
+		elif type(data) == type(bool()):
+			return bool(False)
+		else:
+			raise( "unsupported data type" )
+
+
     # ==================================
     # run_cases()
     # ==================================
@@ -139,8 +154,9 @@ class Test:
 			#------------------------------------------------------------------
 			# Reset Mailbox data
 			#------------------------------------------------------------------
-			self.mailbox.set_data( idx=mbx_index, data=0 )
-			data = input("Type anything to continue:\n")
+			# tx_data = tx_data * 0 #preserve data type
+			self.mailbox.set_data( idx=mbx_index, data=self.__set_zero(tx_data) )
+			# data = input("Type anything to continue:\n")
 
 		#----------------------------------------------------------------------
 		# Test RX Cases
@@ -168,8 +184,9 @@ class Test:
 			#------------------------------------------------------------------
 			# Reset Mailbox data
 			#------------------------------------------------------------------
-			self.mailbox.set_data( idx=global_mbx.Test_Tx, data=0x00 )
-			data = input("Type anything to continue:\n")
+			# rx_data = rx_data * 0 #do this to preserve data type
+			self.mailbox.set_data( idx=global_mbx.Test_Tx, data=self.__set_zero(rx_data) )
+			# data = input("Type anything to continue:\n")
 		#----------------------------------------------------------------------
 		# destructive testing?
 		#----------------------------------------------------------------------

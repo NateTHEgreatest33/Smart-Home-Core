@@ -82,7 +82,7 @@ test_cases_rx = [
 [ global_mbx.Int_Rx,   21,      5,       1,              "Test Receiving int data"     ],
 [ global_mbx.Bool_Rx,  22,      True,    1,              "Test Receiving boolean data" ],
 [ global_mbx.Async_Rx, 23,      10,      1,              "Test Receiving async data"   ],
-[ global_mbx.Rnd_5_Rx, 24,      5,       5,              "Test Receiving rnd 5 data"   ]
+[ global_mbx.Rnd_5_Rx, 24,      15,      5,              "Test Receiving rnd 5 data"   ]
 
 ]
 #---------------------------------------------------------------------
@@ -130,33 +130,33 @@ class Test:
     # run_cases()
     # ==================================
 	def run_cases(self):
-		#----------------------------------------------------------------------
+		# ----------------------------------------------------------------------
 		# Test TX Cases
-		#----------------------------------------------------------------------
-		# self.log.test_step( "Test TX test cases")
-		# for mbx_index, tx_data, rx_data, within_round, test_case  in test_cases_tx:
-		# 	#------------------------------------------------------------------
-		# 	# Setup Test Case
-		# 	#------------------------------------------------------------------
-		# 	self.log.test_step( "{} is properly handled".format(test_case) )
-		# 	self.log.test_step( "- setting index {} to {}, expecting {} on index {}".format(mbx_index, tx_data, rx_data, global_mbx.Test_Rx) )
+		# ----------------------------------------------------------------------
+		self.log.test_step( "Test TX test cases")
+		for mbx_index, tx_data, rx_data, within_round, test_case  in test_cases_tx:
+			#------------------------------------------------------------------
+			# Setup Test Case
+			#------------------------------------------------------------------
+			self.log.test_step( "{} is properly handled".format(test_case) )
+			self.log.test_step( "- setting index {} to {}, expecting {} on index {}".format(mbx_index, tx_data, rx_data, global_mbx.Test_Rx) )
 
-		# 	self.mailbox.set_data( idx=mbx_index, data=tx_data )
-		# 	#------------------------------------------------------------------
-		# 	# Run Mailbox for rounds required for Rx/Tx
-		# 	#------------------------------------------------------------------
-		# 	self.__run_mailbox_for( within_round )
+			self.mailbox.set_data( idx=mbx_index, data=tx_data )
+			#------------------------------------------------------------------
+			# Run Mailbox for rounds required for Rx/Tx
+			#------------------------------------------------------------------
+			self.__run_mailbox_for( within_round )
 
-		# 	#------------------------------------------------------------------
-		# 	# Setup Test Case
-		# 	#------------------------------------------------------------------
-		# 	actual_data = self.mailbox.mailbox_map[ global_mbx.Test_Rx ][mailbox_idx.DATA]
-		# 	self.log.compare_equal( expected=rx_data, actual=actual_data, case="Verify data return matches expected" )
+			#------------------------------------------------------------------
+			# Setup Test Case
+			#------------------------------------------------------------------
+			actual_data = self.mailbox.mailbox_map[ global_mbx.Test_Rx ][mailbox_idx.DATA]
+			self.log.compare_equal( expected=rx_data, actual=actual_data, case="Verify data return matches expected" )
 			
-		# 	#------------------------------------------------------------------
-		# 	# Reset Mailbox data
-		# 	#------------------------------------------------------------------
-		# 	self.mailbox.set_data( idx=mbx_index, data=self.__set_zero(tx_data) )
+			#------------------------------------------------------------------
+			# Reset Mailbox data
+			#------------------------------------------------------------------
+			self.mailbox.set_data( idx=mbx_index, data=self.__set_zero(tx_data) )
 
 		#----------------------------------------------------------------------
 		# Test RX Cases
@@ -184,9 +184,8 @@ class Test:
 			#------------------------------------------------------------------
 			# Reset Mailbox data
 			#------------------------------------------------------------------
-			# rx_data = rx_data * 0 #do this to preserve data type
 			self.mailbox.set_data( idx=global_mbx.Test_Tx, data=self.__set_zero(tx_data) )
-			# data = input("Type anything to continue:\n")
+			
 		#----------------------------------------------------------------------
 		# destructive testing?
 		#----------------------------------------------------------------------
@@ -202,9 +201,11 @@ class Test:
 		#add extra +1 so that RX can transmit a response
 		end_round = ( current_round + 1 + rounds ) % 100
 		while( current_round != end_round ):
-			watchdog = watchdog + 1
 			time.sleep(1)
 			self.mailbox.runtime()
+
+			if( current_round == self.mailbox.round_counter ):
+				watchdog = watchdog + 1
 			current_round = self.mailbox.round_counter
 
 			if( watchdog > 10 ):

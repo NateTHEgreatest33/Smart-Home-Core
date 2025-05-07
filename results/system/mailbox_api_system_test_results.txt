@@ -19,7 +19,7 @@ RESULT: True
 > Test Sending boolean data is properly handled
 > - setting index 4 to True, expecting 12 on index 11
 Verify data return matches expected: 12 == 12
-RESULT: True
+RESULT: True 
 > Test Sending async data is properly handled
 > - setting index 6 to 10, expecting 13 on index 11
 Verify data return matches expected: 13 == 13

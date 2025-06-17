@@ -75,5 +75,11 @@ std::array<mailbox_type, (size_t)mbx_index::NUM_MAILBOX > global_mailbox
                               PROCEDURES
 --------------------------------------------------------------------*/
 
+/*--------------------------------------------------------------------
+                           Enum Verification
+--------------------------------------------------------------------*/
+static_assert( global_mailbox.size() == static_cast<std::size_t>(mbx_index::NUM_MAILBOX), "mbx_index enum is not correctly sized to mailbox size" );
+
+
 /* mailbox_map.hpp */
 #endif

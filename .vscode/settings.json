@@ -117,7 +117,8 @@
         "valarray": "cpp",
         "__split_buffer": "cpp",
         "__tree": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "span": "cpp"
     },
     "cortex-debug.variableUseNaturalFormat": false,
     "github.copilot.enable": {

@@ -61,8 +61,6 @@ global_mailbox = [
 [ 0,     'ASYNC', False, 'RX', modules.PICO_MODULE, modules.RPI_MODULE  ], # Async - int RX message
 [ 0,     '5',     False, 'TX', modules.RPI_MODULE,  modules.PICO_MODULE ], # RND 5 - int TX message
 [ 0,     '5',     False, 'RX', modules.PICO_MODULE, modules.RPI_MODULE  ], # RND 5 - int RX message
-# [ 0,     'ASYNC', False, 'RX', modules.PICO_MODULE, modules.RPI_MODULE  ], # Test Results RX
-# [ 0,     'ASYNC', False, 'TX', modules.RPI_MODULE,  modules.PICO_MODULE ], # Test Results TX
 [ 0,     'ASYNC', False, 'RX', modules.RPI_MODULE, modules.PICO_MODULE  ], # Test Commands TX
 [ 0,     'ASYNC', False, 'RX', modules.PICO_MODULE,  modules.RPI_MODULE ], # Test Results RX
  ]
@@ -195,20 +193,32 @@ class Test:
     # ==================================
     # __run_mailbox_for()
     # ==================================
-	def __run_mailbox_for( self, rounds ):
+	def __run_mailbox_for( self, tx_rounds ):
+		#setup watchdog + calculate end round
 		watchdog = 0
 		current_round = self.mailbox.round_counter
-		#add extra +1 so that RX can transmit a response
-		end_round = ( current_round + 1 + rounds ) % 100
+		
+		#calculate how many rounds per full cycle (every module tx)
+		num_rounds_for_full_cycle = len(self.mailbox.msg_conn.listOfModules)
+
+		#add extra +1 so that RX can transmit a reponse
+		end_round = ( current_round + 1 + (num_rounds_for_full_cycle*tx_rounds) ) % 100
+
 		while( current_round != end_round ):
-			time.sleep(1)
+			time.sleep(.3) # 300ms per round (slower than modules)
 			self.mailbox.runtime()
 
+			#if we are stuck on a round update watchdog
 			if( current_round == self.mailbox.round_counter ):
 				watchdog = watchdog + 1
+			else:
+				watchdog = 0
+
+			#update current round (even if same)
 			current_round = self.mailbox.round_counter
 
-			if( watchdog > 10 ):
+			# we sleep for .3s to 30 count == ~10s
+			if( watchdog > 30 ):
 				print(" --> no rounds have happened in the last 10 seconds, something seems to be broken. Forcing TX round" )
 				self.mailbox.current_round = modules.RPI_MODULE
 				return

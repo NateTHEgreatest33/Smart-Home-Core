@@ -3,6 +3,7 @@
 Smart Home Core is a fully customizable template for using the suite of utlities and messaging formats developed by myself. It is written with in style of DO-178 projects, with requirements, tests, and code all tracing to each other!
 
 Modules included†
+- **Mailbox**: A synchronous and asynchronous messaging system built upon MessageAPI
 - **MessageAPI**: A full messaging layer built upon loraAPI
 - **loraAPI**: low level driver for interfacing with the RFM95 Tranciver.
 - **ConsoleAPI**: a full console application including logging 

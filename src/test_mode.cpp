@@ -152,6 +152,12 @@ for( i = 0; i < rx_msg.num_messages; i++ )
                     tx_msg.message[1] = rx_msg.messages[i].message[1];
                     }
                 break;
+
+            case 0x04:
+                memset( &(tx_msg.message[1]), 0xEE, (sizeof(uint8_t)*9) );
+                tx_msg.size = 10;   
+                break;
+                
             case 0x0A:
                 tx_msg.message[1] = 0x22;
                 break;

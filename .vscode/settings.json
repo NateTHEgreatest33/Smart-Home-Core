@@ -109,7 +109,22 @@
         "__hash_table": "cpp",
         "__node_handle": "cpp",
         "queue.hpp": "c",
-        "*.tpp": "cpp"
+        "*.tpp": "cpp",
+        "regex": "cpp",
+        "codecvt": "cpp",
+        "complex": "cpp",
+        "ranges": "cpp",
+        "valarray": "cpp",
+        "__split_buffer": "cpp",
+        "__tree": "cpp",
+        "stack": "cpp",
+        "span": "cpp"
     },
-    "cortex-debug.variableUseNaturalFormat": true
+    "cortex-debug.variableUseNaturalFormat": false,
+    "github.copilot.enable": {
+        "*": false,
+        "plaintext": false,
+        "markdown": false,
+        "scminput": false
+    }
 }

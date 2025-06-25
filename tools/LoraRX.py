@@ -2,6 +2,25 @@ import time
 import spidev
 
 
+#def SpiInit():
+    # We only have SPI bus 0 available to us on the Pi
+ #   bus = 0
+
+    #Device is the chip select pin. Set to 0 or 1, depending on the connections
+  #  device = 0
+
+    # Enable SPI
+   # spi = spidev.SpiDev()
+
+    # Open a connection to a specific bus and device (chip select pin)
+    #spi.open(bus, device)
+
+    # Set SPI speed and mode
+    #spi.max_speed_hz = 100000
+    #spi.mode = 0
+
+
+
 def LoraInit():
     #config LoRa
     #print("writing 0x80 (sleep, highFrq,LoRa) to reg config (0x01)")
@@ -21,24 +40,35 @@ def LoraInit():
     print("Lora Initilized Succesfully")
 
 def CheckMessage():
+    #read from status register 
     msg = [0x00 | 0x12, 0x00]
     result = spi.xfer2(msg)
 
-    #verify msg rx'ed w/ valid header
-    if(result[1] & 0x40 == 0x40 and result[1] & 0x10 == 0x10): 
-        
-        msg = [0x00 | 0x13, 0x00]
-        result = spi.xfer2(msg)
-        numBytesReceived = result[1]
-        return True
-    
+    #Rx done flag
+    if( result[1] & 0x40 == 0x40 ):
+        #valid header flag
+        if( result[1] & 0x10 != 0x10): 
+            print("Mg Rx'ed with invalid header (0x10) data {}".format( result[1] ) )
+        else:
+            #read msg size
+            msg = [0x00 | 0x13, 0x00]
+            result = spi.xfer2(msg)
+            numBytesReceived = result[1]
+
+            
+            if numBytesReceived > 16:
+                print("Mg Rx'ed with >16 bytes {}".format( result[1] ) )
+
+                msg = [0x80 | 0x12, 0xFF]
+                result = spi.xfer2(msg)
+                return False
+            return True
     elif(result[1] & 0x80 == 0x80 or result[1] & 0x20 == 0x20):
         #0x80 = RX timeout
         #0x20 = CRC error
         #clear flag
         msg = [0x80 | 0x12, 0xFF]
         result = spi.xfer2(msg)
-        print( "Rx timeout or CRC error encountered: {}".format( result[1]))
         return False
     else:
         return False
@@ -84,6 +114,8 @@ def readMessage():
     result = spi.xfer2(msg)
 
     return storageArray
+
+
 
 
 def setRxMode():
@@ -177,10 +209,18 @@ print("Read Config Register: ",hex(result[1]))
 print("all configured")
 
 while True:
-
+    #print("hello1")
     if CheckMessage() == True:
-        msg_rxed = readMessage()
+        listABC = readMessage()
         print("New Message: {",end =" ")
-        for x in msg_rxed:
+        for x in listABC:
             print(hex(x),end = " ")
         print("}")
+
+#setup Tx fifoPtr
+#msg = [0x80 | 0x0D, 0x80]
+#result = spi.xfer2(msg)
+
+
+#msgs = [0xAA, 0xBB, 0xCC, 0x44]
+#LoraSendMessage(msgs, 4)

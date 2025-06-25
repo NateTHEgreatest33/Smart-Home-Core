@@ -16,6 +16,7 @@
 --------------------------------------------------------------------*/
 #include "background_task.hpp"
 #include "console.hpp"
+#include "mailbox.hpp"
 
 /*--------------------------------------------------------------------
                           GLOBAL NAMESPACES
@@ -32,6 +33,7 @@
 /*--------------------------------------------------------------------
                            MEMORY CONSTANTS
 --------------------------------------------------------------------*/
+#define HUNDRED_SEC_AS_MS   (1000*100) /* 100 sec represented as ms */
 
 /*--------------------------------------------------------------------
                               VARIABLES
@@ -40,7 +42,10 @@
 /*--------------------------------------------------------------------
                               EXTERNS
 --------------------------------------------------------------------*/
-extern core::console console;
+extern core::console Console;
+extern core::mailbox< (size_t)mbx_index::NUM_MAILBOX > Mailbox;
+
+extern bool g_test_mode_enable;                  //I want to create a thread safe object class, something that just wraps access in a mutex lock
 
 /*--------------------------------------------------------------------
                                 MACROS
@@ -67,6 +72,9 @@ void background_task
 /*----------------------------------------------------------
 Local Variables
 ----------------------------------------------------------*/
+static absolute_time_t s_current_100ms_timeout   = delayed_by_ms( get_absolute_time(), 100 );
+static absolute_time_t s_current_100sec_timeout = delayed_by_ms( get_absolute_time(), HUNDRED_SEC_AS_MS );
+
 
 /*----------------------------------------------------------
 Main Loop
@@ -76,6 +84,39 @@ while( true )
     /*------------------------------------------------------
     Run console periodic
     ------------------------------------------------------*/
-    console.console_runtime();
+    Console.console_runtime();
+
+    /*------------------------------------------------------
+    If testmode is enableed, do not run anything other
+    than Console
+    ------------------------------------------------------*/
+    if( g_test_mode_enable )
+        continue;
+
+    /*------------------------------------------------------
+    Run mailbox rx periodic
+    ------------------------------------------------------*/
+    Mailbox.rx_runtime();
+
+    /*------------------------------------------------------
+    Run mailbox tx periodic every 100ms & update timeout
+    after a run
+    ------------------------------------------------------*/
+    if( s_current_100ms_timeout < get_absolute_time() )
+        {
+        Mailbox.tx_runtime();
+        s_current_100ms_timeout = delayed_by_ms( get_absolute_time(), 100 );
+        }
+
+    /*------------------------------------------------------
+    Run mailbox watchdog every 100s
+    ------------------------------------------------------*/
+    if( s_current_100sec_timeout < get_absolute_time() )
+        {
+        Mailbox.watchdog();
+        s_current_100sec_timeout = delayed_by_ms( get_absolute_time(), HUNDRED_SEC_AS_MS );
+        }
+        
+        
     }
 }

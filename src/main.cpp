@@ -24,7 +24,11 @@
 #include "button.hpp"
 #include "console.hpp"
 #include "messageAPI.hpp"
+#include "mailbox.hpp"
+
 #include "test_mode.hpp"
+#include "mailbox_map.hpp"
+#include "test/mailbox_test.hpp"
 
 #include <iostream>
 
@@ -44,9 +48,11 @@ const location current_location = PICO_MODULE;
 /*--------------------------------------------------------------------
                               VARIABLES
 --------------------------------------------------------------------*/
-core::console console( uart0 );                     /* console API  */
-core::loraInterface loRa( spi_default ,console );   /* Lora API     */
-core::messageInterface messageAPI( loRa, console ); /* Message API  */
+core::console Console( uart0 );                     /* console API  */
+core::loraInterface loRa( spi_default, Console );   /* Lora API     */
+core::messageInterface messageAPI( loRa, Console ); /* Message API  */
+core::mailbox< (size_t)mbx_index::NUM_MAILBOX > Mailbox( global_mailbox );
+                                                    /* Mailbox API  */
 
 /*--------------------------------------------------------------------
                                GLOBALS
@@ -100,7 +106,7 @@ Handle GPIO configured
 switch( gpio )
     {
     default:
-        console.add_assert( "GPIO Handler called on unsupported pin" );
+        Console.add_assert( "GPIO Handler called on unsupported pin" );
         break;
     }
 }
@@ -127,6 +133,7 @@ tx_message       tx_msg;    /* transmit message structure */
 bool             sdio_err_var; /* stdio init errors       */
 pico_error_codes wifi_err_var; /* wifi init errors        */
 uint8_t          i;            /* index                   */
+static bool      called_once;  /* TESTING asssert flag    */
 
 /*----------------------------------------------------------
 Initialize local variables
@@ -136,6 +143,8 @@ memset( &tx_msg, 0, sizeof( tx_message ) );
 
 sdio_err_var = false;
 wifi_err_var = PICO_ERROR_GENERIC;
+
+called_once = false;
 
 /*----------------------------------------------------------
 Initialize all subsystems   
@@ -150,7 +159,7 @@ If issue with subsystem initilization do not move forward
 ----------------------------------------------------------*/
 if ( wifi_err_var != PICO_OK || !sdio_err_var )
     {
-    console.add_assert( "System unable to initilize" );
+    Console.add_assert( "System unable to initilize" );
 
     while( true )
         {
@@ -158,7 +167,7 @@ if ( wifi_err_var != PICO_OK || !sdio_err_var )
         Allow user to retrive error messages if unable to
         initilize.
         --------------------------------------------------*/
-        console.console_runtime();  
+        Console.console_runtime();  
         }
     }
 
@@ -183,33 +192,32 @@ while( true )
 
     Test mode is primarly for system level functionality
     ------------------------------------------------------*/
-    test_mode( g_test_mode_enable, console ) ;
+    test_mode( g_test_mode_enable, Console ) ;
 
     if( g_test_mode_enable )
         continue;
 
-	/*------------------------------------------------------
-    Check for new messages
-    ------------------------------------------------------*/
-    rx_msg = messageAPI.get_multi_message();
-    
-    /*------------------------------------------------------
-    Example TX message for each rx message
-    ------------------------------------------------------*/
-    for( i = 0; i < rx_msg.num_messages; i++ )
-        {
-        memset( &tx_msg, 0, sizeof( tx_message ) );
-        
-        tx_msg.destination = rx_msg.messages[i].source;
-        tx_msg.message[0]  = 0xFF;
-        tx_msg.message[1]  = 0xFF;
-        tx_msg.size        = 2;
-
-        if( !messageAPI.send_message(tx_msg) )
+    /*----------------------------------------------------------
+    Mailbox testing
+    ----------------------------------------------------------*/
+    #ifdef TESTING
+        /*------------------------------------------------------
+        Assert once and do not spam log
+        ------------------------------------------------------*/
+        if( !called_once )
             {
-            console.add_assert("MessageAPI send message failed!");
+            Console.add_assert( "TESTING defined as true: testing global mailbox enabled");
+            called_once = true;
             }
-        }
+        /*------------------------------------------------------
+        Call runtime
+        ------------------------------------------------------*/
+        mailbox_testing::run();
+    #endif
+
+	/*------------------------------------------------------
+    Application code goes here!
+    ------------------------------------------------------*/
 
 	} /* while(true) */
 

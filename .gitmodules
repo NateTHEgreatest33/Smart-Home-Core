@@ -16,3 +16,6 @@
 [submodule "vnv/system/lib"]
 	path = vnv/system/lib
 	url = https://github.com/NateTHEgreatest33/STF.git
+[submodule "lib/mailbox"]
+	path = lib/mailbox
+	url = https://github.com/NateTHEgreatest33/mailbox

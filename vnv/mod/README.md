@@ -36,6 +36,51 @@ To run the tests, follow these steps:
     ./run_mod_tests
     ```
 
+## Storing Test Results
+
+To store the test results in a structured XML format (JUnit), you can use the `--gtest_output` flag. This is useful for CI/CD systems and for keeping a record of test runs.
+
+1.  **Run the tests with the output flag:** You will want to use an absolute path instead of a realtive path as shown below
+
+    ```bash
+    ./run_mod_tests --gtest_output=xml:/Users/natelenze/Developer/git/Smart-Home-Core/results/mod/mod_test_results.xml
+    ```
+
+2.  **View the results:** The test results will be saved in `results/mod/mod_test_results.xml`.
+
+## Generating Code Coverage
+
+This build is configured to generate code coverage data. To create an HTML report, you'll need to have `lcov` installed. You can typically install it with Homebrew on macOS (`brew install lcov`).
+
+1.  **Clean the build directory:** This is important to ensure you're starting with a fresh set of coverage data.
+
+    ```bash
+    rm -rf *
+    ```
+
+2.  **Re-run CMake and make:**
+
+    ```bash
+    cmake ../vnv/mod
+    make
+    ```
+
+3.  **Run the tests:** This will generate the initial coverage data.
+
+    ```bash
+    ./run_mod_tests
+    ```
+
+4.  **Generate the coverage report:**
+
+    ```bash
+    lcov --capture --directory . --output-file coverage.info
+    lcov --remove coverage.info '/usr/*' '*/_deps/*' --output-file coverage.info
+    genhtml coverage.info --output-directory coverage_report
+    ```
+
+5.  **View the report:** Open `coverage_report/index.html` in your web browser to see the detailed coverage results.
+
 ## Adding New Tests
 
 To add a new test for a module:

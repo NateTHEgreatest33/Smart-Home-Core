@@ -36,17 +36,17 @@ To run the tests, follow these steps:
     ./run_mod_tests
     ```
 
-## Storing Test Results
+## Generating HTML Test Reports
 
-To store the test results in a structured XML format (JUnit), you can use the `--gtest_output` flag. This is useful for CI/CD systems and for keeping a record of test runs.
+This project includes a Python script to generate an HTML report from the XML test results. This provides a more human-readable format for reviewing test outcomes.
 
-1.  **Run the tests with the output flag:** You will want to use an absolute path instead of a realtive path as shown below
+1.  **Run the script:**
 
     ```bash
-    ./run_mod_tests --gtest_output=xml:/Users/natelenze/Developer/git/Smart-Home-Core/results/mod/mod_test_results.xml
+    python3 vnv/mod/mod_results.py
     ```
 
-2.  **View the results:** The test results will be saved in `results/mod/mod_test_results.xml`.
+2.  **View the report:** The script will generate `mod_test_results.html` in the `results/mod` directory. You can open this file in your web browser to view the report.
 
 ## Generating Code Coverage
 

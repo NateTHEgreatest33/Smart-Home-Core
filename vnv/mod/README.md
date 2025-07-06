@@ -90,26 +90,41 @@ To add a new test for a module:
 2.  The CMake build system will automatically discover and include any new `.cpp` files.
 3.  If your test requires including code from the main project, you can include the headers directly (e.g., `#include "lib/util/queue.hpp"`).
 
-### Testing Non-Header-Only Libraries
+### Testing Non-Header-Only Libraries and Mocking Pico SDK
 
-If the code you want to test is not header-only (i.e., it has a corresponding `.cpp` file), you will need to add the source file to the `CMakeLists.txt` in this directory.
+If the code you want to test is not header-only (i.e., it has a corresponding `.cpp` file), you will need to add the source file to the `CMakeLists.txt` in this directory. Additionally, if your code depends on Pico SDK headers, you'll need to provide mocks for those functions.
 
-1.  Open `vnv/mod/CMakeLists.txt`.
-2.  Add the path to the `.cpp` file to the `add_executable` command. For example, to test the `button` library, you would modify the file like this:
+1.  **Create Mock Files (if needed):**
+    For any `pico/...` or `hardware/...` includes in your source files, create corresponding mock header and source files in `vnv/mod/mocks/pico/...` or `vnv/mod/mocks/hardware/...` respectively. These mocks should provide stub implementations for the functions your code calls.
 
-```cmake
-# ... (other cmake content)
+2.  **Update `vnv/mod/CMakeLists.txt`:**
+    Open `vnv/mod/CMakeLists.txt` and make the following modifications:
 
-# Find all test files
-file(GLOB_RECURSE TEST_SOURCES "*.cpp")
+    *   **Add Mock Include Directories:** Add the mock directories to the include path.
+        ```cmake
+        include_directories(${CMAKE_CURRENT_SOURCE_DIR}/mocks)
+        ```
 
-# Add the source files you want to test
-set(PROJECT_SOURCES
-    ${CMAKE_SOURCE_DIR}/lib/button/button.cpp
-)
+    *   **Add Source Files and Mock Source Files:** Add the paths to your non-header-only source files and any mock `.cpp` files to the `PROJECT_SOURCES` variable. For example, to test `disable_interrupt.cpp` and `mutex_lock.cpp` with their mocks:
 
-# Add an executable for the tests
-add_executable(run_mod_tests ${TEST_SOURCES} ${PROJECT_SOURCES})
+        ```cmake
+        # ... (other cmake content)
 
-# ... (rest of the file)
-```
+        # Find all test files
+        file(GLOB_RECURSE TEST_SOURCES "*.cpp")
+
+        # Add the source files you want to test and mock source files
+        set(PROJECT_SOURCES
+            ${CMAKE_CURRENT_SOURCE_DIR}/../../lib/util/disable_interrupt.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/../../lib/util/mutex_lock.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/mocks/hardware/sync.cpp
+            # Add other .cpp files here as needed
+        )
+
+        # Add an executable for the tests
+        add_executable(run_mod_tests ${TEST_SOURCES} ${PROJECT_SOURCES})
+
+        # ... (rest of the file)
+        ```
+    The `CMAKE_CURRENT_SOURCE_DIR}/../../` prefix is used to correctly reference files relative to the project root from within the `vnv/mod` directory.
+

@@ -7,6 +7,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
 
 # Add the main project directory to the include path
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../..)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/mocks)
 
 # Fetch GoogleTest
 include(FetchContent)
@@ -28,7 +29,12 @@ include_directories(${googletest_SOURCE_DIR}/googletest/include)
 include_directories(${googletest_SOURCE_DIR}/googlemock/include)
 
 # Add an executable for the tests
-add_executable(run_mod_tests ${TEST_SOURCES})
+set(PROJECT_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../lib/util/disable_interrupt.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../lib/util/mutex_lock.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/mocks/hardware/sync.cpp
+)
+add_executable(run_mod_tests ${TEST_SOURCES} ${PROJECT_SOURCES})
 
 # Link the tests to GoogleTest
 target_link_libraries(run_mod_tests gtest gtest_main)

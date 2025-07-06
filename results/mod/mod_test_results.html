@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Mod Test Results</title>
+<style>
+  body { font-family: Arial, sans-serif; color: #333; line-height: 1.4; }
+  .container { width: 80%; margin: 0 auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
+  h1 { text-align: center; color: #444; margin-bottom: 20px; }
+  h2 { color: #555; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 20px; }
+  .info-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 0.9em; }
+  .info-table td { border: 1px solid #eee; padding: 5px; text-align: left; }
+  .info-table td:first-child { font-weight: bold; width: 150px; }
+  .test-suite-block { border: 1px solid #ddd; margin-bottom: 10px; padding: 10px; border-radius: 5px; }
+  .test-suite-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; cursor: pointer; }
+  .test-suite-header h3 { margin: 0; color: #666; }
+  .test-case-block { border: 1px solid #eee; margin-bottom: 8px; padding: 8px; border-radius: 5px; background-color: #f8f8f8; display: flex; justify-content: space-between; align-items: center; }
+  .test-case-name { font-weight: bold; }
+  .status-pass { color: white; background-color: green; padding: 3px 8px; border-radius: 3px; font-size: 0.9em; }
+  .status-fail { color: white; background-color: red; padding: 3px 8px; border-radius: 3px; font-size: 0.9em; }
+  .details { padding-left: 15px; display: none; font-size: 0.9em; }
+  .overall-pass { color: white; background-color: green; padding: 10px; border-radius: 5px; text-align: center; margin-top: 20px; font-weight: bold; }
+  .overall-fail { color: white; background-color: red; padding: 10px; border-radius: 5px; text-align: center; margin-top: 20px; font-weight: bold; }
+</style>
+</head>
+<body>
+<div class='container'>
+<h1>Module Test Results</h1>
+<table class='info-table'>
+  <tr><td>FUT sha:</td><td>bc3c993c2472c20ebe6cbc7e4756580c25946c2d</td></tr>
+  <tr><td>Date:</td><td>Sun Jul  6 14:28:18 2025</td></tr>
+</table>
+<div class='test-suite-block'>
+  <div class='test-suite-header' onclick="toggleDetails('DisableInterruptsTest')">
+    <h3>DisableInterruptsTest</h3>
+  </div>
+  <div id="DisableInterruptsTest" class='details'>
+<div class='test-case-block'>
+  <span class='test-case-name'>ConstructorDisablesInterrupts</span>
+  <span class='status-pass'>Pass</span>
+</div>
+<div class='test-case-block'>
+  <span class='test-case-name'>DestructorRestoresInterrupts</span>
+  <span class='status-pass'>Pass</span>
+</div>
+  </div>
+</div>
+<div class='test-suite-block'>
+  <div class='test-suite-header' onclick="toggleDetails('MutexLockTest')">
+    <h3>MutexLockTest</h3>
+  </div>
+  <div id="MutexLockTest" class='details'>
+<div class='test-case-block'>
+  <span class='test-case-name'>ConstructorLocksMutex</span>
+  <span class='status-pass'>Pass</span>
+</div>
+<div class='test-case-block'>
+  <span class='test-case-name'>DestructorUnlocksMutex</span>
+  <span class='status-pass'>Pass</span>
+</div>
+  </div>
+</div>
+<div class='test-suite-block'>
+  <div class='test-suite-header' onclick="toggleDetails('QueueTest')">
+    <h3>QueueTest</h3>
+  </div>
+  <div id="QueueTest" class='details'>
+<div class='test-case-block'>
+  <span class='test-case-name'>IsEmpty</span>
+  <span class='status-pass'>Pass</span>
+</div>
+<div class='test-case-block'>
+  <span class='test-case-name'>IsFull</span>
+  <span class='status-pass'>Pass</span>
+</div>
+<div class='test-case-block'>
+  <span class='test-case-name'>PushAndFront</span>
+  <span class='status-pass'>Pass</span>
+</div>
+<div class='test-case-block'>
+  <span class='test-case-name'>Pop</span>
+  <span class='status-pass'>Pass</span>
+</div>
+<div class='test-case-block'>
+  <span class='test-case-name'>Size</span>
+  <span class='status-pass'>Pass</span>
+</div>
+<div class='test-case-block'>
+  <span class='test-case-name'>Empty</span>
+  <span class='status-pass'>Pass</span>
+</div>
+<div class='test-case-block'>
+  <span class='test-case-name'>Rollover</span>
+  <span class='status-pass'>Pass</span>
+</div>
+<div class='test-case-block'>
+  <span class='test-case-name'>PushWhenFull</span>
+  <span class='status-pass'>Pass</span>
+</div>
+<div class='test-case-block'>
+  <span class='test-case-name'>PopWhenEmpty</span>
+  <span class='status-pass'>Pass</span>
+</div>
+  </div>
+</div>
+<h2>Overall Result</h2>
+<p class='overall-pass'>Overall Test Result: Pass</p>
+<script>
+function toggleDetails(id) {
+  var details = document.getElementById(id);
+  if (details.style.display === 'none' || details.style.display === '') {
+    details.style.display = 'block';
+  } else {
+    details.style.display = 'none';
+  }
+}
+</script>
+</div>
+</body>
+</html>

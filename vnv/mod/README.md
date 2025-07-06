@@ -52,10 +52,11 @@ To store the test results in a structured XML format (JUnit), you can use the `-
 
 This build is configured to generate code coverage data. To create an HTML report, you'll need to have `lcov` installed. You can typically install it with Homebrew on macOS (`brew install lcov`).
 
-1.  **Clean the build directory:** This is important to ensure you're starting with a fresh set of coverage data.
+1.  **Clean the build directory and coverage data:** This is important to ensure you're starting with a fresh set of coverage data.
 
     ```bash
     rm -rf *
+    find . -name "*.gcda" -delete
     ```
 
 2.  **Re-run CMake and make:**

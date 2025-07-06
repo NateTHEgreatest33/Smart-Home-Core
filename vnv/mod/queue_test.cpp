@@ -176,3 +176,40 @@ TEST_F(QueueTest, Rollover)
     q.pop();
     EXPECT_EQ(q.front(), 6);
 }
+
+/*********************************************************************
+*
+*   TEST NAME:
+*       QueueTest.PushWhenFull
+*
+*   DESCRIPTION:
+*       Tests pushing an item when the queue is full.
+*
+*********************************************************************/
+TEST_F(QueueTest, PushWhenFull)
+{
+    for (int i = 0; i < 5; ++i)
+    {
+        q.push(i);
+    }
+    EXPECT_TRUE(q.is_full());
+    EXPECT_FALSE(q.push(99)); // Should return false when full
+    EXPECT_EQ(q.size(), 5); // Size should remain unchanged
+}
+
+/*********************************************************************
+*
+*   TEST NAME:
+*       QueueTest.PopWhenEmpty
+*
+*   DESCRIPTION:
+*       Tests popping an item when the queue is empty.
+*
+*********************************************************************/
+TEST_F(QueueTest, PopWhenEmpty)
+{
+    EXPECT_TRUE(q.is_empty());
+    q.pop(); // Should not crash
+    EXPECT_TRUE(q.is_empty()); // Should still be empty
+    EXPECT_EQ(q.size(), 0); // Size should remain 0
+}

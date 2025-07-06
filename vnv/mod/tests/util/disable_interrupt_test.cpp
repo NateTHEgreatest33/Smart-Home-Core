@@ -1,6 +1,25 @@
+/*********************************************************************
+*
+*   HEADER:
+*       disable_interrupt_test.cpp
+*
+*   DESCRIPTION:
+*       This file contains the unit tests for the utl::disable_interrupts class.
+*
+*   Copyright 2025 Nate Lenze
+*
+*********************************************************************/
+
+/*--------------------------------------------------------------------
+                              INCLUDES
+--------------------------------------------------------------------*/
 #include "gtest/gtest.h"
 #include "lib/util/disable_interrupt.hpp"
 #include "hardware/sync.h" // This will now pick up our mock
+
+/*--------------------------------------------------------------------
+                               CLASSES
+--------------------------------------------------------------------*/
 
 // Extern declarations for the mock variables
 extern uint32_t save_and_disable_interrupts_mock_return_value;
@@ -9,7 +28,39 @@ extern uint32_t restore_interrupts_called_value;
 namespace utl {
 namespace test {
 
-TEST(DisableInterruptsTest, ConstructorDisablesInterrupts)
+/*********************************************************************
+*
+*   CLASS NAME:
+*       DisableInterruptsTest
+*
+*   DESCRIPTION:
+*       Test fixture for the utl::disable_interrupts class.
+*
+*********************************************************************/
+class DisableInterruptsTest : public ::testing::Test
+{
+protected:
+    void SetUp() override
+    {
+        save_and_disable_interrupts_mock_return_value = 0;
+        restore_interrupts_called_value = 0;
+    }
+};
+
+/*--------------------------------------------------------------------
+                              TEST CASES
+--------------------------------------------------------------------*/
+
+/*********************************************************************
+*
+*   TEST NAME:
+*       DisableInterruptsTest.ConstructorDisablesInterrupts
+*
+*   DESCRIPTION:
+*       Tests that the constructor disables interrupts.
+*
+*********************************************************************/
+TEST_F(DisableInterruptsTest, ConstructorDisablesInterrupts)
 {
     save_and_disable_interrupts_mock_return_value = 0x12345678;
     // When di is constructed, save_and_disable_interrupts() should be called
@@ -21,10 +72,18 @@ TEST(DisableInterruptsTest, ConstructorDisablesInterrupts)
     SUCCEED();
 }
 
-TEST(DisableInterruptsTest, DestructorRestoresInterrupts)
+/*********************************************************************
+*
+*   TEST NAME:
+*       DisableInterruptsTest.DestructorRestoresInterrupts
+*
+*   DESCRIPTION:
+*       Tests that the destructor restores interrupts.
+*
+*********************************************************************/
+TEST_F(DisableInterruptsTest, DestructorRestoresInterrupts)
 {
     save_and_disable_interrupts_mock_return_value = 0xABCDEF00; // Set a value to be saved
-    restore_interrupts_called_value = 0; // Reset the mock variable before the test
 
     {
         utl::disable_interrupts di; // Constructor saves interrupts

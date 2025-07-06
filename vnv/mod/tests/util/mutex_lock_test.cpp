@@ -1,6 +1,25 @@
+/*********************************************************************
+*
+*   HEADER:
+*       mutex_lock_test.cpp
+*
+*   DESCRIPTION:
+*       This file contains the unit tests for the utl::mutex_lock class.
+*
+*   Copyright 2025 Nate Lenze
+*
+*********************************************************************/
+
+/*--------------------------------------------------------------------
+                              INCLUDES
+--------------------------------------------------------------------*/
 #include "gtest/gtest.h"
 #include "lib/util/mutex_lock.hpp"
 #include "pico/mutex.h" // This will now pick up our mock
+
+/*--------------------------------------------------------------------
+                               MOCKS
+--------------------------------------------------------------------*/
 
 // Extern declarations for the mock functions
 extern "C" {
@@ -11,12 +30,6 @@ extern void mutex_exit(mutex_t *mtx);
 // Mock variables to track calls
 mutex_t *mutex_enter_blocking_called_with = nullptr;
 mutex_t *mutex_exit_called_with = nullptr;
-
-// Reset mocks before each test
-void reset_mutex_mocks() {
-    mutex_enter_blocking_called_with = nullptr;
-    mutex_exit_called_with = nullptr;
-}
 
 // Implement mock functions
 extern "C" {
@@ -32,13 +45,28 @@ void mutex_exit(mutex_t *mtx) {
 }
 }
 
+/*--------------------------------------------------------------------
+                               CLASSES
+--------------------------------------------------------------------*/
+
 namespace utl {
 namespace test {
 
+/*********************************************************************
+*
+*   CLASS NAME:
+*       MutexLockTest
+*
+*   DESCRIPTION:
+*       Test fixture for the utl::mutex_lock class.
+*
+*********************************************************************/
 class MutexLockTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        reset_mutex_mocks();
+        // Reset mocks before each test
+        mutex_enter_blocking_called_with = nullptr;
+        mutex_exit_called_with = nullptr;
         // Initialize a dummy mutex for testing
         test_mutex.locked = false;
         test_mutex.lock_count = 0;
@@ -47,6 +75,19 @@ protected:
     mutex_t test_mutex;
 };
 
+/*--------------------------------------------------------------------
+                              TEST CASES
+--------------------------------------------------------------------*/
+
+/*********************************************************************
+*
+*   TEST NAME:
+*       MutexLockTest.ConstructorLocksMutex
+*
+*   DESCRIPTION:
+*       Tests that the constructor locks the mutex.
+*
+*********************************************************************/
 TEST_F(MutexLockTest, ConstructorLocksMutex)
 {
     // Ensure the mutex is initially unlocked
@@ -63,6 +104,15 @@ TEST_F(MutexLockTest, ConstructorLocksMutex)
     }
 }
 
+/*********************************************************************
+*
+*   TEST NAME:
+*       MutexLockTest.DestructorUnlocksMutex
+*
+*   DESCRIPTION:
+*       Tests that the destructor unlocks the mutex.
+*
+*********************************************************************/
 TEST_F(MutexLockTest, DestructorUnlocksMutex)
 {
     // Ensure the mutex is initially unlocked

@@ -43,7 +43,7 @@ This project includes a Python script to generate an HTML report from the XML te
 1.  **Run the script:**
 
     ```bash
-    python3 vnv/mod/mod_results.py
+    python3.11 vnv/mod/mod_results.py
     ```
 
 2.  **View the report:** The script will generate `mod_test_results.html` in the `results/mod` directory. You can open this file in your web browser to view the report.

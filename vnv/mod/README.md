@@ -82,6 +82,14 @@ This build is configured to generate code coverage data. To create an HTML repor
 
 5.  **View the report:** Open `coverage_report/index.html` in your web browser to see the detailed coverage results.
 
+6.  **Copy coverage to results:**
+Once done, copy `build_mod_tests/coverage_report` to the `results/mod` directory to store coverage results
+
+```bash
+    rm -r results/mod/coverage_report
+    cp -r build_mod_tests/coverage_report results/mod/coverage_report
+    ```
+
 ## Adding New Tests
 
 To add a new test for a module:

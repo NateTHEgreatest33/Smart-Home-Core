@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="13" failures="0" disabled="0" errors="0" time="0" timestamp="2025-07-06T14:28:18.144" name="AllTests">
+  <testsuite name="DisableInterruptsTest" tests="2" failures="0" disabled="0" skipped="0" errors="0" time="0" timestamp="2025-07-06T14:28:18.144">
+    <testcase name="ConstructorDisablesInterrupts" file="/Users/natelenze/Developer/git/Smart-Home-Core/vnv/mod/disable_interrupt_test.cpp" line="12" status="run" result="completed" time="0" timestamp="2025-07-06T14:28:18.144" classname="DisableInterruptsTest" />
+    <testcase name="DestructorRestoresInterrupts" file="/Users/natelenze/Developer/git/Smart-Home-Core/vnv/mod/disable_interrupt_test.cpp" line="24" status="run" result="completed" time="0" timestamp="2025-07-06T14:28:18.144" classname="DisableInterruptsTest" />
+  </testsuite>
+  <testsuite name="MutexLockTest" tests="2" failures="0" disabled="0" skipped="0" errors="0" time="0" timestamp="2025-07-06T14:28:18.144">
+    <testcase name="ConstructorLocksMutex" file="/Users/natelenze/Developer/git/Smart-Home-Core/vnv/mod/mutex_lock_test.cpp" line="50" status="run" result="completed" time="0" timestamp="2025-07-06T14:28:18.144" classname="MutexLockTest" />
+    <testcase name="DestructorUnlocksMutex" file="/Users/natelenze/Developer/git/Smart-Home-Core/vnv/mod/mutex_lock_test.cpp" line="66" status="run" result="completed" time="0" timestamp="2025-07-06T14:28:18.144" classname="MutexLockTest" />
+  </testsuite>
+  <testsuite name="QueueTest" tests="9" failures="0" disabled="0" skipped="0" errors="0" time="0" timestamp="2025-07-06T14:28:18.144">
+    <testcase name="IsEmpty" file="/Users/natelenze/Developer/git/Smart-Home-Core/vnv/mod/queue_test.cpp" line="51" status="run" result="completed" time="0" timestamp="2025-07-06T14:28:18.144" classname="QueueTest" />
+    <testcase name="IsFull" file="/Users/natelenze/Developer/git/Smart-Home-Core/vnv/mod/queue_test.cpp" line="67" status="run" result="completed" time="0" timestamp="2025-07-06T14:28:18.144" classname="QueueTest" />
+    <testcase name="PushAndFront" file="/Users/natelenze/Developer/git/Smart-Home-Core/vnv/mod/queue_test.cpp" line="86" status="run" result="completed" time="0" timestamp="2025-07-06T14:28:18.144" classname="QueueTest" />
+    <testcase name="Pop" file="/Users/natelenze/Developer/git/Smart-Home-Core/vnv/mod/queue_test.cpp" line="103" status="run" result="completed" time="0" timestamp="2025-07-06T14:28:18.144" classname="QueueTest" />
+    <testcase name="Size" file="/Users/natelenze/Developer/git/Smart-Home-Core/vnv/mod/queue_test.cpp" line="120" status="run" result="completed" time="0" timestamp="2025-07-06T14:28:18.144" classname="QueueTest" />
+    <testcase name="Empty" file="/Users/natelenze/Developer/git/Smart-Home-Core/vnv/mod/queue_test.cpp" line="139" status="run" result="completed" time="0" timestamp="2025-07-06T14:28:18.144" classname="QueueTest" />
+    <testcase name="Rollover" file="/Users/natelenze/Developer/git/Smart-Home-Core/vnv/mod/queue_test.cpp" line="157" status="run" result="completed" time="0" timestamp="2025-07-06T14:28:18.144" classname="QueueTest" />
+    <testcase name="PushWhenFull" file="/Users/natelenze/Developer/git/Smart-Home-Core/vnv/mod/queue_test.cpp" line="189" status="run" result="completed" time="0" timestamp="2025-07-06T14:28:18.144" classname="QueueTest" />
+    <testcase name="PopWhenEmpty" file="/Users/natelenze/Developer/git/Smart-Home-Core/vnv/mod/queue_test.cpp" line="209" status="run" result="completed" time="0" timestamp="2025-07-06T14:28:18.144" classname="QueueTest" />
+  </testsuite>
+</testsuites>

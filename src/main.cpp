@@ -25,10 +25,12 @@
 #include "console.hpp"
 #include "messageAPI.hpp"
 #include "mailbox.hpp"
+#include "hal/hal_interface.hpp"
 
 #include "test_mode.hpp"
 #include "mailbox_map.hpp"
 #include "test/mailbox_test.hpp"
+#include "app_logic.hpp"
 
 #include <iostream>
 
@@ -53,6 +55,8 @@ core::loraInterface loRa( spi_default, Console );   /* Lora API     */
 core::messageInterface messageAPI( loRa, Console ); /* Message API  */
 core::mailbox< (size_t)mbx_index::NUM_MAILBOX > Mailbox( global_mailbox );
                                                     /* Mailbox API  */
+
+HALInterface* g_hal = nullptr;                      /* hardware abstraction layer */
 
 /*--------------------------------------------------------------------
                                GLOBALS
@@ -125,9 +129,14 @@ int main
     void
     )
 {
+#include "hal/pico_hal.hpp"
+
 /*----------------------------------------------------------
 Local variables
 ----------------------------------------------------------*/
+PicoHAL pico_hal; // Concrete HAL implementation
+g_hal = &pico_hal; // Assign to global interface pointer
+
 rx_multi         rx_msg;    /* returned message structure */
 tx_message       tx_msg;    /* transmit message structure */
 bool             sdio_err_var; /* stdio init errors       */
@@ -179,7 +188,7 @@ multicore_launch_core1( background_task );
 /*----------------------------------------------------------
 Set LED on to signify start of main process loop
 ----------------------------------------------------------*/
-cyw43_arch_gpio_put( CYW43_WL_GPIO_LED_PIN, 1 );
+application_startup();
 
 /*----------------------------------------------------------
 System Test procedure/replies

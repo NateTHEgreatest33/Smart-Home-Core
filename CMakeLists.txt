@@ -15,6 +15,7 @@ add_subdirectory( lib/button )
 add_subdirectory( lib/util )
 add_subdirectory( lib/console )
 add_subdirectory( lib/mailbox )
+add_subdirectory( lib/hal )
 
 pico_sdk_init()
 
@@ -28,6 +29,9 @@ add_executable( SmartHomeCore
   src/test_mode.cpp
 
   src/mailbox_map.hpp
+
+  src/app_logic.cpp
+  src/app_logic.hpp
 )
 
 # Debugger Attached
@@ -51,6 +55,7 @@ target_link_libraries(SmartHomeCore
   utilLib
   consoleAPI
   mailboxAPI
+  hal
 
 )
 

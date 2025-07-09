@@ -30,6 +30,7 @@ include_directories(${googletest_SOURCE_DIR}/googlemock/include)
 
 # Add an executable for the tests
 set(PROJECT_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/app_logic.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../../lib/util/disable_interrupt.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../../lib/util/mutex_lock.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/mocks/hardware/sync.cpp

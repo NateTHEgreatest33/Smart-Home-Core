@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD 20)
 add_compile_options(-O0)
 
 add_subdirectory( lib/messageAPI )
-add_subdirectory( lib/LoRa )
+add_subdirectory( lib/wifiAPI )
 add_subdirectory( lib/button )
 add_subdirectory( lib/util )
 add_subdirectory( lib/console )
@@ -39,13 +39,12 @@ pico_enable_stdio_uart( SmartHomeCore 1)
 
 target_link_libraries(SmartHomeCore
   pico_stdlib
-  hardware_spi
   pico_multicore
   # Using Pico W
-  pico_cyw43_arch_none
+  pico_cyw43_arch_lwip_threadsafe_background
 
   # libraries
-  loraAPI
+  wifiAPI
   messageAPI
   buttonComponent
   utilLib

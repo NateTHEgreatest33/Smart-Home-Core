@@ -15,6 +15,7 @@ add_subdirectory( lib/button )
 add_subdirectory( lib/util )
 add_subdirectory( lib/console )
 add_subdirectory( lib/mailbox )
+add_subdirectory( lib/LoRa )
 
 pico_sdk_init()
 

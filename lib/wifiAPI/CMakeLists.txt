@@ -16,4 +16,7 @@ target_link_libraries( wifiAPI
   consoleAPI
 )
 
-target_include_directories(wifiAPI PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(wifiAPI PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)

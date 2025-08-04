@@ -64,12 +64,12 @@ bool core::wifiInterface::init(const char* ssid, const char* password) {
     }
     cyw43_arch_enable_sta_mode();
 
-    p_console.add_log("Connecting to Wi-Fi...");
+    p_console.log("Connecting to Wi-Fi...");
     if (cyw43_arch_wifi_connect_timeout_ms(ssid, password, CYW43_AUTH_WPA2_AES_PSK, 30000)) {
         p_console.add_assert("failed to connect.");
         return false;
     }
-    p_console.add_log("Connected.");
+    p_console.log("Connected.");
     return true;
 }
 
@@ -105,7 +105,7 @@ bool core::wifiInterface::start_server(uint16_t port) {
     tcp_arg(p_server_pcb, this);
     tcp_accept(p_server_pcb, tcp_server_accept);
 
-    p_console.add_log("Server started");
+    p_console.log("Server started");
     return true;
 }
 
@@ -230,7 +230,7 @@ err_t core::wifiInterface::tcp_server_sent(void *arg, struct tcp_pcb *tpcb, u16_
 err_t core::wifiInterface::tcp_server_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err) {
     wifiInterface* self = (wifiInterface*)arg;
     if (p == NULL) {
-        self->p_console.add_log("Connection closed");
+        self->p_console.log("Connection closed");
         self->close_connection();
         return ERR_OK;
     }

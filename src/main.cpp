@@ -26,10 +26,6 @@
 #include "messageAPI.hpp"
 #include "mailbox.hpp"
 
-#include "test_mode.hpp"
-#include "mailbox_map.hpp"
-#include "test/mailbox_test.hpp"
-
 #include <iostream>
 
 /*--------------------------------------------------------------------
@@ -43,16 +39,11 @@
 /*--------------------------------------------------------------------
                            MEMORY CONSTANTS
 --------------------------------------------------------------------*/
-const location current_location = PICO_MODULE;
 
 /*--------------------------------------------------------------------
                               VARIABLES
 --------------------------------------------------------------------*/
 core::console Console( uart0 );                     /* console API  */
-core::loraInterface loRa( spi_default, Console );   /* Lora API     */
-core::messageInterface messageAPI( loRa, Console ); /* Message API  */
-core::mailbox< (size_t)mbx_index::NUM_MAILBOX > Mailbox( global_mailbox );
-                                                    /* Mailbox API  */
 
 /*--------------------------------------------------------------------
                                GLOBALS
@@ -128,8 +119,6 @@ int main
 /*----------------------------------------------------------
 Local variables
 ----------------------------------------------------------*/
-rx_multi         rx_msg;    /* returned message structure */
-tx_message       tx_msg;    /* transmit message structure */
 bool             sdio_err_var; /* stdio init errors       */
 pico_error_codes wifi_err_var; /* wifi init errors        */
 uint8_t          i;            /* index                   */
@@ -138,9 +127,6 @@ static bool      called_once;  /* TESTING asssert flag    */
 /*----------------------------------------------------------
 Initialize local variables
 ----------------------------------------------------------*/
-memset( &rx_msg, 0, sizeof( rx_message ) );
-memset( &tx_msg, 0, sizeof( tx_message ) );
-
 sdio_err_var = false;
 wifi_err_var = PICO_ERROR_GENERIC;
 
@@ -187,36 +173,7 @@ System Test procedure/replies
 while( true )
     {
 	/*------------------------------------------------------
-    Handle test mode. and do not run main processing while 
-    test mode is enabled. 
-
-    Test mode is primarly for system level functionality
-    ------------------------------------------------------*/
-    test_mode( g_test_mode_enable, Console ) ;
-
-    if( g_test_mode_enable )
-        continue;
-
-    /*----------------------------------------------------------
-    Mailbox testing
-    ----------------------------------------------------------*/
-    #ifdef TESTING
-        /*------------------------------------------------------
-        Assert once and do not spam log
-        ------------------------------------------------------*/
-        if( !called_once )
-            {
-            Console.add_assert( "TESTING defined as true: testing global mailbox enabled");
-            called_once = true;
-            }
-        /*------------------------------------------------------
-        Call runtime
-        ------------------------------------------------------*/
-        mailbox_testing::run();
-    #endif
-
-	/*------------------------------------------------------
-    Application code goes here!
+    Example Loop
     ------------------------------------------------------*/
 
 	} /* while(true) */

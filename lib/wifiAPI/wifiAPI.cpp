@@ -59,17 +59,17 @@ core::wifiInterface::~wifiInterface() {
 *********************************************************************/
 bool core::wifiInterface::init(const char* ssid, const char* password) {
     if (cyw43_arch_init()) {
-        p_console.add_assert("Wi-Fi init failed");
+        //p_console.add_assert("Wi-Fi init failed");
         return false;
     }
     cyw43_arch_enable_sta_mode();
 
-    p_console.log("Connecting to Wi-Fi...");
+    //p_console.log("Connecting to Wi-Fi...");
     if (cyw43_arch_wifi_connect_timeout_ms(ssid, password, CYW43_AUTH_WPA2_AES_PSK, 30000)) {
-        p_console.add_assert("failed to connect.");
+        //p_console.add_assert("failed to connect.");
         return false;
     }
-    p_console.log("Connected.");
+    //p_console.log("Connected.");
     return true;
 }
 
@@ -86,26 +86,26 @@ bool core::wifiInterface::start_server(uint16_t port) {
     p_is_server = true;
     p_server_pcb = tcp_new_ip_type(IPADDR_TYPE_ANY);
     if (!p_server_pcb) {
-        p_console.add_assert("failed to create pcb");
+        //p_console.add_assert("failed to create pcb");
         return false;
     }
 
     err_t err = tcp_bind(p_server_pcb, IP_ADDR_ANY, port);
     if (err) {
-        p_console.add_assert("failed to bind pcb");
+        //p_console.add_assert("failed to bind pcb");
         return false;
     }
 
     p_server_pcb = tcp_listen(p_server_pcb);
     if (!p_server_pcb) {
-        p_console.add_assert("failed to listen");
+        //p_console.add_assert("failed to listen");
         return false;
     }
 
     tcp_arg(p_server_pcb, this);
     tcp_accept(p_server_pcb, tcp_server_accept);
 
-    p_console.log("Server started");
+    //p_console.log("Server started");
     return true;
 }
 
@@ -122,13 +122,13 @@ bool core::wifiInterface::connect_to_server(const char* server_ip, uint16_t port
     p_is_server = false;
     ip_addr_t target_addr;
     if (!ip4addr_aton(server_ip, &target_addr)) {
-        p_console.add_assert("failed to parse ip address");
+        //p_console.add_assert("failed to parse ip address");
         return false;
     }
 
     p_client_pcb = tcp_new_ip_type(IPADDR_TYPE_ANY);
     if (!p_client_pcb) {
-        p_console.add_assert("failed to create pcb");
+        //p_console.add_assert("failed to create pcb");
         return false;
     }
 
@@ -139,7 +139,7 @@ bool core::wifiInterface::connect_to_server(const char* server_ip, uint16_t port
     cyw43_arch_lwip_end();
 
     if (err) {
-        p_console.add_assert("failed to connect");
+        //p_console.add_assert("failed to connect");
         return false;
     }
 
@@ -167,13 +167,13 @@ bool core::wifiInterface::send_message(const uint8_t* data, uint16_t len) {
 
     err_t err = tcp_write(pcb, data, len, TCP_WRITE_FLAG_COPY);
     if (err) {
-        p_console.add_assert("failed to write data");
+        //p_console.add_assert("failed to write data");
         return false;
     }
 
     err = tcp_output(pcb);
     if (err) {
-        p_console.add_assert("failed to output data");
+        //p_console.add_assert("failed to output data");
         return false;
     }
 
@@ -230,7 +230,7 @@ err_t core::wifiInterface::tcp_server_sent(void *arg, struct tcp_pcb *tpcb, u16_
 err_t core::wifiInterface::tcp_server_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err) {
     wifiInterface* self = (wifiInterface*)arg;
     if (p == NULL) {
-        self->p_console.log("Connection closed");
+        //self->p_console.log("Connection closed");
         self->close_connection();
         return ERR_OK;
     }

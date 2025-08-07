@@ -25,6 +25,7 @@
 #include "console.hpp"
 #include "messageAPI.hpp"
 #include "mailbox.hpp"
+#include "wifiAPI.hpp"
 
 #include "test_mode.hpp"
 #include "mailbox_map.hpp"
@@ -53,7 +54,7 @@ core::loraInterface loRa( spi_default, Console );   /* Lora API     */
 core::messageInterface messageAPI( loRa, Console ); /* Message API  */
 core::mailbox< (size_t)mbx_index::NUM_MAILBOX > Mailbox( global_mailbox );
                                                     /* Mailbox API  */
-
+core::wifiInterface wifiConnection( Console );
 /*--------------------------------------------------------------------
                                GLOBALS
 --------------------------------------------------------------------*/
@@ -172,9 +173,9 @@ if ( wifi_err_var != PICO_OK || !sdio_err_var )
     }
 
 /*----------------------------------------------------------
-launch background_task on core 1
+launch background_task on core 1 (do not)
 ----------------------------------------------------------*/
-multicore_launch_core1( background_task );
+// multicore_launch_core1( background_task );
 
 /*----------------------------------------------------------
 Set LED on to signify start of main process loop
@@ -182,43 +183,61 @@ Set LED on to signify start of main process loop
 cyw43_arch_gpio_put( CYW43_WL_GPIO_LED_PIN, 1 );
 
 /*----------------------------------------------------------
-System Test procedure/replies
+Set LED on to signify start of main process loop
 ----------------------------------------------------------*/
-while( true )
-    {
-	/*------------------------------------------------------
-    Handle test mode. and do not run main processing while 
-    test mode is enabled. 
+cyw43_arch_gpio_put( CYW43_WL_GPIO_LED_PIN, 1 );
+wifiConnection.init( "PartyPlanningCommittee", "Ranger2023" );
+wifiConnection.start_server( 8080 );
 
-    Test mode is primarly for system level functionality
-    ------------------------------------------------------*/
-    test_mode( g_test_mode_enable, Console ) ;
+constexpr uint8_t bufferSize = 100;
+uint8_t buffer[bufferSize];
 
-    if( g_test_mode_enable )
-        continue;
+while(1){
+    if( 0!= wifiConnection.get_message( &(buffer[0]), bufferSize) )
+        {
+        Console.add_assert("we got data");
+        }
+}
 
-    /*----------------------------------------------------------
-    Mailbox testing
-    ----------------------------------------------------------*/
-    #ifdef TESTING
-        /*------------------------------------------------------
-        Assert once and do not spam log
-        ------------------------------------------------------*/
-        if( !called_once )
-            {
-            Console.add_assert( "TESTING defined as true: testing global mailbox enabled");
-            called_once = true;
-            }
-        /*------------------------------------------------------
-        Call runtime
-        ------------------------------------------------------*/
-        mailbox_testing::run();
-    #endif
 
-	/*------------------------------------------------------
-    Application code goes here!
-    ------------------------------------------------------*/
+// /*----------------------------------------------------------
+// System Test procedure/replies
+// ----------------------------------------------------------*/
+// while( true )
+//     {
+// 	/*------------------------------------------------------
+//     Handle test mode. and do not run main processing while 
+//     test mode is enabled. 
 
-	} /* while(true) */
+//     Test mode is primarly for system level functionality
+//     ------------------------------------------------------*/
+//     test_mode( g_test_mode_enable, Console ) ;
+
+//     if( g_test_mode_enable )
+//         continue;
+
+//     /*----------------------------------------------------------
+//     Mailbox testing
+//     ----------------------------------------------------------*/
+//     #ifdef TESTING
+//         /*------------------------------------------------------
+//         Assert once and do not spam log
+//         ------------------------------------------------------*/
+//         if( !called_once )
+//             {
+//             Console.add_assert( "TESTING defined as true: testing global mailbox enabled");
+//             called_once = true;
+//             }
+//         /*------------------------------------------------------
+//         Call runtime
+//         ------------------------------------------------------*/
+//         mailbox_testing::run();
+//     #endif
+
+// 	/*------------------------------------------------------
+//     Application code goes here!
+//     ------------------------------------------------------*/
+
+// 	} /* while(true) */
 
 } /* main() */

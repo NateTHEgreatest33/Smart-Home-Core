@@ -16,6 +16,8 @@ add_subdirectory( lib/util )
 add_subdirectory( lib/console )
 add_subdirectory( lib/mailbox )
 
+add_subdirectory( lib/wifi )
+
 pico_sdk_init()
 
 add_executable( SmartHomeCore
@@ -46,6 +48,7 @@ target_link_libraries(SmartHomeCore
   utilLib
   consoleAPI
   mailboxAPI
+  wifiAPI
 
 )
 

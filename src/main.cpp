@@ -25,6 +25,7 @@
 #include "console.hpp"
 #include "messageAPI.hpp"
 #include "mailbox.hpp"
+#include "wifi.hpp"
 
 #include <iostream>
 

@@ -39,7 +39,7 @@ target_link_libraries(SmartHomeCore
   hardware_spi
   pico_multicore
   # Using Pico W
-  pico_cyw43_arch_none
+  pico_cyw43_arch_lwip_poll
 
   # libraries
   loraAPI

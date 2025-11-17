@@ -1,4 +1,8 @@
 # cmake_minimum_required(VERSION 3.5)
+set(TEST_TCP_SERVER_IP "10.0.0.187") 
+set(WIFI_PASSWORD "Ranger2023") 
+set(WIFI_SSID "PartyPlanningCommittee") 
+
 
 project(wifiAPI CXX ASM)
 
@@ -9,6 +13,8 @@ pico_sdk_init()
 add_library( wifiAPI
     wifi.hpp
     wifi.tpp
+    lwipopts.h
+    
     )
 
 target_compile_definitions(wifiAPI PRIVATE
@@ -19,14 +25,10 @@ target_compile_definitions(wifiAPI PRIVATE
 
 target_link_libraries( wifiAPI
   pico_stdlib 
-  pico_cyw43_arch_lwip_poll
 #   messageAPI
 #   utilLib
 #   consoleAPI
 
-  # Using Pico W
-  
-#   pico_cyw43_arch_none
 )
 
 target_include_directories( wifiAPI PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}" )

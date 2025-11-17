@@ -20,12 +20,25 @@
 #include "lwip/pbuf.h"
 #include "lwip/tcp.h"
 
+#include "lwipopts.h"
+
+#define PICO_CYW43_ARCH_POLL 1
+
 /*--------------------------------------------------------------------
                           LITERAL CONSTANTS
 --------------------------------------------------------------------*/
-// #if !defined(TEST_TCP_SERVER_IP)
-//     #error TEST_TCP_SERVER_IP not defined
-// #endif
+#if !defined(TEST_TCP_SERVER_IP)
+    #error TEST_TCP_SERVER_IP not defined
+#endif
+
+#if !defined(WIFI_PASSWORD)
+    #error WIFI_PASSWORD not defined
+#endif
+
+#if !defined(WIFI_SSID)
+    #error WIFI_SSID not defined
+#endif
+
 /*--------------------------------------------------------------------
                                 TYPES
 --------------------------------------------------------------------*/

@@ -68,9 +68,13 @@ class wifiInterface
     wifiInterface();
     ~wifiInterface();
 
+    void wifi_runtime();
+
     private:
     bool open_client(void);
     bool close_client(void);
+
+    TCP_CLIENT_T* tcp_client_init(void);
 
     err_t poll_callback(void *arg, struct tcp_pcb *tpcb);
     err_t send_callback(void *arg, struct tcp_pcb *tpcb, u16_t len);

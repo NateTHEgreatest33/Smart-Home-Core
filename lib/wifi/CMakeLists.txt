@@ -1,8 +1,4 @@
 # cmake_minimum_required(VERSION 3.5)
-set(TEST_TCP_SERVER_IP "10.0.0.187") 
-set(WIFI_PASSWORD "Ranger2023") 
-set(WIFI_SSID "PartyPlanningCommittee") 
-
 
 project(wifiAPI CXX ASM)
 

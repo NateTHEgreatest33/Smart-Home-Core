@@ -27,17 +27,17 @@
 /*--------------------------------------------------------------------
                           LITERAL CONSTANTS
 --------------------------------------------------------------------*/
-#if !defined(TEST_TCP_SERVER_IP)
-    #error TEST_TCP_SERVER_IP not defined
-#endif
+// #if !defined(TEST_TCP_SERVER_IP)
+//     #error TEST_TCP_SERVER_IP not defined
+// #endif
 
-#if !defined(WIFI_PASSWORD)
-    #error WIFI_PASSWORD not defined
-#endif
+// #if !defined(WIFI_PASSWORD)
+//     #error WIFI_PASSWORD not defined
+// #endif
 
-#if !defined(WIFI_SSID)
-    #error WIFI_SSID not defined
-#endif
+// #if !defined(WIFI_SSID)
+//     #error WIFI_SSID not defined
+// #endif
 
 /*--------------------------------------------------------------------
                                 TYPES
@@ -46,6 +46,7 @@ typedef struct TCP_CLIENT_T_ {
     struct tcp_pcb *tcp_pcb;
     ip_addr_t remote_addr;
     bool connected;
+    int error_code;
 } TCP_CLIENT_T;
 
 /*--------------------------------------------------------------------
@@ -74,7 +75,7 @@ class wifiInterface
     bool open_client(void);
     bool close_client(void);
 
-    TCP_CLIENT_T* tcp_client_init(void);
+    void tcp_client_init(void);
 
     err_t poll_callback(void *arg, struct tcp_pcb *tpcb);
     err_t send_callback(void *arg, struct tcp_pcb *tpcb, u16_t len);
@@ -82,6 +83,9 @@ class wifiInterface
     void  error_callback(void *arg, err_t err);
     err_t connected_callback(void *arg, struct tcp_pcb *tpcb, err_t err);
     
+
+    TCP_CLIENT_T p_state;
+
     };
 
 }

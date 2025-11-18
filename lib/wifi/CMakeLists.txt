@@ -8,7 +8,7 @@ pico_sdk_init()
 
 add_library( wifiAPI
     wifi.hpp
-    wifi.tpp
+    wifi.cpp
     lwipopts.h
     
     )
@@ -21,6 +21,7 @@ target_compile_definitions(wifiAPI PRIVATE
 
 target_link_libraries( wifiAPI
   pico_stdlib 
+  pico_cyw43_arch_lwip_poll #using picoW
 #   messageAPI
 #   utilLib
 #   consoleAPI

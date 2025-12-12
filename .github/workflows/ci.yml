@@ -2,9 +2,9 @@ name: Smart Home Core CI
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: [ "pi_pico" ]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: [ "pi_pico" ]
   workflow_dispatch:
 
 jobs:

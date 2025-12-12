@@ -1,0 +1,66 @@
+name: Smart Home Core CI
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  # -----------------------------------------------------------------------------
+  # Job 1: Host-based Unit Tests
+  # Verifies logic in vnv/mod using Google Test on the runner's native architecture
+  # -----------------------------------------------------------------------------
+  unit-tests:
+    name: Run Unit Tests (Host)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Build Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake build-essential
+
+      - name: Configure CMake (Unit Tests)
+        run: cmake -S vnv/mod -B build_mod_tests
+
+      - name: Build Unit Tests
+        run: make -C build_mod_tests
+
+      - name: Execute Tests
+        run: ./build_mod_tests/run_mod_tests
+
+  # -----------------------------------------------------------------------------
+  # Job 2: Firmware Build
+  # Cross-compiles src/ and lib/ for the Raspberry Pi Pico (ARM)
+  # -----------------------------------------------------------------------------
+  build-firmware:
+    name: Build Firmware (Pico W)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install ARM Toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake build-essential gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib
+
+      # Defines the variable used by pico_sdk_import.cmake to fetch the SDK automatically
+      - name: Set SDK Environment
+        run: echo "PICO_SDK_FETCH_FROM_GIT=on" >> $GITHUB_ENV
+
+      - name: Configure CMake (Firmware)
+        # Assuming Pico W based on wifi library usage. 
+        # If standard Pico, change to -DPICO_BOARD=pico
+        run: cmake -S . -B build -DPICO_BOARD=pico_w
+
+      - name: Build Firmware
+        run: make -C build -j$(nproc)

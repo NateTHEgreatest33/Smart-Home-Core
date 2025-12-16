@@ -81,6 +81,7 @@ jobs:
     name: Run System Tests (Pi Hardware)
     needs: build-firmware
     runs-on: [self-hosted, linux, ARM64]
+    environment: Hardware_lab
     env:
       # Path to the downloaded firmware artifact, available for tests that choose to flash it.
       FIRMWARE_PATH: ${{ github.workspace }}/build/SmartHomeCore.elf

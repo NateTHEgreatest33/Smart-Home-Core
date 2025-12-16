@@ -57,7 +57,7 @@ class Test:
     # ==================================
 	def __init__(self, result_obj ):
 		self.log = result_obj
-		self.pico = pi_pico( test_mode = True )
+		self.pico = pi_pico( test_mode = True, load_software_path="custom_sw_units" )
 
 
     # ==================================

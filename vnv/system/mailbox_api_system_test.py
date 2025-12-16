@@ -100,9 +100,6 @@ class Test:
 		self.pico    = pico
 		self.mailbox = mailbox
 
-		#load custom mailbox sw onto board
-		# self.pico.load_software("elfPath")
-
     # ==================================
     # run()
     # ==================================
@@ -239,7 +236,7 @@ def main():
 		test = Test( log, [], mailbox )
 	else:
 		log = results( __file__ )
-		Pico = pi_pico( test_mode=False )
+		Pico = pi_pico( test_mode=False, load_software_path="custom_elf_w_test_mode" )
 		mailbox = Mailbox( msg_conn = Pico.msg_conn, gbl_mailbox = global_mailbox )
 		test = Test( log, Pico, mailbox )
 

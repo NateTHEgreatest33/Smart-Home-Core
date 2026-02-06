@@ -1,0 +1,5 @@
+pyserial
+RPi.GPIO
+numpy
+GitPython
+spidev

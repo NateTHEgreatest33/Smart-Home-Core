@@ -64,3 +64,48 @@ jobs:
 
       - name: Build Firmware
         run: make -C build -j$(nproc)
+
+      - name: Upload Firmware Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SmartHomeCore-Firmware
+          path: build/SmartHomeCore.elf
+          retention-days: 5
+
+  # -----------------------------------------------------------------------------
+  # Job 3: System Tests (Hardware)
+  # Runs on a self-hosted Raspberry Pi runner.
+  # Flashes the firmware and runs Python system tests.
+  # -----------------------------------------------------------------------------
+  system-tests:
+    name: Run System Tests (Pi Hardware)
+    needs: build-firmware
+    runs-on: [self-hosted, linux, ARM64]
+    environment: Hardware_lab
+    env:
+      # Path to the downloaded firmware artifact, available for tests that choose to flash it.
+      FIRMWARE_PATH: ${{ github.workspace }}/build/SmartHomeCore.elf
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Download Firmware Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: SmartHomeCore-Firmware
+          path: build
+
+      - name: Install Dependencies
+        run: |
+          # Ensure python3 and pip are installed
+          # sudo apt-get install -y python3 python3-pip picotool
+          pip3 install -r vnv/system/requirements.txt --break-system-packages
+
+      - name: Run Console API Tests
+        run: python3 vnv/system/console_api_system_test.py
+
+      - name: Run Mailbox API Tests
+        run: python3 vnv/system/mailbox_api_system_test.py
+
+      - name: Run Message API Tests
+        run: python3 vnv/system/message_api_system_test.py

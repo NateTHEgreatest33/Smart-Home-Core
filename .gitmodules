@@ -19,3 +19,6 @@
 [submodule "lib/mailbox"]
 	path = lib/mailbox
 	url = https://github.com/NateTHEgreatest33/mailbox
+[submodule "lib/displayAPI"]
+	path = lib/displayAPI
+	url = https://NateTHEgreatest33@github.com/NateTHEgreatest33/displayAPI.git

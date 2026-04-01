@@ -15,6 +15,8 @@ add_subdirectory( lib/button )
 add_subdirectory( lib/util )
 add_subdirectory( lib/console )
 add_subdirectory( lib/mailbox )
+add_subdirectory( lib/displayAPI )
+
 
 pico_sdk_init()
 
@@ -46,6 +48,7 @@ target_link_libraries(SmartHomeCore
   utilLib
   consoleAPI
   mailboxAPI
+  displayAPI
 
 )
 
